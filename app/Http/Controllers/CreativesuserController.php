@@ -12,8 +12,5 @@ class CreativesuserController extends Controller
         return view('admin.account.user.creatives.index');
     }
 
-    public function dashboard()
-    {
-        return view('users.content.index');
-    }
+    
 }

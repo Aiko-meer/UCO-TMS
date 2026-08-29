@@ -1,7 +1,23 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
+ <!--New Task Model-->
+                        @include ('admin.socmed.newtaskmodal')
+                       @if (session('success'))
+    <div id="floatingAlert" class="alert alert-success shadow-lg" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; transition: opacity 0.5s ease;">
+        {{ session('success') }}
+    </div>
 
+    <script>
+        setTimeout(function() {
+            let alert = document.getElementById('floatingAlert');
+            if (alert) {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 4000);
+    </script>
+@endif
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -28,7 +44,7 @@
                 <!-- Header -->
                  @include ('admin.assets.headnavbar')
                 <!-- // END Header -->
-
+               
                 <div class="border-bottom-2 py-32pt position-relative z-1">
                     <div class="container-fluid page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
                         <div class="flex d-flex flex-column flex-sm-row align-items-center mb-24pt mb-md-0">
@@ -56,13 +72,17 @@
                             </div>
                         </div>
 
-                         <div class="row"
-                             role="tablist">
+                         <div class="row" role="tablist">
                             <div class="col-auto border-left">
-                                <a href=""
-                                   class="btn btn-accent">New Task</a>
+                                <button type="button"
+                                        class="btn btn-accent"
+                                        data-toggle="modal"
+                                        data-target="#newTaskModal">
+                                    New Task
+                                </button>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 

@@ -24,6 +24,7 @@ Route::get('/admin/account/edit-profile', [AccountController::class, 'editprofil
 Route::get('/admin/account/edit-profile/password', [AccountController::class, 'editprofilepassword'])->name('admin.account.edit-password');
 
 Route::get('/socmed/dashboard', [SocialmediaController::class, 'dashboard'])->name('socmed.home');
+Route::POST('/socmed/dashboard/store', [SocialmediaController::class, 'store'])->name('socmed.store');
 
 Route::get('/photography/dashboard', [PhotographyController::class, 'dashboard'])->name('photo.home');
 
@@ -39,10 +40,6 @@ Route::get('/uzpost/dashboard', [UzpostController::class, 'dashboard'])->name('u
 
 Route::get('/uzpr/dashboard', [UzprController::class, 'dashboard'])->name('uzpr.home');
 
-Route::get('/contentuser/table', [ContentuserController::class, 'usertable'])->name('contentuser.table');
-Route::get('/contentuser/socmed', [ContentuserController::class, 'socmed'])->name('contentuser.socmed');
-Route::get('/contentuser/socmed/table', [ContentuserController::class, 'socmedtable'])->name('contentuser.socmedtable');
-
-Route::get('/creativesuser/dashboard', [CreativesuserController::class, 'dashboard'])->name('creativeuser.table');
-
-Route::get('/users/dashboard', [UserController::class, 'dashboard'])->name('user.table');
+Route::get('/creatives/dashboard', [CreativesuserController::class, 'dashboard'])->name('creativeuser.table');
+Route::get('/content/dashboard', [ContentuserController::class, 'dashboard'])->name('contentuser.table');
+Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.table');

@@ -5,6 +5,7 @@
         <!-- Bootstrap -->
         <script src="{{ asset('assets/vendor/popper.min.js') }}"></script>
         <script src="{{ asset('assets/vendor/bootstrap.min.js') }}"></script>
+        
 
         <!-- Perfect Scrollbar -->
         <script src="{{ asset('assets/vendor/perfect-scrollbar.min.js') }}"></script>
@@ -38,3 +39,7 @@
 
         <!-- Chart.js Samples -->
         <script src="{{ asset('assets/js/page.tasks-board.js') }}"></script>
+
+         <!-- Flatpickr -->
+        <script src="{{ asset('assets/vendor/flatpickr/flatpickr.min.js')}}"></script>
+        <script src="{{asset('assets/js/flatpickr.js')}}"></script>
