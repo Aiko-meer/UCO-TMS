@@ -1,23 +1,6 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
- <!--New Task Model-->
-                        @include ('admin.socmed.newtaskmodal')
-                       @if (session('success'))
-    <div id="floatingAlert" class="alert alert-success shadow-lg" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; transition: opacity 0.5s ease;">
-        {{ session('success') }}
-    </div>
-
-    <script>
-        setTimeout(function() {
-            let alert = document.getElementById('floatingAlert');
-            if (alert) {
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            }
-        }, 4000);
-    </script>
-@endif
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -27,6 +10,26 @@
                 <div class="sk-chase-dot"></div>
                 <div class="sk-chase-dot"></div>
             </div>
+        </div>
+         <!--New Task Model-->
+                        @include ('admin.socmed.newtaskmodal')
+         <!--pop-up for active  -->
+                      @include ('admin.socmed.viewpop')
+
+
+                        
+                       @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 3000 // Closes automatically after 3 seconds
+        });
+    </script>
+@endif
+        
 
             <!-- <div class="sk-bounce">
     <div class="sk-bounce-dot"></div>
@@ -34,7 +37,7 @@
   </div> -->
 
             <!-- More spinner examples at https://github.com/tobiasahlin/SpinKit/blob/master/examples.html -->
-        </div>
+        
 
         <div class="mdk-drawer-layout js-mdk-drawer-layout"
              data-push
@@ -178,6 +181,33 @@
                                     </a>
                                 </div>
                             </div>
+                            <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Check if there's a saved tab in localStorage and activate it
+        let activeTab = localStorage.getItem('activeDashboardTab');
+        if (activeTab) {
+            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
+            if (tabTrigger) {
+                // Use Bootstrap's tab trigger if available, or fallback to click()
+                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+                    var tab = new bootstrap.Tab(tabTrigger);
+                    tab.show();
+                } else {
+                    tabTrigger.click();
+                }
+            }
+        }
+
+        // 2. Save the tab href to localStorage whenever a tab is clicked
+        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                let targetID = this.getAttribute('href');
+                localStorage.setItem('activeDashboardTab', targetID);
+            });
+        });
+    });
+</script>
                         </div>
 
                         <div class="tab-content">

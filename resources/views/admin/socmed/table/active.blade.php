@@ -64,7 +64,8 @@
                                 </thead>
                                 <tbody class="list"
                                        id="projects">
-
+                                @foreach($requests as $req)
+                                @if ($req->information->status == 0)
                                     <tr>
 
                                         <td class="pr-0">
@@ -84,8 +85,8 @@
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>Juan dela cruz</strong></small>
-                                                        <small class="js-lists-values-location text-50">juan.delacruz@uz.edu.ph</small>
+                                                        <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
+                                                        <small class="js-lists-values-location text-50">{{ $req->email}}</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -100,8 +101,7 @@
 
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex d-flex flex-column">
-                                                            <p class="mb-0"><strong class="js-lists-values-lead">UCO</strong></p>
-                                                            <small class="js-lists-values-email text-50">Content Associate</small>
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{ $req->department}}</strong></p>
                                                         </div>
                                                     </div>
 
@@ -112,30 +112,35 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>15/08/2019</strong></small>
+                                                <small class="js-lists-values-date"><strong>{{ $req->information?->created_at?->format('M d, Y h:i A') }}</strong></small>
                                                 <small class="text-50">18 days ago</small>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>17/08/2019</strong></small>
+                                                <small class="js-lists-values-date"><strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong></small>
                                                 <small class="text-50">2 days</small>
                                             </div>
                                         </td>
                                         <td class="text-right">
-                                            <a href=""
-                                               class="text-50"><i class="material-icons">more_vert</i></a>
+                                            <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
                                         </td>
                                     </tr>
-
+                                    @endif
+                                @endforeach
                                 </tbody>
                             </table>
+                              
                         </div>
+
+                     

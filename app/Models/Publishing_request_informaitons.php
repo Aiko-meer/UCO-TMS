@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Socmed_request_information extends Model
+class Publishing_request_informaitons extends Model
 {
     //
-    protected $table = 'socmed_request_informations';
-
      protected $fillable = [
         'request_id',
         'purpose',
@@ -21,12 +19,12 @@ class Socmed_request_information extends Model
         'produce',
         'published',
         'status',
-        'content_attachement'
+        'reference'
         // Add any other columns that belong to the 'socmed_requests' table here
     ];
 
     public function request()
     {
-        return $this->belongsTo(Socmed_request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Publishing_requests::class, 'request_id');
     }
 }

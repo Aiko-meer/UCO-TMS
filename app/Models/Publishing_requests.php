@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Socmed_request extends Model
+class Publishing_requests extends Model
 {
     //
-    protected $table = 'socmed_requests';
-
-    protected $fillable = [
+     protected $fillable = [
         'email',
         'fullname',
         'department',
@@ -19,6 +17,6 @@ class Socmed_request extends Model
 
     public function information()
     {
-        return $this->hasOne(Socmed_request_information::class, 'request_id','request_id');
+        return $this->hasOne(Publishing_request_informaitons::class, 'request_id');
     }
 }

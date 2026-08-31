@@ -36,9 +36,6 @@
                         <h6 class="text-uppercase font-weight-bold mb-1">
                             Requester Information
                         </h6>
-                        <p class="text-muted small mb-0">
-                            Please provide your personal and department information.
-                        </p>
                     </div>
 
                     <!-- Full Name -->
@@ -70,15 +67,9 @@
                                     name="department"
                                     class="form-control"
                                     required>
-                                <option value="" selected disabled>
-                                    Select department
-                                </option>
-
-                                <option value="1">Information Technology</option>
-                                <option value="2">Student Affairs</option>
-                                <option value="3">Marketing</option>
-                                <option value="4">Human Resources</option>
-                                <option value="5">Administration</option>
+                                 @foreach($departments as $dep)
+                                 <option value="{{$dep->code}}">{{$dep->name}}</option>
+                                 @endforeach
                             </select>
                         </div>
                     </div>
@@ -255,71 +246,173 @@
                     </div>
                 </div>
 
-                <!-- For layout 
+                <!-- For layout--> 
                   <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="font-weight-semibold">Do you need a layout for this request?</label>
-                            <div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="layoutYes" name="needs_layout" value="yes" class="custom-control-input" onchange="toggleLayoutSection()">
-                                    <label class="custom-control-label" for="layoutYes">Yes</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="layoutNo" name="needs_layout" value="no" class="custom-control-input" checked onchange="toggleLayoutSection()">
-                                    <label class="custom-control-label" for="layoutNo">No</label>
-                                </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold">Do you need a layout for this request?</label>
+                        <div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="layoutYes" value="1" name="needs_layout" class="custom-control-input" onchange="toggleLayoutSection()">
+                                <label class="custom-control-label" for="layoutYes">Yes</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="layoutNo"  value="no" class="custom-control-input" checked onchange="toggleLayoutSection()">
+                                <label class="custom-control-label" for="layoutNo">No</label>
                             </div>
                         </div>
-                  </div>
+                    </div>
+                </div>
 
                     
                   <div id="layoutDetailsSection" class="col-md-12" style="display: none;">
-                        <div class="card border-primary mb-3">
-                            <div class="card-header bg-light font-weight-semibold text-primary">Layout Details</div>
-                            <div class="card-body">
-                                <div class="form-row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                        <label for="attachment" class="font-weight-semibold">
-                            Attachments
-                        </label>
-                        <span>for layout reference</span>
+                            <div class="card border-primary mb-3">
+                                <div class="card-header bg-light font-weight-semibold text-primary">Layout Details</div>
+                                <div class="card-body">
+                                    <div class="form-row">
+                                       <!-- Category -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="priority" class="font-weight-semibold">
+                                                    Category
+                                                    <span class="text-danger">*</span>
+                                                </label>
 
-                        <div class="custom-file">
-                            <input type="file"
-                                class="custom-file-input"
-                                id="attachment"
-                                name="attachment[]"
-                                multiple>
+                                                <select id="priority"
+                                                        name="category_layout"
+                                                        class="form-control"
+                                                        >
 
-                            <label class="custom-file-label" for="attachment">
-                                Choose file(s)
-                            </label>
-                        </div>
+                                                    <option value="" selected disabled>
+                                                        Select
+                                                    </option>
 
-                        <small class="form-text text-muted">
-                            PDF, DOCX, JPG, PNG — Max 10 MB 
-                        </small>
-                    </div>
+                                                    <option value="low">Advisory</option>
+                                                    <option value="normal">Congratulatory</option>
+                                                    <option value="high">Social Card/Facebook Banner</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Attachments -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="attachment" class="font-weight-semibold">Attachments</label>
+                                                <span>for layout reference</span>
+
+                                                <div class="custom-file">
+                                                    <input type="file"
+                                                        class="custom-file-input"
+                                                        id="attachment"
+                                                        name="reference[]"
+                                                        multiple
+                                                        onchange="previewAndManageFiles(this)">
+                                                    <label class="custom-file-label" for="attachment" id="fileCustomLabel">
+                                                        Choose file(s)
+                                                    </label>
+                                                </div>
+
+                                                <small class="form-text text-muted">
+                                                    PDF, DOCX, JPG, PNG — Max 10 MB 
+                                                </small>
+
+                                                <!-- Dynamic Preview & Removal Container -->
+                                                <div id="filePreviewContainer" class="mt-2 d-flex flex-wrap gap-2"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-<script>
+                  <script>
     function toggleLayoutSection() {
-        const layoutYes = document.getElementById('layoutYes');
-        const layoutSection = document.getElementById('layoutDetailsSection');
+    const layoutYes = document.getElementById('layoutYes');
+    const layoutSection = document.getElementById('layoutDetailsSection');
+    const categorySelect = document.getElementById('priority'); 
+    
+    if (layoutYes.checked) {
+        layoutSection.style.display = 'block';
+        categorySelect.required = true; // Native JS property toggle
+    } else {
+        layoutSection.style.display = 'none';
+        categorySelect.required = false; 
+        categorySelect.value = ''; 
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggleLayoutSection();
+});
+
+    // Run immediately on page load to fix default state
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleLayoutSection();
+    });
+
+    let dtFiles = new DataTransfer();
+
+    function previewAndManageFiles(input) {
+        const customLabel = document.getElementById('fileCustomLabel');
         
-        if (layoutYes.checked) {
-            layoutSection.style.display = 'block';
+        for (let i = 0; i < input.files.length; i++) {
+            dtFiles.items.add(input.files[i]);
+        }
+        
+        input.files = dtFiles.files;
+        renderPreviews();
+        
+        if (dtFiles.files.length > 0) {
+            customLabel.textContent = `${dtFiles.files.length} file(s) chosen`;
         } else {
-            layoutSection.style.display = 'none';
+            customLabel.textContent = 'Choose file(s)';
         }
     }
-</script>-->
 
+    function removeFile(index) {
+        let newDt = new DataTransfer();
+        
+        for (let i = 0; i < dtFiles.files.length; i++) {
+            if (i !== index) {
+                newDt.items.add(dtFiles.files[i]);
+            }
+        }
+        
+        dtFiles = newDt;
+        const input = document.getElementById('attachment');
+        const customLabel = document.getElementById('fileCustomLabel');
+        
+        input.files = dtFiles.files;
+        renderPreviews();
+        
+        if (dtFiles.files.length > 0) {
+            customLabel.textContent = `${dtFiles.files.length} file(s) chosen`;
+        } else {
+            customLabel.textContent = 'Choose file(s)';
+            input.value = '';
+        }
+    }
+
+    function renderPreviews() {
+        const previewContainer = document.getElementById('filePreviewContainer');
+        previewContainer.innerHTML = '';
+        
+        Array.from(dtFiles.files).forEach((file, index) => {
+            const fileBadge = document.createElement('div');
+            fileBadge.className = 'badge badge-secondary p-2 m-1 d-flex align-items-center';
+            fileBadge.style.fontSize = '0.9rem';
+            
+            let displayName = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+            
+            fileBadge.innerHTML = `
+                <span class="mr-2">${displayName}</span>
+                <button type="button" class="close text-white ml-auto" style="float: none; font-size: 1.1rem; line-height: 1;" onclick="removeFile(${index})">
+                    &times;
+                </button>
+            `;
+            previewContainer.appendChild(fileBadge);
+        });
+    }
+</script>
                         <!-- Approved -->
                 <div class="col-12">
                     <div class="form-group">
@@ -337,20 +430,21 @@
                     </div>
                 </div>
                <!-- Attachment -->
-                <div class="col-md-6">
+               <div class="col-md-6">
                     <div class="form-group">
-                        <label for="attachment" class="font-weight-semibold">
+                        <label for="content_attachment" class="font-weight-semibold">
                             Attachments
                         </label>
 
                         <div class="custom-file">
                             <input type="file"
                                 class="custom-file-input"
-                                id="attachment"
+                                id="content_attachment"
                                 name="content_attachement[]"
-                                multiple>
+                                multiple
+                                onchange="previewContentFiles(this)">
 
-                            <label class="custom-file-label" for="attachment">
+                            <label class="custom-file-label" for="content_attachment" id="contentCustomLabel">
                                 Choose file(s)
                             </label>
                         </div>
@@ -358,8 +452,78 @@
                         <small class="form-text text-muted">
                             PDF, DOCX, JPG, PNG — Max 10 MB 
                         </small>
+
+                        <div id="contentPreviewContainer" class="mt-2 d-flex flex-wrap gap-2"></div>
                     </div>
                 </div>
+
+            <script>
+                let contentDtFiles = new DataTransfer();
+
+                function previewContentFiles(input) {
+                    const customLabel = document.getElementById('contentCustomLabel');
+                    
+                    for (let i = 0; i < input.files.length; i++) {
+                        contentDtFiles.items.add(input.files[i]);
+                    }
+                    
+                    input.files = contentDtFiles.files;
+                    renderContentPreviews();
+                    
+                    if (contentDtFiles.files.length > 0) {
+                        customLabel.textContent = `${contentDtFiles.files.length} file(s) chosen`;
+                    } else {
+                        customLabel.textContent = 'Choose file(s)';
+                    }
+                }
+
+                function removeContentFile(index) {
+                    let newDt = new DataTransfer();
+                    
+                    for (let i = 0; i < contentDtFiles.files.length; i++) {
+                        if (i !== index) {
+                            newDt.items.add(contentDtFiles.files[i]);
+                        }
+                    }
+                    
+                    contentDtFiles = newDt;
+                    const input = document.getElementById('content_attachment');
+                    const customLabel = document.getElementById('contentCustomLabel');
+                    
+                    input.files = contentDtFiles.files;
+                    renderContentPreviews();
+                    
+                    if (contentDtFiles.files.length > 0) {
+                        customLabel.textContent = `${contentDtFiles.files.length} file(s) chosen`;
+                    } else {
+                        customLabel.textContent = 'Choose file(s)';
+                        input.value = '';
+                    }
+                }
+
+                function renderContentPreviews() {
+                    const previewContainer = document.getElementById('contentPreviewContainer');
+                    previewContainer.innerHTML = '';
+                    
+                    Array.from(contentDtFiles.files).forEach((file, index) => {
+                        const fileBadge = document.createElement('div');
+                        fileBadge.className = 'badge badge-secondary p-2 m-1 d-flex align-items-center';
+                        fileBadge.style.fontSize = '0.9rem';
+                        
+                        let displayName = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+                        
+                        fileBadge.innerHTML = `
+                            <span class="mr-2">${displayName}</span>
+                            <button type="button" class="close text-white ml-auto" style="float: none; font-size: 1.1rem; line-height: 1;" onclick="removeContentFile(${index})">
+                                &times;
+                            </button>
+                        `;
+                        previewContainer.appendChild(fileBadge);
+                    });
+                }
+            </script>
+
+
 
 </div>
 

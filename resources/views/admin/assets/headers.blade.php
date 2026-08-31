@@ -45,10 +45,9 @@
               href="{{ asset('assets/css/app.css') }}"
               rel="stylesheet">
 
-        <!-- Dark Mode CSS (optional) -->
-        <link type="text/css"
-              href="{{ asset('assets/css/dark-mode.css') }}"
-              rel="stylesheet">
+        <!-- Vendor CSS -->
+        <link rel="stylesheet"
+              href="{{asset('assets/css/nestable.css')}}">
      
 
     </head>

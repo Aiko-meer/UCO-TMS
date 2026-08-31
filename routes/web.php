@@ -23,8 +23,10 @@ Route::get('/admin/account', [AccountController::class, 'dashboard'])->name('adm
 Route::get('/admin/account/edit-profile', [AccountController::class, 'editprofile'])->name('admin.account.edit-profile');
 Route::get('/admin/account/edit-profile/password', [AccountController::class, 'editprofilepassword'])->name('admin.account.edit-password');
 
+//socialmedia request
 Route::get('/socmed/dashboard', [SocialmediaController::class, 'dashboard'])->name('socmed.home');
 Route::POST('/socmed/dashboard/store', [SocialmediaController::class, 'store'])->name('socmed.store');
+Route::PUT('/socmed/dashboard/update/{request_id}', [SocialmediaController::class, 'update'])->name('socmed.update');
 
 Route::get('/photography/dashboard', [PhotographyController::class, 'dashboard'])->name('photo.home');
 

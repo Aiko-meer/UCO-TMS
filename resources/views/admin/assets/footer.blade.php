@@ -30,9 +30,11 @@
         <script src="{{ asset('assets/js/chartjs.js') }}"></script>
 
          <!-- Tables -->
-        <script src="{{ asset('assets/js/toggle-check-all.js') }}"></script>
-        <script src="{{ asset('assets/js/check-selected-row.js') }}"></script>
 
+           <!-- Vendor JS -->
+        <script src="{{asset('assets/vendor/jquery.nestable.js')}}"></script>
+        <!-- Initialize -->
+        <script src="{{asset('assets/js/nestable.js')}}"></script>
           <!-- List.js -->
         <script src="{{ asset('assets/vendor/list.min.js') }}"></script>
         <script src="{{ asset('assets/js/list.js') }}"></script>
@@ -43,3 +45,5 @@
          <!-- Flatpickr -->
         <script src="{{ asset('assets/vendor/flatpickr/flatpickr.min.js')}}"></script>
         <script src="{{asset('assets/js/flatpickr.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
