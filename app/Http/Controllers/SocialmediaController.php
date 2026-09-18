@@ -18,7 +18,11 @@ class SocialmediaController extends Controller
     public function dashboard()
     {
         // Fetches parent records along with their corresponding child information
-    $requests = Socmed_request::with('information')->get();
+    $requests = Socmed_request::with('information')->orderBy('id', 'desc')->get();;
+   $actviepagi  = Socmed_request::with('information')->paginate(5, ['fullname'], 'active_page');
+    $archivepagi =Socmed_request::with('information')->paginate(10);
+    $monthpagi =Socmed_request::with('information')->paginate(10);
+    $listpagi =Socmed_request::with('information')->paginate(5);
     $departments = Departments::all(); 
     // Inside your controller method:
     $year = request('year', date('Y')); // Defaults to current year if not selected
@@ -48,6 +52,13 @@ class SocialmediaController extends Controller
             $q->where('status', 1); // Change to your actual approval status code (must be unique!)
         })->count();
 
+        $monthCount = Socmed_request::whereHas('information', function($q) {
+            $q->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year);
+        })->count();
+
+        $totalCount = Socmed_request::count();
+
     // 3. Calculate percentages safely (avoiding division by zero)
     $inProgressPercentage = $totalRequests > 0 ? round(($inProgressCount / $totalRequests) * 100) : 0;
     $postedPercentage = $totalRequests > 0 ? round(($postedCount / $totalRequests) * 100) : 0;
@@ -62,7 +73,13 @@ class SocialmediaController extends Controller
         'postedCount', 
         'postedPercentage', 
         'approvalCount', 
-        'approvalPercentage'));
+        'approvalPercentage',
+        'totalCount',
+        'actviepagi',
+        'archivepagi',
+        'monthpagi',
+        'listpagi',
+        'monthCount'));
     }
 
    public function store(Request $request)
@@ -97,6 +114,7 @@ class SocialmediaController extends Controller
         $attachmentPaths = [];
                         if ($request->hasFile('content_attachement')) {
                             $cleanPurpose = Str::slug($validatedData['purpose']);
+                            $produce = $validatedData['full_name'];
                             
                             foreach ($request->file('content_attachement') as $file) {
                                 $originalName = $file->getClientOriginalName();
@@ -106,6 +124,10 @@ class SocialmediaController extends Controller
                                 $path = $file->storeAs('attachments', $filename, 'public');
                                 $attachmentPaths[] = $path;
                             }
+
+                            
+                        }else{
+                            $produce = "";
                         }
 
             // Generate a unique 6-character random request ID
@@ -131,7 +153,7 @@ class SocialmediaController extends Controller
                 'content_information' => $validatedData['content_information'] ?? null,
                 'section' => $validatedData['section'] ?? null,
                 'approve' => $validatedData['approve'] ?? null,
-                'produce' => $validatedData['produce'] ?? null,
+                'produce' => $produce,
                 'published' => $validatedData['published'] ?? null,
                 'status' => $validatedData['status'] ?? '0', // Default status if applicable
                 'content_attachement' => json_encode($attachmentPaths),
@@ -164,11 +186,11 @@ class SocialmediaController extends Controller
         });
 
        try {
-    // Your save/create logic here
-    Socmed_request::create($request->all());
-
+   DB::commit(); // Finalize all inserts if everything succeeds
     return redirect()->back()->with('success', 'Request saved successfully!');
+
 } catch (\Exception $e) {
+    DB::rollBack(); // Undo any partial database inserts if an error occurs
     return redirect()->back()->with('error', 'Failed to save: ' . $e->getMessage());
 }
     }

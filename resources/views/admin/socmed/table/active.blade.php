@@ -140,7 +140,43 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                              
+                              <div class="card-footer p-8pt">
+    <ul class="pagination justify-content-start pagination-xsm m-0">
+        <!-- Previous Page Link -->
+        <li class="page-item {{ $actviepagi->onFirstPage() ? 'disabled' : '' }}">
+            <a class="page-link" href="{{ $actviepagi->withQueryString()->previousPageUrl() ?? '0' }}" aria-label="Previous">
+                <span aria-hidden="true" class="material-icons">chevron_left</span>
+                <span>Prev</span>
+            </a>
+        </li>
+
+        <!-- Page Dropdown -->
+        <li class="page-item dropdown">
+            <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
+                <span>{{ $actviepagi->currentPage() }}</span>
+            </a>
+            <div class="dropdown-menu">
+                @foreach ($actviepagi->getUrlRange(1, $actviepagi->lastPage()) as $page => $url)
+                    @php
+                        // Manually append the query string to each dropdown item URL to preserve other active table states
+                        $parsedUrl = $url . '&' . http_build_query(request()->except($actviepagi->getPageName()));
+                    @endphp
+                    <a href="{{ $parsedUrl }}" class="dropdown-item {{ $page == $actviepagi->currentPage() ? 'active' : '' }}">
+                        {{ $page }}
+                    </a>
+                @endforeach
+            </div>
+        </li>
+
+        <!-- Next Page Link -->
+        <li class="page-item {{ $actviepagi->onLastPage() ? 'disabled' : '' }}">
+            <a class="page-link" href="{{ $actviepagi->withQueryString()->nextPageUrl() ?? '0' }}" aria-label="Next">
+                <span>Next</span>
+                <span aria-hidden="true" class="material-icons">chevron_right</span>
+            </a>
+        </li>
+    </ul>
+</div>
                         </div>
 
                      

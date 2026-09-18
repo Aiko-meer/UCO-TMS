@@ -138,4 +138,37 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                             <div class="card-footer p-8pt">
+                            <ul class="pagination justify-content-start pagination-xsm m-0">
+                                <!-- Previous Page Link -->
+                                <li class="page-item {{ $listpagi->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $listpagi->previousPageUrl() ?? '#' }}" aria-label="Previous">
+                                        <span aria-hidden="true" class="material-icons">chevron_left</span>
+                                        <span>Prev</span>
+                                    </a>
+                                </li>
+
+                                <!-- Page Dropdown -->
+                                <li class="page-item dropdown">
+                                    <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
+                                        <span>{{ $listpagi->currentPage() }}</span>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @foreach ($listpagi->getUrlRange(1, $listpagi->lastPage()) as $page => $url)
+                                            <a href="{{ $url }}" class="dropdown-item {{ $page == $listpagi->currentPage() ? 'active' : '' }}">
+                                                {{ $page }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </li>
+
+                                <!-- Next Page Link -->
+                                <li class="page-item {{ $listpagi->onLastPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $listpagi->nextPageUrl() ?? '#' }}" aria-label="Next">
+                                        <span>Next</span>
+                                        <span aria-hidden="true" class="material-icons">chevron_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         </div>

@@ -29,6 +29,7 @@ Route::POST('/socmed/dashboard/store', [SocialmediaController::class, 'store'])-
 Route::PUT('/socmed/dashboard/update/{request_id}', [SocialmediaController::class, 'update'])->name('socmed.update');
 
 Route::get('/photography/dashboard', [PhotographyController::class, 'dashboard'])->name('photo.home');
+Route::POST('/photography/dashboard/store', [PhotographyController::class, 'store'])->name('photo.store');
 
 Route::get('/videography/dashboard', [VideoController::class, 'dashboard'])->name('video.home');
 

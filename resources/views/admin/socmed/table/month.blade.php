@@ -121,7 +121,39 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                              
+                               <div class="card-footer p-8pt">
+                            <ul class="pagination justify-content-start pagination-xsm m-0">
+                                <!-- Previous Page Link -->
+                                <li class="page-item {{ $monthpagi->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $monthpagi->previousPageUrl() ?? '#' }}" aria-label="Previous">
+                                        <span aria-hidden="true" class="material-icons">chevron_left</span>
+                                        <span>Prev</span>
+                                    </a>
+                                </li>
+
+                                <!-- Page Dropdown -->
+                                <li class="page-item dropdown">
+                                    <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
+                                        <span>{{ $monthpagi->currentPage() }}</span>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @foreach ($monthpagi->getUrlRange(1, $monthpagi->lastPage()) as $page => $url)
+                                            <a href="{{ $url }}" class="dropdown-item {{ $page == $monthpagi->currentPage() ? 'active' : '' }}">
+                                                {{ $page }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </li>
+
+                                <!-- Next Page Link -->
+                                <li class="page-item {{ $monthpagi->onLastPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $monthpagi->nextPageUrl() ?? '#' }}" aria-label="Next">
+                                        <span>Next</span>
+                                        <span aria-hidden="true" class="material-icons">chevron_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         </div>
                         <script>
     // Real-time auto-refresh interval (e.g., every 5 seconds)

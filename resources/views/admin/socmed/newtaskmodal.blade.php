@@ -246,8 +246,8 @@
                     </div>
                 </div>
 
-                <!-- For layout--> 
-                  <div class="col-md-6">
+                <!-- For layout -->
+                <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-weight-semibold">Do you need a layout for this request?</label>
                         <div>
@@ -256,87 +256,100 @@
                                 <label class="custom-control-label" for="layoutYes">Yes</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="layoutNo"  value="no" class="custom-control-input" checked onchange="toggleLayoutSection()">
+                                <!-- Changed value from "no" to "0" so it functions correctly as a radio group -->
+                                <input type="radio" id="layoutNo" value="0" name="needs_layout" class="custom-control-input" checked onchange="toggleLayoutSection()">
                                 <label class="custom-control-label" for="layoutNo">No</label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                    
-                  <div id="layoutDetailsSection" class="col-md-12" style="display: none;">
-                            <div class="card border-primary mb-3">
-                                <div class="card-header bg-light font-weight-semibold text-primary">Layout Details</div>
-                                <div class="card-body">
-                                    <div class="form-row">
-                                       <!-- Category -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="priority" class="font-weight-semibold">
-                                                    Category
-                                                    <span class="text-danger">*</span>
-                                                </label>
+                <div id="layoutDetailsSection" class="col-md-12" style="display: none;">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-light font-weight-semibold text-primary">Layout Details</div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <!-- Category -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="priority" class="font-weight-semibold">
+                                            Category
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <select id="priority"
+                                                name="category_layout"
+                                                class="form-control" >
+                                            <option value="" selected disabled>Select</option>
+                                            <option value="low">Advisory</option>
+                                            <option value="normal">Congratulatory</option>
+                                            <option value="high">Social Card/Facebook Banner</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                                                <select id="priority"
-                                                        name="category_layout"
-                                                        class="form-control"
-                                                        >
+                                <!-- Attachments -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="attachment" class="font-weight-semibold">Attachments</label>
+                                        <span>for layout reference</span>
 
-                                                    <option value="" selected disabled>
-                                                        Select
-                                                    </option>
-
-                                                    <option value="low">Advisory</option>
-                                                    <option value="normal">Congratulatory</option>
-                                                    <option value="high">Social Card/Facebook Banner</option>
-                                                </select>
-                                            </div>
+                                        <div class="custom-file">
+                                            <input type="file"
+                                                class="custom-file-input"
+                                                id="attachment"
+                                                name="reference[]"
+                                                multiple
+                                                onchange="previewAndManageFiles(this)">
+                                            <label class="custom-file-label" for="attachment" id="fileCustomLabel">
+                                                Choose file(s)
+                                            </label>
                                         </div>
 
-                                        <!-- Attachments -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="attachment" class="font-weight-semibold">Attachments</label>
-                                                <span>for layout reference</span>
+                                        <small class="form-text text-muted">
+                                            PDF, DOCX, JPG, PNG — Max 10 MB 
+                                        </small>
 
-                                                <div class="custom-file">
-                                                    <input type="file"
-                                                        class="custom-file-input"
-                                                        id="attachment"
-                                                        name="reference[]"
-                                                        multiple
-                                                        onchange="previewAndManageFiles(this)">
-                                                    <label class="custom-file-label" for="attachment" id="fileCustomLabel">
-                                                        Choose file(s)
-                                                    </label>
-                                                </div>
-
-                                                <small class="form-text text-muted">
-                                                    PDF, DOCX, JPG, PNG — Max 10 MB 
-                                                </small>
-
-                                                <!-- Dynamic Preview & Removal Container -->
-                                                <div id="filePreviewContainer" class="mt-2 d-flex flex-wrap gap-2"></div>
-                                            </div>
-                                        </div>
+                                        <div id="filePreviewContainer" class="mt-2 d-flex flex-wrap gap-2"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                  <script>
-    function toggleLayoutSection() {
+<script>
+   function toggleLayoutSection() {
     const layoutYes = document.getElementById('layoutYes');
     const layoutSection = document.getElementById('layoutDetailsSection');
     const categorySelect = document.getElementById('priority'); 
     
+    // Content attachment elements
+    const contentAttachmentInput = document.getElementById('content_attachment');
+    const contentCustomLabel = document.getElementById('contentCustomLabel');
+    const contentPreviewContainer = document.getElementById('contentPreviewContainer');
+    
     if (layoutYes.checked) {
+        // Show layout section and make category required
         layoutSection.style.display = 'block';
-        categorySelect.required = true; // Native JS property toggle
+        categorySelect.required = true; 
+
+        // Disable and reset the content attachment input
+        if (contentAttachmentInput) {
+            contentAttachmentInput.disabled = true;
+            contentAttachmentInput.value = '';
+            contentCustomLabel.textContent = 'Choose file(s)';
+            contentPreviewContainer.innerHTML = '';
+        }
     } else {
+        // Hide layout section and clear category requirement
         layoutSection.style.display = 'none';
         categorySelect.required = false; 
         categorySelect.value = ''; 
+
+        // Re-enable content attachment input
+        if (contentAttachmentInput) {
+            contentAttachmentInput.disabled = false;
+        }
     }
 }
 
@@ -344,7 +357,7 @@ document.addEventListener("DOMContentLoaded", function() {
     toggleLayoutSection();
 });
 
-    // Run immediately on page load to fix default state
+    // Single unified initialization block on page load
     document.addEventListener("DOMContentLoaded", function() {
         toggleLayoutSection();
     });
@@ -442,7 +455,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                 id="content_attachment"
                                 name="content_attachement[]"
                                 multiple
-                                onchange="previewContentFiles(this)">
+                                onchange="previewContentFiles(this)"
+                                required>
 
                             <label class="custom-file-label" for="content_attachment" id="contentCustomLabel">
                                 Choose file(s)

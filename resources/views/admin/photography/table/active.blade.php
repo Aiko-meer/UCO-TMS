@@ -18,18 +18,6 @@
                                 <thead>
                                     <tr>
 
-                                        <th style="width: 18px;"
-                                            class="pr-0">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox"
-                                                       class="custom-control-input js-toggle-check-all"
-                                                       data-target="#projects"
-                                                       id="customCheckAll">
-                                                <label class="custom-control-label"
-                                                       for="customCheckAll"><span class="text-hide">Toggle all</span></label>
-                                            </div>
-                                        </th>
-
                                         <th style="width: 150px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
@@ -40,6 +28,12 @@
                                             <a href="javascript:void(0)"
                                                class="sort"
                                                data-sort="js-lists-values-lead">Department</a>
+                                        </th>
+
+                                        <th style="width: 70px";>
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-lead">Event</a>
                                         </th>
 
                                         <th style="width: 48px;">
@@ -64,18 +58,8 @@
                                 </thead>
                                 <tbody class="list"
                                        id="projects">
-
+                                     @foreach($requests as $req)
                                     <tr>
-
-                                        <td class="pr-0">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox"
-                                                       class="custom-control-input js-check-selected-row"
-                                                       id="customCheck1_1">
-                                                <label class="custom-control-label"
-                                                       for="customCheck1_1"><span class="text-hide">Check</span></label>
-                                            </div>
-                                        </td>
 
                                         <td>
 
@@ -84,8 +68,8 @@
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>Juan dela cruz</strong></small>
-                                                        <small class="js-lists-values-location text-50">juan.delacruz@uz.edu.ph</small>
+                                                        <small class="js-lists-values-project"><strong>{{$req->fullname}}</strong></small>
+                                                        <small class="js-lists-values-location text-50">{{$req->email}}</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -100,8 +84,24 @@
 
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex d-flex flex-column">
-                                                            <p class="mb-0"><strong class="js-lists-values-lead">UCO</strong></p>
-                                                            <small class="js-lists-values-email text-50">Content Associate</small>
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{$req->department}}</strong></p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="media flex-nowrap align-items-center"
+                                                 style="white-space: nowrap;">
+                                                <div class="media-body">
+
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex d-flex flex-column">
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{$req->information->event}}</strong></p>
                                                         </div>
                                                     </div>
 
@@ -135,7 +135,7 @@
                                                class="text-50"><i class="material-icons">more_vert</i></a>
                                         </td>
                                     </tr>
-
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>

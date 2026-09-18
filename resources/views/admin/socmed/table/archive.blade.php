@@ -13,23 +13,7 @@
                                                         role="button"><i class="material-icons">search</i></button>
                                             </div>
 
-                                            <form method="GET" action="" class="d-flex align-items-center gap-2">
-                                                <select name="month" class="form-control form-control-sm" onchange="this.form.submit()">
-                                                    @foreach(range(1, 12) as $m)
-                                                        <option value="{{ $m }}" {{ request('month', date('m')) == $m ? 'selected' : '' }}>
-                                                            {{ Carbon\Carbon::create()->month($m)->format('F') }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-
-                                                <select name="year" class="form-control form-control-sm" onchange="this.form.submit()">
-                                                    @for($y = date('Y'); $y >= 2023; $y--)
-                                                        <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>
-                                                            {{ $y }}
-                                                        </option>
-                                                    @endfor
-                                                </select>
-                                            </form>
+                                            
                                         </div>
                              
                             <table class="table mb-0 thead-border-top-0 table-nowrap" id="archive">
@@ -287,7 +271,39 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                              
+                             <div class="card-footer p-8pt">
+                            <ul class="pagination justify-content-start pagination-xsm m-0">
+                                <!-- Previous Page Link -->
+                                <li class="page-item {{ $archivepagi->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $archivepagi->previousPageUrl() ?? '#' }}" aria-label="Previous">
+                                        <span aria-hidden="true" class="material-icons">chevron_left</span>
+                                        <span>Prev</span>
+                                    </a>
+                                </li>
+
+                                <!-- Page Dropdown -->
+                                <li class="page-item dropdown">
+                                    <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
+                                        <span>{{ $archivepagi->currentPage() }}</span>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @foreach ($archivepagi->getUrlRange(1, $archivepagi->lastPage()) as $page => $url)
+                                            <a href="{{ $url }}" class="dropdown-item {{ $page == $archivepagi->currentPage() ? 'active' : '' }}">
+                                                {{ $page }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </li>
+
+                                <!-- Next Page Link -->
+                                <li class="page-item {{ $archivepagi->onLastPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $archivepagi->nextPageUrl() ?? '#' }}" aria-label="Next">
+                                        <span>Next</span>
+                                        <span aria-hidden="true" class="material-icons">chevron_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         </div>
 
                         <script>

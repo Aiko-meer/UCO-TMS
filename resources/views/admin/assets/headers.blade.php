@@ -48,6 +48,10 @@
         <!-- Vendor CSS -->
         <link rel="stylesheet"
               href="{{asset('assets/css/nestable.css')}}">
+      
+         <!-- Sweet Alert -->
+        <link rel="stylesheet"
+              href="assets/css/sweetalert.css">
      
 
     </head>
