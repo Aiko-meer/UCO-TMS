@@ -163,108 +163,103 @@
                             <span class="text-danger">*</span>
                         </label>
 
-                        <select id="priority"
-                                name="category"
-                                class="form-control"
-                                required>
+                        <select name="category" id="categorySelect" class="form-control" onchange="toggleOtherField(this)">
 
                             <option value="" selected disabled>
                                 Select
                             </option>
-
-                            <option value="photo">Photography Documentation</option>
-                            <option value="audio">Audio Visual Presentation</option>
-                            <option value="soft Copy">Soft Copy Pictures</option>
-                            <option value="video">Institutional Videos</option>
+                            <option value="">Advisory</option>
+                            <option value="">Congratulatory</option>
+                            <option value="">Social Card/Facebook Banner</option>
+                            <option value="">Certificate</option>
+                            <option value="">Plaque</option>
+                            <option value="">Press Release</option>
+                            <option value="">Invitation/e-Invitation</option>
+                            <option value="">LED (The Summit Centre)</option>
+                            <option value="">IHK eBillboard</option>
+                            <option value="">Event Programme</option>
+                            <option value="">Logo Production</option>
+                            <option value="">Logo Enhancement</option>
+                            <option value="">Logo Soft Copy Request</option>
+                            <option value="others">Others</option>
 
                         </select>
+
+                        <!-- Hidden "Other" Input Field -->
+                        <div class="form-group mt-2" id="otherFieldWrapper" style="display: none;">
+                            <label for="other_category">Please specify other category:</label>
+                            <input type="text" name="other_category" id="other_category" class="form-control" placeholder="Type category here...">
+                        </div>
+                                                <script>
+                        function toggleOtherField(selectElement) {
+                            var otherWrapper = document.getElementById('otherFieldWrapper');
+                            
+                            // Check if the selected value is 'others'
+                            if (selectElement.value === 'others') {
+                                otherWrapper.style.display = 'block'; // Show the field
+                            } else {
+                                otherWrapper.style.display = 'none';  // Hide the field
+                                document.getElementById('other_category').value = ''; // Clear text if hidden
+                            }
+                        }
+                        </script>
                     </div>
                 </div>
                 <!-- event -->
                     <div class="col-12">
                         <div class="form-group">
                             <label for="full_name" class="font-weight-semibold">
-                                Event
+                                Purpose of Request
                                 <span class="text-danger">*</span>
                             </label>
 
                             <textarea type="text"
                                 class="form-control"
                                 id="full_name"
-                                name="event"
+                                name="purpose"
                                 placeholder="event of the Request"
                                 required></textarea>
                         </div>
                     </div>
-                <!-- Venue -->
-                    <div class="col-md-6">
+
+                     <!-- event -->
+                    <div class="col-12">
                         <div class="form-group">
-                            <label for="" class="font-weight-semibold">
-                                Venue
+                            <label for="full_name" class="font-weight-semibold">
+                               Content Information
                                 <span class="text-danger">*</span>
                             </label>
 
-                            <input type="text"
+                            <textarea type="text"
                                 class="form-control"
-                                id=""
-                                name="venue"
-                                required>
+                                id="full_name"
+                                name="content_info"
+                                placeholder="event of the Request"
+                                required></textarea>
                         </div>
                     </div>
-                <!-- Start -->
-                    <div class="col-md-6">
+
+                     <div class="col-12">
                         <div class="form-group">
-                            <label for="" class="font-weight-semibold">
-                                Start Time:
+                            <label for="content_attachment" class="font-weight-semibold">
+                                Content Information Attachment 
                                 <span class="text-danger">*</span>
                             </label>
-
-                            <input type="time"
+                            <span class="d-block  small mb-2 text-danger">For attachment, Google Drive link is only allowed for easy access of the materials (optional)</span>
+                            <input type="url"
                                 class="form-control"
-                                id=""
-                                name="start"
+                                id="content_attachment"
+                                name="content_attachment"
+                                placeholder="https://drive.google.com/..."
+                                pattern="https:\/\/.*drive\.google\.com\/.*"
+                                title="Please enter a valid Google Drive link"
                                 required>
                         </div>
                     </div>
-                    <!-- End -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="" class="font-weight-semibold">
-                                End Time:
-                                <span class="text-danger">*</span>
-                            </label>
-
-                            <input type="time"
-                                class="form-control"
-                                id=""
-                                name="end"
-                                required>
-                        </div>
-                    </div>
-                <!-- purpose Documentation  -->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="priority" class="font-weight-semibold">
-                            Purpose of documentation 
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <select id=""
-                                name="purpose_doc"
-                                class="form-control"
-                                required>
-
-                            <option value="" selected disabled>
-                                Select
-                            </option>
-
-                           <option value="posting">For posting</option>
-                           <option value="hard copy">Hard Copy photos</option>
-                           <option value="internal">For internal use</option>
-
-                        </select>
-                    </div>
-                </div>
+               
+                
+                
+                
                 <!-- Request Details -->
                 <div class="col-12 mb-4">
                     <h6 class="text-uppercase font-weight-bold mb-1">

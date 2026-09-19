@@ -41,7 +41,7 @@ class SocialmediaController extends Controller
     // 2. Get counts for each status
     // If 'status' is inside the related 'information' table:
         $inProgressCount = Socmed_request::whereHas('information', function($q) {
-            $q->where('status', 0); // Change to your actual in-progress status code
+            $q->where('status', 1); // Change to your actual in-progress status code
         })->count();
 
         $postedCount = Socmed_request::whereHas('information', function($q) {
@@ -49,7 +49,7 @@ class SocialmediaController extends Controller
         })->count();
 
         $approvalCount = Socmed_request::whereHas('information', function($q) {
-            $q->where('status', 1); // Change to your actual approval status code (must be unique!)
+            $q->where('status', 0); // Change to your actual approval status code (must be unique!)
         })->count();
 
         $monthCount = Socmed_request::whereHas('information', function($q) {

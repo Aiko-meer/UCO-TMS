@@ -59,6 +59,7 @@
                                 <tbody class="list"
                                        id="projects">
                                      @foreach($requests as $req)
+                                     @if ( $req->status = 1)
                                     <tr>
 
                                         <td>
@@ -69,7 +70,7 @@
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
                                                         <small class="js-lists-values-project"><strong>{{$req->fullname}}</strong></small>
-                                                        <small class="js-lists-values-location text-50">{{$req->email}}</small>
+                                                        <a href="mailto:{{$req->email}}">{{$req->email}}</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -112,29 +113,49 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
+                                                @if ($req->information->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->information->status == 1)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
+                                                <span class="indicator-line rounded bg-success"></span>
+                                                @endif
+                                                 @if ($req->information->status == 2)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-info"></span>
+                                                @endif 
+                                                @if ($req->information->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-danger"></span>
+                                                @endif
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>Teatro estrellia</strong></small>
+                                                <small class="js-lists-values-date"><strong>{{$req->information->venue}}</strong></small>
                                                 <small class="text-50"></small>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>17/08/2019</strong></small>
-                                                <small class="text-50">2 days</small>
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                </small>
                                             </div>
                                         </td>
-                                        <td class="text-right">
-                                            <a href=""
-                                               class="text-50"><i class="material-icons">more_vert</i></a>
+                                         <td class="text-right">
+                                            <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>

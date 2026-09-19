@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Departments;
 use Illuminate\Http\Request;
 
 class LayoutservicesController extends Controller
@@ -9,6 +9,11 @@ class LayoutservicesController extends Controller
     //
     public function dashboard()
     {
-        return view('admin.Creatives.layout.index');
+         $departments = Departments::all();
+    
+
+    return view('admin.creatives.layout.index', compact(
+            'departments',
+        ));
     }
 }

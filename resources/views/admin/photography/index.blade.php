@@ -13,6 +13,8 @@
             </div>
         </div>
  @include ('admin.photography.newtaskmodal')
+ <!--pop-up for active  -->
+                      @include ('admin.photography.viewpop')
         <div class="mdk-drawer-layout js-mdk-drawer-layout"
              data-push
              data-responsive-width="992px">
@@ -154,19 +156,7 @@
                                         </span>
                                     </a>
                                 </div>
-                                 <div class="col-auto border-left border-right">
-                                    <a href="#list"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
-                                        <span class="flex d-flex flex-column">
-                                            <strong class="card-title">In Progress</strong>
-                                            <small class="card-subtitle text-50">On Event</small>
-                                        </span>
-                                    </a>
-                                </div>
+                                 
                             </div>
                         </div>
   <script>

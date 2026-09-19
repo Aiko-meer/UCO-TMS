@@ -74,7 +74,7 @@
                                             <span class="sidebar-menu-text">Layout Services </span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item {{ request()->routeIs('production.home','layout.home') ? 'active' : '' }}">
+                                    <li class="sidebar-menu-item {{ request()->routeIs('production.home') ? 'active' : '' }}">
                                         <a class="sidebar-menu-button"
                                            href="{{route ('production.home')}}">
                                             <span class="sidebar-menu-text">Production Services </span>

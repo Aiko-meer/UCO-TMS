@@ -31,6 +31,12 @@
                                                data-sort="js-lists-values-lead">Department</a>
                                         </th>
 
+                                         <th style="width: 48px;">
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-status">Purpose</a>
+                                        </th>
+
                                         <th style="width: 48px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
@@ -98,6 +104,27 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
+                                                 @if ($req->information->status == 0)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->information->status == 1)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
+                                                <span class="indicator-line rounded bg-success"></span>
+                                                @endif
+                                                 @if ($req->information->status == 2)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Posted</small>
+                                                <span class="indicator-line rounded bg-info"></span>
+                                                @endif 
+                                                @if ($req->information->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-danger"></span>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex flex-column">
                                                 <!-- Hidden or separated text value specifically for List.js search matching the month -->
                                                 <span class="d-none js-lists-values-date">{{ $req->information?->created_at?->format('F') }}</span>
                                                 
@@ -109,8 +136,12 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong></small>
-                                                <small class="text-50">2 days</small>
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                </small>
                                             </div>
                                         </td>
                                         <td class="text-right">
@@ -182,6 +213,12 @@
                                         <th style="width: 48px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
+                                               data-sort="js-lists-values-status">Purpose</a>
+                                        </th>
+
+                                        <th style="width: 48px;">
+                                            <a href="javascript:void(0)"
+                                               class="sort"
                                                data-sort="js-lists-values-status">Status</a>
                                         </th>
 
@@ -213,7 +250,7 @@
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
                                                         <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
-                                                        <small class="js-lists-values-location text-50">{{ $req->email}}</small>
+                                                        <a href="mailto:{{$req->email}}">{{$req->email}}</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -244,6 +281,27 @@
                                             </div>
                                         </td>
 
+                                         <td>
+                                            <div class="d-flex flex-column">
+                                                 @if ($req->information->status == 0)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->information->status == 1)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
+                                                <span class="indicator-line rounded bg-success"></span>
+                                                @endif
+                                                 @if ($req->information->status == 2)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-info"></span>
+                                                @endif 
+                                                @if ($req->information->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-danger"></span>
+                                                @endif
+                                            </div>
+                                        </td>
+
                                         <td>
                                             <div class="d-flex flex-column">
                                                 <!-- Hidden or separated text value specifically for List.js search matching the month -->
@@ -257,8 +315,12 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong></small>
-                                                <small class="text-50">2 days</small>
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                </small>
                                             </div>
                                         </td>
                                         <td class="text-right">
@@ -306,37 +368,7 @@
                         </div>
                         </div>
 
-                        <script>
-    // Real-time auto-refresh interval (e.g., every 5 seconds)
-    setInterval(function() {
-        fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            let newTbody = doc.querySelector('#projects');
-            
-            if (newTbody) {
-                // Keep track of current search value to prevent clearing user input
-                let searchInput = document.querySelector('.search');
-                let searchTerm = searchInput ? searchInput.value : '';
-
-                // Replace table body content with fresh data
-                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
-
-                // Re-trigger List.js search if search was active
-                if (searchTerm && window.List && window.List.lists) {
-                    // List.js handles re-initialization automatically if container matches
-                }
-            }
-        })
-        .catch(error => console.error('Error updating table:', error));
-    }, 5000); // 5000ms = 5 seconds
-</script>
+                     
 <script>
     // Helper function to pull headers and only the visible rows data
    function getCleanTableData() {

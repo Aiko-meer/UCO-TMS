@@ -24,7 +24,7 @@
                                 </div>
 
                             </div>-->
-                            <div class="col-lg-4 card-group-row__col">                                                                          
+                            <div class="col-lg-4 card-group-row__col">
 
                                 <div class="card card-group-row__card">
                                     <div class="card-header py-12pt d-flex align-items-center">
@@ -61,7 +61,7 @@
                                                     data-chart-line-background-color="primary;gray"
                                                     data-chart-disable-tooltips="true"></canvas>
                                         </div>
-                                        <strong class="flex">Posted</strong>
+                                        <strong class="flex">Closed</strong>
                                         <div class="text-50">14</div>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                                                     data-chart-disable-tooltips="true">
                                             </canvas>
                                         </div>
-                                        <strong class="flex">Approval</strong>
+                                        <strong class="flex">Denied</strong>
                                         <div class="text-50">10</div>
                                     </div>
                                 </div>

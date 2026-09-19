@@ -17,16 +17,23 @@
                             <table class="table mb-0 thead-border-top-0 table-nowrap" id="active">
                                 <thead>
                                     <tr>
+
                                         <th style="width: 150px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
                                                data-sort="js-lists-values-project">Requestor</a>
                                         </th>
 
-                                        <th>
+                                        <th style="width: 70px";>
                                             <a href="javascript:void(0)"
                                                class="sort"
                                                data-sort="js-lists-values-lead">Department</a>
+                                        </th>
+
+                                        <th style="width: 70px";>
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-lead">Event</a>
                                         </th>
 
                                         <th style="width: 48px;">
@@ -35,16 +42,16 @@
                                                data-sort="js-lists-values-status">Status</a>
                                         </th>
 
-                                        <th style="width: 48px;">
+                                        <th >
                                             <a href="javascript:void(0)"
                                                class="sort"
-                                               data-sort="js-lists-values-budget">Date requested </a>
+                                               data-sort="js-lists-values-budget">Location </a>
                                         </th>
 
                                         <th style="width: 48px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
-                                               data-sort="js-lists-values-date">Due</a>
+                                               data-sort="js-lists-values-date">Date Event</a>
                                         </th>
                                         <th style="width: 24px;"></th>
                                     </tr>
@@ -96,6 +103,27 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
+                                               @if ($req->information->status == 0)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->information->status == 1)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
+                                                <span class="indicator-line rounded bg-success"></span>
+                                                @endif
+                                                 @if ($req->information->status == 2)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-info"></span>
+                                                @endif 
+                                                @if ($req->information->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-danger"></span>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex flex-column">
                                                 <!-- Hidden or separated text value specifically for List.js search matching the month -->
                                                 <span class="d-none js-lists-values-date">{{ $req->information?->created_at?->format('F') }}</span>
                                                 
@@ -107,8 +135,12 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong></small>
-                                                <small class="text-50">2 days</small>
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                </small>
                                             </div>
                                         </td>
                                         <td class="text-right">
