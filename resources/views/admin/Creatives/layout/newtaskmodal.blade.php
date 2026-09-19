@@ -257,9 +257,161 @@
                         </div>
                     </div>
                
+                    <!-- For posting -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-semibold">Do you need a posting schedule  for this request?</label>
+                        <div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="layoutYes" value="1" name="needs_layout" class="custom-control-input" onchange="toggleLayoutSection()">
+                                <label class="custom-control-label" for="layoutYes">Yes</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <!-- Changed value from "no" to "0" so it functions correctly as a radio group -->
+                                <input type="radio" id="layoutNo" value="0" name="needs_layout" class="custom-control-input" checked onchange="toggleLayoutSection()">
+                                <label class="custom-control-label" for="layoutNo">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="layoutDetailsSection" class="col-md-12" style="display: none;">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-light font-weight-semibold text-primary">Layout Details</div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                 <!-- Specification -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="priority" class="font-weight-semibold">
+                            Specification
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <select id="priority"
+                                name="specification_sod"
+                                class="form-control"
+                                required>
+
+                            <option value="" selected disabled>
+                                Select 
+                            </option>                  
+                            <option value="">Advertisements</option>
+                            <option value="low">Advisory</option>
+                            <option value="normal">Album</option>
+                            <option value="high">Announcement</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="urgent">Banner</option>
+                            <option value="urgent">Celebration</option>
+                            <option value="urgent">Congratulatory</option>
+                            <option value="urgent">Guidelines</option>
+                            <option value="urgent">Live Stream </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="priority" class="font-weight-semibold">
+                            Category
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <select id="category_sod"
+                                name="category_sod"
+                                class="form-control"
+                                required>
+
+                            <option value="" selected disabled>
+                                Select
+                            </option>
+
+                            <option value="low">Facebook Page</option>
+                            <option value="normal">Website</option>
+                            <option value="high">Twitter</option>
+                            <option value="urgent">Youtube</option>
+                            <option value="urgent">Instagram</option>
+                            <option value="urgent">Campus Connect (GLOBE/TM/SMART)</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Content Information -->
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="request_title" class="font-weight-semibold">
+                            Content Caption
+                            <span class="text-danger">*</span>
+                        </label>
+                        <textarea
+                        class="form-control"
+                        id="request_title"
+                        name="content_caption"
+                        rows="4"
+                        placeholder="e.g. 🎉 Facebook promotional post for Foundation Day..."
+                        required></textarea>
+                    </div>
+                </div>
+
+                   <!-- Date Needed -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="date_needed" class="font-weight-semibold">
+                            Date Needed
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input type="date"
+                            class="form-control"
+                            id="date_needed_sod"
+                            name="date_needed_socmed"
+                            required>
+                    </div>
+                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                
-                
+                <script>
+   function toggleLayoutSection() {
+    const layoutYes = document.getElementById('layoutYes');
+    const layoutSection = document.getElementById('layoutDetailsSection');
+    const categorySelect = document.getElementById('category_sod');
+    const specificationSelect = document.getElementById('priority'); 
+    const dateNeededSelect = document.getElementById('date_needed_sod');
+    
+    
+    if (layoutYes.checked) {
+        // Show layout section and make category required
+        layoutSection.style.display = 'block';
+        categorySelect.required = true;
+        specificationSelect.required = true; 
+        dateNeededSelect.required = true;
+
+        // Disable and reset the content attachment input
+        if (contentAttachmentInput) {
+            contentAttachmentInput.disabled = true;
+            contentAttachmentInput.value = '';
+            contentCustomLabel.textContent = 'Choose file(s)';
+            contentPreviewContainer.innerHTML = '';
+        }
+    } else {
+        // Hide layout section and clear category requirement
+        layoutSection.style.display = 'none';
+        categorySelect.required = false;  
+        specificationSelect.value = false; 
+        dateNeededSelect.value = false; 
+
+        // Re-enable content attachment input
+        if (contentAttachmentInput) {
+            contentAttachmentInput.disabled = false;
+        }
+    }
+}
+</script>
                 <!-- Request Details -->
                 <div class="col-12 mb-4">
                     <h6 class="text-uppercase font-weight-bold mb-1">

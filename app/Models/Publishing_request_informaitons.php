@@ -12,6 +12,7 @@ class Publishing_request_informaitons extends Model
         'purpose',
         'date_needed',
         'category',
+        'other_category',
         'specification',
         'content_information',
         'section',

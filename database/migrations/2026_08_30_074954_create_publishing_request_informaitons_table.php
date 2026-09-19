@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('purpose');
             $table->date('date_needed');
             $table->string('category');
+            $table->string('other_category')->nullable;
             $table->string('specification');
             $table->string('content_information')->nullable;
             $table->string('section');
