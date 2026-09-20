@@ -52,6 +52,6 @@
          <!-- Sweet Alert -->
         <link rel="stylesheet"
               href="assets/css/sweetalert.css">
-     
+     @livewireStyles
 
     </head>

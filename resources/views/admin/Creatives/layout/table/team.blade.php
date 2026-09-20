@@ -62,7 +62,7 @@
                                     </div>
 
                                      <div class="flex d-flex flex-row mr-8pt">
-                                        <strong class="flex">Drafted</strong>
+                                        <strong class="flex">Posted</strong>
                                         <div class="text-50">10</div>
                                           <strong class="flex ml-5">Approval</strong>
                                         <div class="text-50">10</div>

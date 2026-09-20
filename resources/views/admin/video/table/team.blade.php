@@ -36,7 +36,7 @@
                                     </div>
                                     <span class="flex d-flex flex-column mr-8pt">
                                         <h4 class="card-title">Juan Dela Cruz</h4>
-                                        <p class="card-subtitle">Photographer and Content Associate</p>
+                                        <p class="card-subtitle">Videographer and Content Associate</p>
                                     </span>
                                     <div class="dropdown ">
                                         <a href="#"

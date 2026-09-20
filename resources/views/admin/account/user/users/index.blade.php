@@ -1,7 +1,7 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
-
+@include('admin.account.user.users.newuser')
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -56,11 +56,11 @@
                             </div>
                         </div>
 
-                         <div class="row"
-                             role="tablist">
+                         <div class="row" role="tablist">
                             <div class="col-auto border-left">
-                                <a href=""
-                                   class="btn btn-accent">Add User</a>
+                                <button type="button" class="btn btn-accent" data-toggle="modal" data-target="#addUserModal">
+                                    <i class="material-icons mr-1" style="font-size: 18px; vertical-align: middle;">person_add</i> Add User
+                                </button>
                             </div>
                         </div>
                     </div>

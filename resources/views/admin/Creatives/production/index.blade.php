@@ -1,7 +1,6 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
-
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -11,6 +10,16 @@
                 <div class="sk-chase-dot"></div>
                 <div class="sk-chase-dot"></div>
             </div>
+        </div>
+         <!--New Task Model-->
+                        @include ('admin.creatives.production.newtaskmodal')
+         <!--pop-up for active  -->
+                      @include ('admin.creatives.production.viewpop')
+
+
+                        
+               
+        
 
             <!-- <div class="sk-bounce">
     <div class="sk-bounce-dot"></div>
@@ -18,7 +27,7 @@
   </div> -->
 
             <!-- More spinner examples at https://github.com/tobiasahlin/SpinKit/blob/master/examples.html -->
-        </div>
+        
 
         <div class="mdk-drawer-layout js-mdk-drawer-layout"
              data-push
@@ -28,7 +37,7 @@
                 <!-- Header -->
                  @include ('admin.assets.headnavbar')
                 <!-- // END Header -->
-
+               
                 <div class="border-bottom-2 py-32pt position-relative z-1">
                     <div class="container-fluid page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
                         <div class="flex d-flex flex-column flex-sm-row align-items-center mb-24pt mb-md-0">
@@ -41,13 +50,13 @@
 
                                     <li class="breadcrumb-item ">
 
-                                        Creative Team 
+                                        Content Team 
 
                                     </li>
 
                                      <li class="breadcrumb-item active">
 
-                                        Production Service 
+                                        Social Media Service 
 
                                     </li>
 
@@ -56,13 +65,17 @@
                             </div>
                         </div>
 
-                         <div class="row"
-                             role="tablist">
+                         <div class="row" role="tablist">
                             <div class="col-auto border-left">
-                                <a href=""
-                                   class="btn btn-accent">New Task</a>
+                                <button type="button"
+                                        class="btn btn-accent"
+                                        data-toggle="modal"
+                                        data-target="#newTaskModal">
+                                    New Task
+                                </button>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -70,11 +83,11 @@
                     <div class="page-section">
 
                     <!--overview-->
-                    @include ('admin.Creatives.production.overview')
+                    @include ('admin.creatives.production.overview')
                     <!--endoverview-->
 
                     <!--overview-->
-                    @include ('admin.Creatives.production.table.team')
+                    @include ('admin.creatives.production.table.team')
                     <!--endoverview-->
 
                         <div class="page-separator">
@@ -84,9 +97,7 @@
                         <div class="card mb-0 p-relative o-hidden">
                             <div class="card-header py-12pt d-flex align-items-center">
                                 <strong>Request</strong>
-                                <a href="#"
-                                   class="d-inline-block mx-16pt"><i class="material-icons text-50">more_horiz</i></a>
-                                <div class="text-50">14</div>
+                                <div class="text-50">Total:</div>
                                 <div class="flex"></div>
                                 <a href="#"><i class="material-icons text-20">keyboard_arrow_down</i></a>
                             </div>
@@ -111,7 +122,7 @@
                                        role="tab"
                                        aria-selected="true"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3">3</span>
+                                        <span class="h2 mb-0 mr-3"></span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Active</strong>
                                             <small class="card-subtitle text-50">Ongoing Projects</small>
@@ -124,7 +135,7 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                        <span class="h2 mb-0 mr-3"></span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Archived</strong>
                                             <small class="card-subtitle text-50">Projects Data</small>
@@ -137,7 +148,7 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                        <span class="h2 mb-0 mr-3"></span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">This month</strong>
                                             <small class="card-subtitle text-50">Past Projects</small>
@@ -150,7 +161,7 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                        <span class="h2 mb-0 mr-3"></span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">List</strong>
                                             <small class="card-subtitle text-50">All Projects</small>
@@ -158,6 +169,33 @@
                                     </a>
                                 </div>
                             </div>
+                            <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Check if there's a saved tab in localStorage and activate it
+        let activeTab = localStorage.getItem('activeDashboardTab');
+        if (activeTab) {
+            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
+            if (tabTrigger) {
+                // Use Bootstrap's tab trigger if available, or fallback to click()
+                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+                    var tab = new bootstrap.Tab(tabTrigger);
+                    tab.show();
+                } else {
+                    tabTrigger.click();
+                }
+            }
+        }
+
+        // 2. Save the tab href to localStorage whenever a tab is clicked
+        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                let targetID = this.getAttribute('href');
+                localStorage.setItem('activeDashboardTab', targetID);
+            });
+        });
+    });
+</script>
                         </div>
 
                         <div class="tab-content">
@@ -168,7 +206,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.production.table.active')
+            @include ('admin.creatives.production.table.active')
         </div>
 
     </div>
@@ -178,7 +216,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.production.table.month')
+            @include ('admin.creatives.production.table.month')
         </div>
 
     </div>
@@ -188,7 +226,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.production.table.list')
+            @include ('admin.creatives.production.table.list')
         </div>
 
     </div>
@@ -198,60 +236,43 @@
          role="tabpanel">
 
         <div class="table-responsive">
-           @include ('admin.Creatives.production.table.archive')
+          
         </div>
 
     </div>
+   <script>
+    // Real-time auto-refresh interval (e.g., every 5 seconds)
+    setInterval(function() {
+        fetch(window.location.href, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, 'text/html');
+            let newTbody = doc.querySelector('#projects');
+            
+            if (newTbody) {
+                // Keep track of current search value to prevent clearing user input
+                let searchInput = document.querySelector('.search');
+                let searchTerm = searchInput ? searchInput.value : '';
 
+                // Replace table body content with fresh data
+                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
+
+                // Re-trigger List.js search if search was active
+                if (searchTerm && window.List && window.List.lists) {
+                    // List.js handles re-initialization automatically if container matches
+                }
+            }
+        })
+        .catch(error => console.error('Error updating table:', error));
+    }, 5000); // 5000ms = 5 seconds
+</script>
 </div>
-
-                       
-                        
-
-                        <div class="card-footer p-8pt">
-
-                            <ul class="pagination justify-content-start pagination-xsm m-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Previous">
-                                        <span aria-hidden="true"
-                                              class="material-icons">chevron_left</span>
-                                        <span>Prev</span>
-                                    </a>
-                                </li>
-                                <li class="page-item dropdown">
-                                    <a class="page-link dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       href="#"
-                                       aria-label="Page">
-                                        <span>1</span>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a href=""
-                                           class="dropdown-item active">1</a>
-                                        <a href=""
-                                           class="dropdown-item">2</a>
-                                        <a href=""
-                                           class="dropdown-item">3</a>
-                                        <a href=""
-                                           class="dropdown-item">4</a>
-                                        <a href=""
-                                           class="dropdown-item">5</a>
-                                    </div>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Next">
-                                        <span>Next</span>
-                                        <span aria-hidden="true"
-                                              class="material-icons">chevron_right</span>
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </div>
+        
                     </div>
 
                     </div>
@@ -269,5 +290,30 @@
         <!-- App Settings FAB -->
          @include ('admin.assets.footer')
     </body>
-
+@if(session('success') || session('error') || $errors->any())
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Good job!',
+                text: "{{ session('success') }}",
+                confirmButtonText: 'OK'
+            });
+        @elseif(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Saving Failed',
+                text: "{{ session('error') }}",
+                confirmButtonText: 'OK'
+            });
+        @elseif($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error!',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonText: 'OK'
+            });
+        @endif
+    </script>
+@endif
 </html>

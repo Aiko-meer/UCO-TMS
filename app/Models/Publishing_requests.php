@@ -17,6 +17,6 @@ class Publishing_requests extends Model
 
     public function information()
     {
-        return $this->hasOne(Publishing_request_informaitons::class, 'request_id');
+        return $this->hasOne(Publishing_request_informaitons::class, 'request_id','request_id');
     }
 }

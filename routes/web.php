@@ -27,14 +27,15 @@ Route::get('/admin/account/edit-profile/password', [AccountController::class, 'e
 Route::get('/socmed/dashboard', [SocialmediaController::class, 'dashboard'])->name('socmed.home');
 Route::POST('/socmed/dashboard/store', [SocialmediaController::class, 'store'])->name('socmed.store');
 Route::PUT('/socmed/dashboard/update/{request_id}', [SocialmediaController::class, 'update'])->name('socmed.update');
-
+//photography
 Route::get('/photography/dashboard', [PhotographyController::class, 'dashboard'])->name('photo.home');
 Route::POST('/photography/dashboard/store', [PhotographyController::class, 'store'])->name('photo.store');
 Route::PUT('/photography/dashboard/update/{request_id}', [PhotographyController::class, 'update'])->name('photo.update');
-
+//video
 Route::get('/videography/dashboard', [VideoController::class, 'dashboard'])->name('video.home');
-
+//layout
 Route::get('/layoutservices/dashboard', [LayoutservicesController::class, 'dashboard'])->name('layout.home');
+Route::POST('/layoutservices/dashboard/store', [LayoutservicesController::class, 'store'])->name('layout.store');
 
 Route::get('/productionservices/dashboard', [ProductionservicesController::class, 'dashboard'])->name('production.home');
 

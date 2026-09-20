@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class CreativesuserController extends Controller
 {
     //
-    public function usertable()
+    public function dashboard()
     {
         return view('admin.account.user.creatives.index');
     }

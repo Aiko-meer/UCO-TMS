@@ -15,6 +15,7 @@ class Publishing_request_informaitons extends Model
         'other_category',
         'specification',
         'content_information',
+        'content_attachement',
         'section',
         'approve',
         'produce',
@@ -26,6 +27,6 @@ class Publishing_request_informaitons extends Model
 
     public function request()
     {
-        return $this->belongsTo(Publishing_requests::class, 'request_id');
+        return $this->belongsTo(Publishing_requests::class, 'request_id','request_id');
     }
 }
