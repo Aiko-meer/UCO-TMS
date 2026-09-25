@@ -29,4 +29,9 @@ class Publishing_request_informaitons extends Model
     {
         return $this->belongsTo(Publishing_requests::class, 'request_id','request_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'produce', 'employee_id');
+    }
 }

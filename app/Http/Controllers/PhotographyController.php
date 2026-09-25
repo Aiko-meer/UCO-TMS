@@ -6,6 +6,7 @@ use App\Models\Photo_vid_requests;
 use App\Models\Photo_vid_request_informations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class PhotographyController extends Controller
@@ -13,6 +14,7 @@ class PhotographyController extends Controller
     //
     public function dashboard()
     {
+        $users = User::where('user_type', 'content_team')->get();
         // Fetches parent records along with their corresponding child information
        $requests = Photo_vid_requests::with('information')
     ->whereHas('information', function ($query) {
@@ -25,6 +27,32 @@ class PhotographyController extends Controller
     $archivepagi =Photo_vid_requests::with('information')->paginate(10);
     $monthpagi =Photo_vid_requests::with('information')->paginate(10);
     $listpagi =Photo_vid_requests::with('information')->paginate(5);
+    $totalRequests = Photo_vid_requests::count();
+    // 2. Get counts for each status
+    // If 'status' is inside the related 'information' table:
+        $inProgressCount = Photo_vid_requests::whereHas('information', function($q) {
+            $q->where('status', 1); // Change to your actual in-progress status code
+        })->count();
+
+        $postedCount = Photo_vid_requests::whereHas('information', function($q) {
+            $q->where('status', 2); // Posted status code
+        })->count();
+
+        $approvalCount = Photo_vid_requests::whereHas('information', function($q) {
+            $q->where('status', 0); // Change to your actual approval status code (must be unique!)
+        })->count();
+
+        $monthCount = Photo_vid_requests::whereHas('information', function($q) {
+            $q->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year);
+        })->count();
+
+        $totalCount = Photo_vid_requests::count();
+
+         // 3. Calculate percentages safely (avoiding division by zero)
+    $inProgressPercentage = $totalRequests > 0 ? round(($inProgressCount / $totalRequests) * 100) : 0;
+    $postedPercentage = $totalRequests > 0 ? round(($postedCount / $totalRequests) * 100) : 0;
+    $approvalPercentage = $totalRequests > 0 ? round(($approvalCount / $totalRequests) * 100) : 0;
 
      $month = request('month', date('m')); // Defaults to current month if not selected
      $year = request('year', date('Y')); // Defaults to current year if not selected
@@ -42,7 +70,16 @@ class PhotographyController extends Controller
             'actviepagi',
             'archivepagi',
             'monthpagi',
-            'listpagi'
+            'listpagi',
+            'postedCount',
+            'approvalCount',
+            'monthCount',
+            'totalCount',
+            'inProgressPercentage',
+            'postedPercentage',
+            'approvalPercentage',
+            'inProgressCount',
+            'users'
         ));
     }
 

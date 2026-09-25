@@ -3,7 +3,7 @@
                        <div class="modal fade" id="viewModal-{{ $req->request_id }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="z-index: 1051; background: #fff;">
-           <form action="{{ route('socmed.update', $req->request_id) }}" method="POST">
+           <form action="{{ route('layout.update', $req->request_id) }}" method="POST">
                 @csrf
                @method('PUT')
                 <div class="modal-header">
@@ -121,14 +121,19 @@
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Assigned:</strong></label>
-                            
                             @if(empty($req->information?->produce))
+                            <label><strong>Assign to:</strong></label>
                                 <!-- Show select dropdown when produce is empty -->
-                                <label for="">No one is assigned yet </label>
+                               <select name="produce" class="form-control" required>
+                                    <option value="" disabled selected>Select a user</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->employee_id }}">{{ $user->fullname }}</option>
+                                    @endforeach
+                                </select>
                             @else
-                                <!-- Show read-only input text box when produce already exists -->
-                                <input type="text" readonly class="form-control" value="{{ $req->information->produce }}">
+
+                            <label><strong>Assigned:</strong></label>  
+                            <input type="text" class="form-control" value="{{ $req->information?->user?->fullname ?? 'No User Found' }}" readonly>
                             @endif
                         </div>
                     </div>

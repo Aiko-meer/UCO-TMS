@@ -85,18 +85,9 @@
                                 <strong>Request</strong>
                                 <a href="#"
                                    class="d-inline-block mx-16pt"><i class="material-icons text-50">more_horiz</i></a>
-                                <div class="text-50">14</div>
+                                <div class="text-50">{{$totalCount}}</div>
                                 <div class="flex"></div>
                                 <a href="#"><i class="material-icons text-20">keyboard_arrow_down</i></a>
-                            </div>
-                            <div class="progress rounded-0"
-                                 style="height: 4px;">
-                                <div class="progress-bar bg-warning"
-                                     role="progressbar"
-                                     style="width: 50%;"
-                                     aria-valuenow="50"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100"></div>
                             </div>
                         </div>
 
@@ -110,7 +101,7 @@
                                        role="tab"
                                        aria-selected="true"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3">3</span>
+                                        <span class="h2 mb-0 mr-3">{{$inProgressPercentage}}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Active</strong>
                                             <small class="card-subtitle text-50">Ongoing Projects</small>
@@ -123,7 +114,7 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                        <span class="h2 mb-0 mr-3">{{$postedPercentage}}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Archived</strong>
                                             <small class="card-subtitle text-50">Projects Data</small>
@@ -136,7 +127,7 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                        <span class="h2 mb-0 mr-3">{{$monthCount}}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">This month</strong>
                                             <small class="card-subtitle text-50">Past Projects</small>
@@ -149,7 +140,7 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                        <span class="h2 mb-0 mr-3">{{$totalCount}}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">List</strong>
                                             <small class="card-subtitle text-50">All Projects</small>

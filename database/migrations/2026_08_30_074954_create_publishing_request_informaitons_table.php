@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('approve');
             $table->string('produce')->nullable();
             $table->date('published')->nullable();
-            $table->integer('status');
-            $table->json('content_attachement');
-            $table->json('reference')->nullable;
+            $table->integer('status')->nullable();
+            $table->json('content_attachement')->nullable();
+            $table->string('reference')->nullable();
             $table->timestamps();
         });
     }

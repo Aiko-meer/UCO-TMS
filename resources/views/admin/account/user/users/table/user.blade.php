@@ -24,7 +24,7 @@
                                                            class="sort"
                                                            data-sort="js-lists-values-employee-name">Employee</a>
                                                     </th>
-
+                                                    <th>Id</th>
                                                     <th style="width: 37px;">Status</th>
 
                                                     
@@ -35,31 +35,35 @@
                                             </thead>
                                             <tbody class="list"
                                                    id="search">
-
+                                            @foreach ($user as $user)
                                                 <tr>
 
                                                     <td>
 
                                                         <div class="d-flex flex-column">
-                                                            <p class="mb-0"><strong class="js-lists-values-employee-name">Michael Smith</strong></p>
-                                                            <small class="js-lists-values-employee-email text-50">lorna_kirlin@nora.biz</small>
+                                                            <p class="mb-0"><strong class="js-lists-values-employee-name">{{$user->fullname}}</strong></p>
+                                                            <small class="js-lists-values-employee-email text-50">{{$user->email}}</small>
                                                         </div>
 
                                                     </td>
 
                                                     <td>
+                                                         <p class="mb-0"><strong class="js-lists-values-employee-name">{{$user->employee_id}}</strong></p>
+                                                    </td>
 
-                                                        <a href=""
-                                                           class="chip chip-outline-secondary">Admin</a>
+                                                    <td>
+
+                                                        <p 
+                                                           class="chip chip-outline-secondary">{{$user->user_type}}</p>
 
                                                     </td>
-                                                    <td class="text-right pl-0">
-                                                        <a href=""
-                                                           class="text-50"><i class="material-icons">more_vert</i></a>
+                                                     <td class="text-right">
+                                                        <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $user->id }}').modal('show');">
+                                                            <i class="material-icons">more_vert</i>
+                                                        </button>
                                                     </td>
                                                 </tr>
-
-                                               
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

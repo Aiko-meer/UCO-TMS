@@ -42,16 +42,10 @@
                                                data-sort="js-lists-values-status">Status</a>
                                         </th>
 
-                                        <th >
-                                            <a href="javascript:void(0)"
-                                               class="sort"
-                                               data-sort="js-lists-values-budget">Location </a>
-                                        </th>
-
                                         <th style="width: 48px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
-                                               data-sort="js-lists-values-date">Date Event</a>
+                                               data-sort="js-lists-values-date">Due</a>
                                         </th>
                                         <th style="width: 24px;"></th>
                                     </tr>
@@ -60,7 +54,7 @@
                                        id="projects">
                                 @foreach($requests as $req)
                               @if ($req->information?->created_at && \Carbon\Carbon::parse($req->information->created_at)->isCurrentMonth())
-                                     @if ($req->information->status == 0)
+                                   
                                     <tr>
 
                                         <td>
@@ -125,17 +119,6 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <!-- Hidden or separated text value specifically for List.js search matching the month -->
-                                                <span class="d-none js-lists-values-date">{{ $req->information?->created_at?->format('F') }}</span>
-                                                
-                                                <!-- Visible date displayed to the user -->
-                                                <small><strong>{{ $req->information?->created_at?->format('M d, Y h:i A') }}</strong></small>
-                                                <small class="text-50">{{ $req->information?->created_at?->diffForHumans() }}</small>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
                                                     <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
@@ -150,7 +133,7 @@
                                             </button>
                                         </td>
                                     </tr>
-                                    @endif
+                                    
                                     @endif
                                 @endforeach
                                 </tbody>

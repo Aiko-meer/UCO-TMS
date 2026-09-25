@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Socmed_request;
 use App\Models\Departments;
+use App\Models\User;
 use App\Models\Socmed_request_information;
 use App\Models\Publishing_requests;
 use App\Models\Publishing_request_informaitons;
@@ -17,6 +18,7 @@ class LayoutservicesController extends Controller
     public function dashboard()
     {
             $departments = Departments::all();
+            $users = User::all();
             $requests = Publishing_requests::with('information')
         ->whereHas('information', 
         function ($query) { $query->where('specification', 'layout'); })->orderBy('id', 'desc')->get();
@@ -25,7 +27,7 @@ class LayoutservicesController extends Controller
             // 2. Get counts for each status
         // If 'status' is inside the related 'information' table:
             $inProgressCount = Publishing_requests::whereHas('information', function($q) {
-                $q->where('status', 0); // Change to your actual in-progress status code
+                $q->where('status', 1); // Change to your actual in-progress status code
             })->count();
 
             $postedCount = Publishing_requests::whereHas('information', function($q) {
@@ -33,7 +35,7 @@ class LayoutservicesController extends Controller
             })->count();
 
             $approvalCount = Publishing_requests::whereHas('information', function($q) {
-                $q->where('status', 1); // Change to your actual approval status code (must be unique!)
+                $q->where('status', 0); // Change to your actual approval status code (must be unique!)
             })->count();
 
             $monthCount = Publishing_requests::whereHas('information', function($q) {
@@ -79,7 +81,9 @@ class LayoutservicesController extends Controller
                 'listpagi',
                 'inProgressPercentage',
                 'postedPercentage',
-                'approvalPercentage'
+                'approvalPercentage',
+                'users',
+                
             ));
     }
 
@@ -167,5 +171,28 @@ class LayoutservicesController extends Controller
     DB::rollBack(); // Undo any partial database inserts if an error occurs
     return redirect()->back()->with('error', 'Failed to save: ' . $e->getMessage());
 }
-  }  
+  } 
+  
+  public function update(Request $request, $request_id) {
+
+       // Wrap in a transaction to ensure both updates succeed together
+           DB::transaction(function () use ($request_id, $request) {
+            // This will fail with a 404 if the main request doesn't exist (which is usually desired)
+            $req = Publishing_request_informaitons::where('request_id', $request_id)->firstOrFail();
+
+            // Updates the social media record if it exists; safely does nothing if it doesn't
+            Socmed_request_information::where('request_id', $request_id)->update([
+                'produce' => $request->input('produce')
+            ]);
+
+            // Update main request fields
+            $req->update([
+                'status' => $request->input('status'),
+                'published' => $request->input('published'),
+                'produce' => $request->input('produce'),
+            ]);
+        });
+
+        return redirect()->back()->with('success', 'Request updated successfully!');
+   }
 }

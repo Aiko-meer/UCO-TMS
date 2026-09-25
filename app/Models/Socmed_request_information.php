@@ -29,4 +29,9 @@ class Socmed_request_information extends Model
     {
         return $this->belongsTo(Socmed_request::class, 'request_id', 'request_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'produce', 'employee_id');
+    }
 }

@@ -113,7 +113,7 @@
                                 <div class="col-auto">
                                     <a href="#active" data-toggle="tab" role="tab" aria-selected="true"
                                     class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3" id="count-active">{{ $approvalCount }}</span>
+                                        <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Active</strong>
                                             <small class="card-subtitle text-50">Ongoing Projects</small>
@@ -137,7 +137,7 @@
                                 <div class="col-auto border-left border-right">
                                     <a href="#month" data-toggle="tab" role="tab" aria-selected="false"
                                     class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3" id="count-month">{{ $inProgressCount }}</span>
+                                        <span class="h2 mb-0 mr-3" id="count-month">{{ $monthCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">This month</strong>
                                             <small class="card-subtitle text-50">Past Projects</small>

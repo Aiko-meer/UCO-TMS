@@ -2,6 +2,7 @@
 
     <body class="layout-app layout-sticky-subnav ">
 @include('admin.account.user.users.newuser')
+@include('admin.account.user.users.overview')
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -74,7 +75,7 @@
                         </div>
 
                       <!--table-->
-                      @include ('admin.account.user.creatives.table.user')
+                      @include ('admin.account.user.users.table.user')
 
                     </div>
                 </div>
@@ -91,5 +92,30 @@
         <!-- App Settings FAB -->
          @include ('admin.assets.footer')
     </body>
-
+@if(session('success') || session('error') || $errors->any())
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Good job!',
+                text: "{{ session('success') }}",
+                confirmButtonText: 'OK'
+            });
+        @elseif(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Saving Failed',
+                text: "{{ session('error') }}",
+                confirmButtonText: 'OK'
+            });
+        @elseif($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error!',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonText: 'OK'
+            });
+        @endif
+    </script>
+@endif
 </html>

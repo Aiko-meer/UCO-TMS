@@ -106,7 +106,14 @@
                             
                             @if(empty($req->information?->produce))
                                 <!-- Show select dropdown when produce is empty -->
-                                <label for="">Waiting for the assigned photographer </label>
+                                <label><strong>Assign to:</strong></label>
+                                <!-- Show select dropdown when produce is empty -->
+                               <select name="produce" class="form-control" required>
+                                    <option value="" disabled selected>Select a user</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->employee_id }}">{{ $user->fullname }}</option>
+                                    @endforeach
+                                </select>
                             @else
                                 <!-- Show read-only input text box when produce already exists -->
                                 <input type="text" readonly class="form-control" value="{{ $req->information->produce }}">
