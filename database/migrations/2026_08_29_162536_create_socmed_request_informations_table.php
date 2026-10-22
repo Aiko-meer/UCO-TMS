@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date_needed');
             $table->string('category');
             $table->string('specification');
-            $table->string('content_information')->nullable;
+            $table->text('content_information')->nullable();
             $table->string('section');
             $table->string('approve');
             $table->string('produce')->nullable();

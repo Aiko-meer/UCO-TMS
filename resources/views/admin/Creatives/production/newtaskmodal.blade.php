@@ -23,7 +23,7 @@
             </button>
         </div>
 
-        <form action="{{route ('layout.store')}}" method="POST" enctype="multipart/form-data">
+        <form action="{{route ('production.store')}}" method="POST" enctype="multipart/form-data">
 
             @csrf
 
@@ -168,19 +168,10 @@
                             <option value="" selected disabled>
                                 Select
                             </option>
-                            <option value="Advisory">Advisory</option>
-                            <option value="Congratulatory">Congratulatory</option>
-                            <option value="Social Card/Facebook Banner">Social Card/Facebook Banner</option>
                             <option value="Certificate">Certificate</option>
                             <option value="Plaque">Plaque</option>
-                            <option value="Press Release">Press Release</option>
-                            <option value="Invitation/e-Invitation">Invitation/e-Invitation</option>
-                            <option value="LED (The Summit Centre)">LED (The Summit Centre)</option>
-                            <option value="IHK eBillboard">IHK eBillboard</option>
-                            <option value="Event Programme">Event Programme</option>
-                            <option value="Logo Production">Logo Production</option>
-                            <option value="Logo Enhancement">Logo Enhancement</option>
-                            <option value="Logo Soft Copy Request">Logo Soft Copy Request</option>
+                            <option value="Invitation">Invitation</option>
+                            <option value="Newspaper">Newspaper</option>
                             <option value="others">Others</option>
 
                         </select>
@@ -208,6 +199,42 @@
                             </script>
                     </div>
                 </div>
+
+                 <!-- Size -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="size" class="font-weight-semibold">
+                                Size
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="size"
+                                name="size"
+                                placeholder="Enter the size e.g A4, 8.5x11, etc."
+                                required>
+                        </div>
+                    </div>
+
+                 <!-- Quantity -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="quantity" class="font-weight-semibold">
+                                Quantity
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="number"
+                                class="form-control"
+                                id="quantity"
+                                name="quantity"
+                                placeholder="Enter the quantity"
+                                required
+                                min="1">
+                        </div>
+                    </div>  
+
                 <!-- event -->
                     <div class="col-12">
                         <div class="form-group">
@@ -260,146 +287,14 @@
                         </div>
                     </div>
                
-               <!--for posting-->
-<div class="col-md-6">
-    <div class="form-group">
-        <label class="font-weight-semibold">Do you need a posting schedule for this request?</label>
-        <div>
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="layoutYes" value="1" name="needs_layout" class="custom-control-input" onchange="toggleLayoutSection()">
-                <label class="custom-control-label" for="layoutYes">Yes</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="layoutNo" value="0" name="needs_layout" class="custom-control-input" checked onchange="toggleLayoutSection()">
-                <label class="custom-control-label" for="layoutNo">No</label>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="layoutDetailsSection" class="col-md-12" style="display: none;">
-    <div class="card border-primary mb-3">
-        <div class="card-header bg-light font-weight-semibold text-primary">Layout Details</div>
-        <div class="card-body">
-            <div class="form-row">
-               
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="priority" class="font-weight-semibold">
-                            Specification
-                            <span class="text-danger">*</span>
-                        </label>
-                        <select id="priority"
-                                name="specification_sod"
-                                class="form-control">
-                            <option value="" selected disabled>Select</option>             
-                            <option value="Advertisements">Advertisements</option>
-                            <option value="Advisory">Advisory</option>
-                            <option value="Album">Album</option>
-                            <option value="Announcement">Announcement</option>
-                            <option value="Urgent">Urgent</option>
-                            <option value="Banner">Banner</option>
-                            <option value="Celebration">Celebration</option>
-                            <option value="Congratulatory">Congratulatory</option>
-                            <option value="Guidelines">Guidelines</option>
-                            <option value="Live Stream">Live Stream</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="category_sod" class="font-weight-semibold">
-                            Category
-                            <span class="text-danger">*</span>
-                        </label>
-                        <select id="category_sod"
-                                name="category_sod"
-                                class="form-control">
-                            <option value="" selected disabled>Select</option>
-                            <option value="Facebook Page">Facebook Page</option>
-                            <option value="Website">Website</option>
-                            <option value="Twitter">Twitter</option>
-                            <option value="Youtube">Youtube</option>
-                            <option value="Instagram">Instagram</option>
-                            <option value="Campus Connect">Campus Connect (GLOBE/TM/SMART)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="request_title" class="font-weight-semibold">
-                            Content Caption
-                            <span class="text-danger">*</span>
-                        </label>
-                        <textarea
-                        class="form-control"
-                        id="request_title"
-                        name="content_caption"
-                        rows="4"
-                        placeholder="e.g. 🎉 Facebook promotional post for Foundation Day..."></textarea>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="date_needed_sod" class="font-weight-semibold">
-                            Date Needed
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="date"
-                            class="form-control"
-                            id="date_needed_sod"
-                            name="date_needed_socmed">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function toggleLayoutSection() {
-    const layoutYes = document.getElementById('layoutYes');
-    const layoutSection = document.getElementById('layoutDetailsSection');
-    const specificationSelect = document.getElementById('priority'); 
-    const categorySelect = document.getElementById('category_sod');
-    const captionTextarea = document.getElementById('request_title');
-    const dateNeededInput = document.getElementById('date_needed_sod');
-    
-    if (layoutYes.checked) {
-        // Show layout section and make all inner fields required
-        layoutSection.style.display = 'block';
-        specificationSelect.required = true;
-        categorySelect.required = true;
-        captionTextarea.required = true;
-        dateNeededInput.required = true;
-    } else {
-        // Hide layout section, make fields not required, and clear their values
-        layoutSection.style.display = 'none';
-        specificationSelect.required = false;
-        specificationSelect.value = '';
-        
-        categorySelect.required = false;
-        categorySelect.value = '';
-        
-        captionTextarea.required = false;
-        captionTextarea.value = '';
-        
-        dateNeededInput.required = false;
-        dateNeededInput.value = '';
-    }
-}
-</script>
+ 
                 <!-- Request Details -->
                 <div class="col-12 mb-4">
                     <h6 class="text-uppercase font-weight-bold mb-1">
                         Reminder
                     </h6>
 
-                    <p class="text-muted font-weight-bold mb-0">
+                    <p class=" font-weight-bold mb-0">
                         NOTE: AVP needs at least 7 DAYS Production Time.
                     </p>
                     <span>Sit-in is encouraged before the Final Cut.</span>

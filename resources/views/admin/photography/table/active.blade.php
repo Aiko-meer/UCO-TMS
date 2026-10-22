@@ -118,8 +118,8 @@
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
                                                  @if ($req->information->status == 1)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
-                                                <span class="indicator-line rounded bg-success"></span>
+                                                <small class="js-lists-values-status text-50 mb-4pt">On progress</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
                                                  @if ($req->information->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>

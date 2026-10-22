@@ -49,15 +49,15 @@
         <div class="card-header py-12pt d-flex align-items-center">
             <div class="position-relative mr-16pt">
                 <div class="text-center fullbleed d-flex align-items-center justify-content-center flex-column z-0">
-                    <small>{{ $postedPercentage }}%</small>
+                    <small>{{ $pendingPercentage }}%</small>
                 </div>
                 <canvas width="48"
                         height="48"
                         class="position-relative z-1"
                         id="dynamicPostedChart"></canvas>
             </div>
-            <strong class="flex">Posted</strong>
-            <div class="text-50">{{ $postedCount }}</div>
+            <strong class="flex">Pending</strong>
+            <div class="text-50">{{ $pendingCount }}</div>
         </div>
     </div>
 </div>
@@ -75,7 +75,7 @@
                         class="position-relative z-1"
                         id="dynamicApprovalChart"></canvas>
             </div>
-            <strong class="flex">Approval</strong>
+            <strong class="flex">Approved</strong>
             <div class="text-50">{{ $approvalCount }}</div>
         </div>
     </div>
@@ -106,7 +106,7 @@
 
         // Initialize each chart with its specific color
         createProgressChart('dynamicInProgressChart', {{ $inProgressPercentage }}, '#ffc107'); // Accent / Yellow
-        createProgressChart('dynamicPostedChart', {{ $postedPercentage }}, '#007bff');       // Primary / Blue
+        createProgressChart('dynamicPostedChart', {{ $pendingPercentage }}, '#007bff');       // Primary / Blue
         createProgressChart('dynamicApprovalChart', {{ $approvalPercentage }}, '#28a745');   // Success / Green
     });
 </script>

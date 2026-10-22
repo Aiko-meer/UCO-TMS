@@ -116,7 +116,7 @@
                                 </select>
                             @else
                                 <!-- Show read-only input text box when produce already exists -->
-                                <input type="text" readonly class="form-control" value="{{ $req->information->produce }}">
+                                <input type="text" readonly class="form-control" value="{{ $req->information?->user?->fullname ?? 'No User Found'}}">
                             @endif
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->information->status }}" disabled selected>
+                               <option value="{{ $req->information->status }}"  selected>
                                     @if($req->information->status == 0) Pending
                                     @elseif($req->information->status == 1) Approve
                                     @elseif($req->information->status == 2) Posted

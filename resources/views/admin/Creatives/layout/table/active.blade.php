@@ -53,7 +53,7 @@
                                 <tbody class="list"
                                        id="projects">
                                 @foreach($requests as $req)
-                                @if ($req->information->status == 1)
+                                @if ($req->information->status == 2)
                                     <tr>
                                         <td>
 
@@ -105,7 +105,7 @@
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
                                                  @if ($req->information->status == 2)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">In Progress</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
                                                 @if ($req->information->status == 3)

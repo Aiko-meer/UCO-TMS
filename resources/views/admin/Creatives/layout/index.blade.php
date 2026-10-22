@@ -14,6 +14,7 @@
         </div>
          <!--New Task Model-->
                         @include ('admin.creatives.layout.newtaskmodal')
+                         @include ('admin.creatives.layout.useroverview')
          <!--pop-up for active  -->
                       @include ('admin.creatives.layout.viewpop')
 
@@ -125,7 +126,7 @@
                                 <div class="col-auto border-left border-right">
                                     <a href="#arch" data-toggle="tab" role="tab" aria-selected="false"
                                     class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3" id="count-archive">{{ $postedCount }}</span>
+                                        <span class="h2 mb-0 mr-3" id="count-archive">{{ $approvalCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Archive</strong>
                                             <small class="card-subtitle text-50">Finished Projects</small>

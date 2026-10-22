@@ -161,12 +161,12 @@
                                 Select
                             </option>
 
-                            <option value="low">Facebook Page</option>
-                            <option value="normal">Website</option>
-                            <option value="high">Twitter</option>
-                            <option value="urgent">Youtube</option>
-                            <option value="urgent">Instagram</option>
-                            <option value="urgent">Campus Connect (GLOBE/TM/SMART)</option>
+                            <option value="Facebook Page">Facebook Page</option>
+                            <option value="Website">Website</option>
+                            <option value="Twitter">Twitter</option>
+                            <option value="Youtube">Youtube</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Campus Connect (GLOBE/TM/SMART)">Campus Connect (GLOBE/TM/SMART)</option>
 
                         </select>
                     </div>
@@ -188,16 +188,16 @@
                             <option value="" selected disabled>
                                 Select 
                             </option>                  
-                            <option value="">Advertisements</option>
-                            <option value="low">Advisory</option>
-                            <option value="normal">Album</option>
-                            <option value="high">Announcement</option>
-                            <option value="urgent">Urgent</option>
-                            <option value="urgent">Banner</option>
-                            <option value="urgent">Celebration</option>
-                            <option value="urgent">Congratulatory</option>
-                            <option value="urgent">Guidelines</option>
-                            <option value="urgent">Live Stream </option>
+                            <option value="Advertisements">Advertisements</option>
+                            <option value="Advisory">Advisory</option>
+                            <option value="Album">Album</option>
+                            <option value="Announcement">Announcement</option>
+                            <option value="Urgent">Urgent</option>
+                            <option value="Banner">Banner</option>
+                            <option value="Celebration">Celebration</option>
+                            <option value="Congratulatory">Congratulatory</option>
+                            <option value="Guidelines">Guidelines</option>
+                            <option value="Live Stream ">Live Stream </option>
                         </select>
                     </div>
                 </div>

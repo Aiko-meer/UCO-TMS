@@ -75,7 +75,7 @@
                         class="position-relative z-1"
                         id="dynamicApprovalChart"></canvas>
             </div>
-            <strong class="flex">Approval</strong>
+            <strong class="flex">For Approval</strong>
             <div class="text-50">{{ $approvalCount }}</div>
         </div>
     </div>

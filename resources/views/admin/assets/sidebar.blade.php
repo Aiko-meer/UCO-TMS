@@ -80,12 +80,6 @@
                                             <span class="sidebar-menu-text">Production Services </span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item {{ request()->routeIs('publishing.home') ? 'active' : '' }}">
-                                        <a class="sidebar-menu-button"
-                                           href="{{route ('publishing.home')}}">
-                                            <span class="sidebar-menu-text">Publishing Services</span>
-                                        </a>
-                                    </li>
                                     <li class="sidebar-menu-item {{ request()->routeIs('uzpost.home') ? 'active' : '' }}">
                                         <a class="sidebar-menu-button "
                                            href="{{route ('uzpost.home')}}">
@@ -102,7 +96,7 @@
                                 </ul>
                             </li>
                            
-                            <li class="sidebar-menu-item {{ request()->routeIs('creativeuser.home','contentuser.home','user.home') ? 'open' : '' }}">
+                            <li class="sidebar-menu-item {{ request()->routeIs('user.table') ? 'open' : '' }}">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#account_menu">

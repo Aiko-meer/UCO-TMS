@@ -14,7 +14,16 @@ class PhotographyController extends Controller
     //
     public function dashboard()
     {
-        $users = User::where('user_type', 'content_team')->get();
+      $users = User::whereIn('user_type', ['content_team', 'content_admin'])
+    ->withCount([
+        'photoRequests as in_progress_count' => function ($query) {
+            $query->where('status', 1);
+        },
+        'photoRequests as documented_count' => function ($query) {
+            $query->where('status', 2);
+        }
+    ])
+    ->get();
         // Fetches parent records along with their corresponding child information
        $requests = Photo_vid_requests::with('information')
     ->whereHas('information', function ($query) {
@@ -79,7 +88,7 @@ class PhotographyController extends Controller
             'postedPercentage',
             'approvalPercentage',
             'inProgressCount',
-            'users'
+            'users',
         ));
     }
 
@@ -152,6 +161,7 @@ class PhotographyController extends Controller
         // Update main request fields
         $req->update([
             'status' => $request->input('status'),
+            'produce' => $request->input('produce'),
         ]);
 
         return redirect()->back()->with('success', 'Request updated successfully!');

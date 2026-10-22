@@ -18,32 +18,58 @@ class LayoutservicesController extends Controller
     public function dashboard()
     {
             $departments = Departments::all();
-            $users = User::all();
+$users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
+    ->withCount([
+        'layoutRequests as in_progress_count' => function ($query) {
+            $query->where('status', 2)
+                  ->where('specification', 'layout'); // Change 'specification' to your actual column name if it differs
+        },
+        'layoutRequests as in_pending_count' => function ($query) {
+            $query->where('status', 0)
+                  ->where('specification', 'layout'); // Change 'specification' to your actual column name if it differs
+        },
+        'layoutRequests as approved_count' => function ($query) {
+            $query->where('status', 1)
+                  ->where('specification', 'layout'); // Change 'specification' to your actual column name if it differs
+        },
+        'layoutRequests as total_count' => function ($query) {
+            $query->where('specification', 'layout'); // Change 'specification' to your actual column name if it differs
+        }
+    ])
+    ->get();
             $requests = Publishing_requests::with('information')
         ->whereHas('information', 
         function ($query) { $query->where('specification', 'layout'); })->orderBy('id', 'desc')->get();
 
-        $totalRequests = Socmed_request::count();
+        $totalRequests = Publishing_requests::whereHas('information', function($q) {
+    $q->where('specification', 'layout');
+})->count();
             // 2. Get counts for each status
         // If 'status' is inside the related 'information' table:
             $inProgressCount = Publishing_requests::whereHas('information', function($q) {
-                $q->where('status', 1); // Change to your actual in-progress status code
-            })->count();
+                    $q->where('status', 2)
+                    ->where('specification', 'layout');
+                })->count();
 
-            $postedCount = Publishing_requests::whereHas('information', function($q) {
-                $q->where('status', 2); // Posted status code
-            })->count();
+            $pendingCount = Publishing_requests::whereHas('information', function($q) {
+                    $q->where('status', 0)
+                    ->where('specification', 'layout');
+                })->count();
 
             $approvalCount = Publishing_requests::whereHas('information', function($q) {
-                $q->where('status', 0); // Change to your actual approval status code (must be unique!)
-            })->count();
+                    $q->where('status', 1)
+                    ->where('specification', 'layout');
+                })->count();
 
             $monthCount = Publishing_requests::whereHas('information', function($q) {
                 $q->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year);
+                ->whereYear('created_at', now()->year)
+                ->where('specification', 'layout');
             })->count();
 
-            $totalCount = Publishing_requests::count();
+            $totalCount =  Publishing_requests::whereHas('information', function($q) {
+                                    $q->where('specification', 'layout');
+                                })->count();
 
             // Inside your controller method:
         $year = request('year', date('Y')); // Defaults to current year if not selected
@@ -63,14 +89,14 @@ class LayoutservicesController extends Controller
 
          // 3. Calculate percentages safely (avoiding division by zero)
     $inProgressPercentage = $totalRequests > 0 ? round(($inProgressCount / $totalRequests) * 100) : 0;
-    $postedPercentage = $totalRequests > 0 ? round(($postedCount / $totalRequests) * 100) : 0;
+    $pendingPercentage = $totalRequests > 0 ? round(($pendingCount / $totalRequests) * 100) : 0;
     $approvalPercentage = $totalRequests > 0 ? round(($approvalCount / $totalRequests) * 100) : 0;
 
         return view('admin.creatives.layout.index', compact(
                 'departments',
                 'requests',
                 'inProgressCount',
-                'postedCount',
+                'pendingCount',
                 'approvalCount',
                 'monthCount',
                 'totalCount',
@@ -80,9 +106,10 @@ class LayoutservicesController extends Controller
                 'monthpagi',
                 'listpagi',
                 'inProgressPercentage',
-                'postedPercentage',
+                'pendingPercentage',
                 'approvalPercentage',
                 'users',
+                
                 
             ));
     }
@@ -100,7 +127,7 @@ class LayoutservicesController extends Controller
             'other_category' => 'nullable|string',
             'purpose' => 'required|string',
             'content_info' => 'nullable|string',
-            'content_attachment' => 'url',
+            'content_attachment' => 'url|nullable',
             'approve' => 'required|string',
             'specification_sod' => 'string',
             'category_sod' => 'string',
@@ -114,7 +141,7 @@ class LayoutservicesController extends Controller
             // Generate a unique 6-character random request ID
             do {
                 $randomRequestId = Str::random(6);
-            } while (Socmed_request::where('request_id', $randomRequestId)->exists());
+            } while (Publishing_requests::where('request_id', $randomRequestId)->exists());
 
             // 3. Save to the parent table (socmed_requests)
             $publishingRequest = Publishing_requests::create([
@@ -136,7 +163,7 @@ class LayoutservicesController extends Controller
                 'section' => $validatedData['section'],
                 'approve' => $validatedData['approve'],
                 'status' => '0', // Default status if applicable
-                'reference' => $validatedData['content_attachment'],
+                'reference' => $validatedData['content_attachment']?? null,
             ]);
 
             if ($request->input('needs_layout') == 1){

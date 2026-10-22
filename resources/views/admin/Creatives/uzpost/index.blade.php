@@ -1,7 +1,8 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
-
+ <!--New Task Model-->
+                        @include ('admin.creatives.uzpost.newtaskmodal')
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -11,7 +12,7 @@
                 <div class="sk-chase-dot"></div>
                 <div class="sk-chase-dot"></div>
             </div>
-
+           
             <!-- <div class="sk-bounce">
     <div class="sk-bounce-dot"></div>
     <div class="sk-bounce-dot"></div>
@@ -56,11 +57,14 @@
                             </div>
                         </div>
 
-                         <div class="row"
-                             role="tablist">
+                         <div class="row" role="tablist">
                             <div class="col-auto border-left">
-                                <a href=""
-                                   class="btn btn-accent">New Task</a>
+                                <button type="button"
+                                        class="btn btn-accent"
+                                        data-toggle="modal"
+                                        data-target="#photoModal">
+                                    New Task
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -70,11 +74,11 @@
                     <div class="page-section">
 
                     <!--overview-->
-                    @include ('admin.Creatives.publishing.overview')
+                    @include ('admin.Creatives.uzpost.overview')
                     <!--endoverview-->
 
                     <!--overview-->
-                    @include ('admin.Creatives.publishing.table.team')
+                    @include ('admin.Creatives.uzpost.table.team')
                     <!--endoverview-->
 
                         <div class="page-separator">
@@ -168,7 +172,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.publishing.table.active')
+            @include ('admin.Creatives.uzpost.table.active')
         </div>
 
     </div>
@@ -178,7 +182,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.publishing.table.month')
+            @include ('admin.Creatives.uzpost.table.month')
         </div>
 
     </div>
@@ -188,7 +192,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.publishing.table.list')
+            @include ('admin.Creatives.uzpost.table.list')
         </div>
 
     </div>
@@ -198,7 +202,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-           @include ('admin.Creatives.publishing.table.archive')
+           @include ('admin.Creatives.uzpost.table.archive')
         </div>
 
     </div>

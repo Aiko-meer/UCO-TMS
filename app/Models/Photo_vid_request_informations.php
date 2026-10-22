@@ -30,4 +30,9 @@ class Photo_vid_request_informations extends Model
     {
         return $this->belongsTo(Photo_vid_requests::class, 'request_id');
     }
+
+     public function user()
+    {
+        return $this->belongsTo(User::class, 'produce', 'employee_id');
+    }
 }

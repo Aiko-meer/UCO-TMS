@@ -65,12 +65,12 @@
                             </div>
                         </div>
 
-                         <div class="row" role="tablist">
+                          <div class="row" role="tablist">
                             <div class="col-auto border-left">
                                 <button type="button"
                                         class="btn btn-accent"
                                         data-toggle="modal"
-                                        data-target="#newTaskModal">
+                                        data-target="#photoModal">
                                     New Task
                                 </button>
                             </div>
@@ -117,51 +117,45 @@
                             <div class="row no-gutters"
                                  role="tablist">
                                 <div class="col-auto">
-                                    <a href="#active"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="true"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3"></span>
+                                    <a href="#active" data-toggle="tab" role="tab" aria-selected="true"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
+                                        <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Active</strong>
                                             <small class="card-subtitle text-50">Ongoing Projects</small>
                                         </span>
                                     </a>
                                 </div>
+
+                                <!-- Archive Counter -->
                                 <div class="col-auto border-left border-right">
-                                    <a href="#archive"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3"></span>
+                                    <a href="#arch" data-toggle="tab" role="tab" aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-archive">{{ $approvalCount }}</span>
                                         <span class="flex d-flex flex-column">
-                                            <strong class="card-title">Archived</strong>
-                                            <small class="card-subtitle text-50">Projects Data</small>
+                                            <strong class="card-title">Archive</strong>
+                                            <small class="card-subtitle text-50">Finished Projects</small>
                                         </span>
                                     </a>
                                 </div>
+
+                                <!-- Month Counter -->
                                 <div class="col-auto border-left border-right">
-                                    <a href="#month"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3"></span>
+                                    <a href="#month" data-toggle="tab" role="tab" aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-month">{{ $monthCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">This month</strong>
                                             <small class="card-subtitle text-50">Past Projects</small>
                                         </span>
                                     </a>
                                 </div>
-                                 <div class="col-auto border-left border-right">
-                                    <a href="#list"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3"></span>
+
+                                <!-- Total Counter -->
+                                <div class="col-auto border-left border-right">
+                                    <a href="#list" data-toggle="tab" role="tab" aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-total">{{ $totalCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">List</strong>
                                             <small class="card-subtitle text-50">All Projects</small>
@@ -232,11 +226,11 @@
     </div>
     {{-- ARCHIVED PROJECTS --}}
     <div class="tab-pane fade"
-         id="archive"
+         id="arch"
          role="tabpanel">
 
         <div class="table-responsive">
-          
+           @include ('admin.creatives.production.table.archive')
         </div>
 
     </div>

@@ -132,11 +132,15 @@
                             <label><strong>Produce:</strong></label>
                             
                             @if(empty($req->information?->produce))
-                                <!-- Show select dropdown when produce is empty -->
-                                <label for="">Once Creative team Done with the layout this will be updated </label>
+                                <!-- Show label when produce is empty -->
+                                <label for="">Once Creative team Done with the layout this will be updated</label>
                             @else
-                                <!-- Show read-only input text box when produce already exists -->
-                                <input type="text" readonly class="form-control" value="{{ $req->information->produce }}">
+                                <!-- Show read-only input text box handling both user or requestor -->
+                                <input type="text" readonly class="form-control" value="{{ 
+                                    $req->information?->user?->fullname 
+                                    ?? $req->information?->produce 
+                                    ?? 'No User Found' 
+                                }}">
                             @endif
                         </div>
                     </div>

@@ -60,7 +60,7 @@
                                 <tbody class="list"
                                        id="projects">
                                 @foreach($requests as $req)
-                                @if ($req->information->status == 2)
+                                @if ($req->information->status == 1)
                                     <tr>
 
                                         <td>
@@ -190,10 +190,11 @@
                               
                         </div>
 
-                         <div class="card mb-0 p-relative o-hidden">
-                            <div class="card-header py-12pt d-flex align-items-center">
-                              <div class="page-separator px-3">
-                            <div class="page-separator__text mf-6">Folder</div>
+                         <div class="card mb-0 p-relative o-hidden ">
+                            <div class="card-header py-12pt d-flex align-items-center bg-secondary ">
+                              <div class="page-separator px-3  "></div>
+                            <div class="page-separator__text mf-5 bg-secondary">Folder</div>
+                            </div>
                         </div>
 
                         <div class="table-responsive"
@@ -401,10 +402,6 @@
                                 </li>
                             </ul>
                         </div>
-                        </div>
-
-                            </div>
-                           
                         </div>
 
                        

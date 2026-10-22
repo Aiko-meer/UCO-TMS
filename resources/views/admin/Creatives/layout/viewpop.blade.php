@@ -133,7 +133,7 @@
                             @else
 
                             <label><strong>Assigned:</strong></label>  
-                            <input type="text" class="form-control" value="{{ $req->information?->user?->fullname ?? 'No User Found' }}" readonly>
+                            <input type="text" class="form-control" name="produce" value="{{ $req->information?->user?->employee_id  }}" hidden>{{$req->information?->user?->fullname  }}
                             @endif
                         </div>
                     </div>
@@ -144,16 +144,16 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->information->status }}" disabled selected>
+                               <option value="{{ $req->information->status }}"  selected>
                                     @if($req->information->status == 0) Pending
                                     @elseif($req->information->status == 1) Approve
-                                    @elseif($req->information->status == 2) Posted
+                                    @elseif($req->information->status == 2) in progress
                                     @elseif($req->information->status == 3) Rejected
                                     @else {{ $req->information->status }}
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>
-                                <option value="2">Posted</option>
+                                <option value="2">in progress</option>
                                 <option value="0">Pending</option>
                                 <option value="3">Rejected</option>
                             </select>

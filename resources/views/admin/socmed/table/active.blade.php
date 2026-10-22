@@ -14,7 +14,7 @@
                                                         role="button"><i class="material-icons">search</i></button>
                                             </div>
                                         </div>
-                            <table class="table mb-0 thead-border-top-0 table-nowrap" id="active">
+                            <table class="table mb-0 thead-border-top-0 table-nowrap " id="active">
                                 <thead>
                                     <tr>
 
@@ -107,8 +107,8 @@
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
                                                  @if ($req->information->status == 1)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
-                                                <span class="indicator-line rounded bg-success"></span>
+                                                <small class="js-lists-values-status text-50 mb-4pt">In Progress</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
                                                  @if ($req->information->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
@@ -144,7 +144,7 @@
                                         </td>
                                         <td class="text-right">
                                             <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
-                                                <i class="material-icons">more_vert</i>
+                                                <i class="material-icons bg-secondary">more_vert</i>
                                             </button>
                                         </td>
                                     </tr>

@@ -15,6 +15,7 @@
  @include ('admin.photography.newtaskmodal')
  <!--pop-up for active  -->
                       @include ('admin.photography.viewpop')
+                       @include ('admin.socmed.useroverview')    
         <div class="mdk-drawer-layout js-mdk-drawer-layout"
              data-push
              data-responsive-width="992px">
@@ -101,7 +102,7 @@
                                        role="tab"
                                        aria-selected="true"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3">{{$inProgressPercentage}}</span>
+                                        <span class="h2 mb-0 mr-3">{{$inProgressCount}}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Active</strong>
                                             <small class="card-subtitle text-50">Ongoing Projects</small>
@@ -114,10 +115,10 @@
                                        role="tab"
                                        aria-selected="false"
                                        class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">{{$postedPercentage}}</span>
+                                        <span class="h2 mb-0 mr-3">{{$postedCount}}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Archived</strong>
-                                            <small class="card-subtitle text-50">Projects Data</small>
+                                            <small class="card-subtitle text-50">Archived</small>
                                         </span>
                                     </a>
                                 </div>

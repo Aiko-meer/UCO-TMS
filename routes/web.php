@@ -39,6 +39,8 @@ Route::POST('/layoutservices/dashboard/store', [LayoutservicesController::class,
 Route::PUT('/layoutservices/dashboard/update/{request_id}', [LayoutservicesController::class, 'update'])->name('layout.update');
 
 Route::get('/productionservices/dashboard', [ProductionservicesController::class, 'dashboard'])->name('production.home');
+Route::POST('/productionservices/dashboard/store', [ProductionservicesController::class, 'store'])->name('production.store');
+Route::PUT('/productionservices/dashboard/update/{request_id}', [ProductionservicesController::class, 'update'])->name('production.update');
 
 Route::get('/publishingservices/dashboard', [PublishingserviceController::class, 'dashboard'])->name('publishing.home');
 

@@ -10,6 +10,7 @@ use App\Models\Publishing_requests;
 use App\Models\Publishing_request_informaitons;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\User;
 use Carbon\Carbon;
 
 class SocialmediaController extends Controller
@@ -24,6 +25,7 @@ class SocialmediaController extends Controller
     $monthpagi =Socmed_request::with('information')->paginate(10);
     $listpagi =Socmed_request::with('information')->paginate(5);
     $departments = Departments::all(); 
+    $users = User::where('user_type', 'content_team')->get();
     // Inside your controller method:
     $year = request('year', date('Y')); // Defaults to current year if not selected
     $month = request('month', date('m')); // Defaults to current month if not selected
@@ -79,7 +81,8 @@ class SocialmediaController extends Controller
         'archivepagi',
         'monthpagi',
         'listpagi',
-        'monthCount'));
+        'monthCount',
+        'users'));
     }
 
    public function store(Request $request)

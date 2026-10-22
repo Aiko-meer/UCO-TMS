@@ -171,16 +171,13 @@
                             <option value="Advisory">Advisory</option>
                             <option value="Congratulatory">Congratulatory</option>
                             <option value="Social Card/Facebook Banner">Social Card/Facebook Banner</option>
-                            <option value="Certificate">Certificate</option>
-                            <option value="Plaque">Plaque</option>
                             <option value="Press Release">Press Release</option>
-                            <option value="Invitation/e-Invitation">Invitation/e-Invitation</option>
+                            <option value="e-Invitation">e-Invitation</option>
                             <option value="LED (The Summit Centre)">LED (The Summit Centre)</option>
                             <option value="IHK eBillboard">IHK eBillboard</option>
                             <option value="Event Programme">Event Programme</option>
                             <option value="Logo Production">Logo Production</option>
                             <option value="Logo Enhancement">Logo Enhancement</option>
-                            <option value="Logo Soft Copy Request">Logo Soft Copy Request</option>
                             <option value="others">Others</option>
 
                         </select>
@@ -256,7 +253,7 @@
                                 placeholder="https://drive.google.com/..."
                                 pattern="https:\/\/.*drive\.google\.com\/.*"
                                 title="Please enter a valid Google Drive link"
-                                required>
+                               >
                         </div>
                     </div>
                

@@ -56,4 +56,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Publishing_request_informaitons::class, 'employee_id', 'produce');
     }
+
+    // In app/Models/User.php
+
+// In app/Models/User.php
+
+public function photoRequests()
+{
+    return $this->hasMany(Photo_vid_request_informations::class, 'produce', 'employee_id');
+}
+public function layoutRequests()
+{
+    return $this->hasMany(Publishing_request_informaitons::class, 'produce', 'employee_id');
+}
 }

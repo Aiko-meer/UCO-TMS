@@ -125,16 +125,6 @@
                                             </div>
                                         </td>
 
-                                        <td>
-                                            <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
-                                                </small>
-                                                <small class="text-50">
-                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
-                                                </small>
-                                            </div>
-                                        </td>
                                         <td class="text-right">
                                             <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
                                                 <i class="material-icons">more_vert</i>
