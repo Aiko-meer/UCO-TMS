@@ -27,7 +27,7 @@
 
         <!-- Chart.js -->
         <script src="{{ asset('assets/vendor/Chart.min.js') }}"></script>
-        <script src="{{ asset('assets/js/chartjs.js') }}"></script>
+        <script src="{{ asset('assets/js/chart.js') }}"></script>
 
          <!-- Tables -->
 
@@ -39,8 +39,7 @@
         <script src="{{ asset('assets/vendor/list.min.js') }}"></script>
         <script src="{{ asset('assets/js/list.js') }}"></script>
 
-        <!-- Chart.js Samples -->
-        <script src="{{ asset('assets/js/page.tasks-board.js') }}"></script>
+      
 
          <!-- Flatpickr -->
         <script src="{{ asset('assets/vendor/flatpickr/flatpickr.min.js')}}"></script>

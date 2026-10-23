@@ -106,18 +106,6 @@
                                 </a>
                                 <ul class="sidebar-submenu collapse sm-indent"
                                     id="account_menu">
-                                    <li class="sidebar-menu-item {{ request()->routeIs('creativeuser.table') ? 'active' : '' }}">
-                                        <a class="sidebar-menu-button"
-                                           href="{{route ('creativeuser.table')}}">
-                                            <span class="sidebar-menu-text">Creatives</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item {{ request()->routeIs('contentuser.table') ? 'active' : '' }}">
-                                        <a class="sidebar-menu-button"
-                                           href="{{route ('contentuser.table')}}">
-                                            <span class="sidebar-menu-text">Content</span>
-                                        </a>
-                                    </li>
                                     <li class="sidebar-menu-item {{ request()->routeIs('user.table') ? 'active' : '' }}">
                                         <a class="sidebar-menu-button"
                                            href="{{route ('user.table')}}">
@@ -126,13 +114,18 @@
                                     </li>
                                 </ul>
                             </li>
-
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="{{ route('softcopy.home') }}">
+                                <i class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder_shared</i>
+                                <span class="sidebar-menu-text">Soft Copy Request</span>
+                            </a>
+                        </li>
                             
                         </ul>           
                                 </ul>
                             </li>
                         </ul>
-
+                        
                     </div>
                 </div>
             </div>

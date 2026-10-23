@@ -3,8 +3,8 @@
                              data-lists-sort-by="js-lists-values-date"
                              data-lists-sort-desc="true"
                              data-lists-values='["js-lists-values-lead", "js-lists-values-project", "js-lists-values-status", "js-lists-values-budget", "js-lists-values-date"]'>
-
-                             <div class="card-header">
+                            
+                            <div class="card-header">
                                             <div class="search-form">
                                                 <input type="text"
                                                        class="form-control search"
@@ -14,21 +14,10 @@
                                                         role="button"><i class="material-icons">search</i></button>
                                             </div>
                                         </div>
-                            <table class="table mb-0 thead-border-top-0 table-nowrap" id="active">
+                                        
+                            <table class="table mb-0 thead-border-top-0 table-nowrap" id="archive">
                                 <thead>
                                     <tr>
-
-                                        <th style="width: 18px;"
-                                            class="pr-0">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox"
-                                                       class="custom-control-input js-toggle-check-all"
-                                                       data-target="#projects"
-                                                       id="customCheckAll">
-                                                <label class="custom-control-label"
-                                                       for="customCheckAll"><span class="text-hide">Toggle all</span></label>
-                                            </div>
-                                        </th>
 
                                         <th style="width: 150px;">
                                             <a href="javascript:void(0)"
@@ -36,25 +25,25 @@
                                                data-sort="js-lists-values-project">Requestor</a>
                                         </th>
 
-                                        <th>
+                                        <th style="width: 150px;">
                                             <a href="javascript:void(0)"
                                                class="sort"
                                                data-sort="js-lists-values-lead">Department</a>
                                         </th>
 
-                                        <th style="width: 48px;">
+                                        <th >
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-status">Purpose</a>
+                                        </th>
+
+                                        <th >
                                             <a href="javascript:void(0)"
                                                class="sort"
                                                data-sort="js-lists-values-status">Status</a>
                                         </th>
 
-                                        <th style="width: 48px;">
-                                            <a href="javascript:void(0)"
-                                               class="sort"
-                                               data-sort="js-lists-values-budget">Date requested </a>
-                                        </th>
-
-                                        <th style="width: 48px;">
+                                        <th >
                                             <a href="javascript:void(0)"
                                                class="sort"
                                                data-sort="js-lists-values-date">Due</a>
@@ -64,28 +53,19 @@
                                 </thead>
                                 <tbody class="list"
                                        id="projects">
-
+                                @foreach($requests as $req)
+                                @if($req->information?->status == 2)
                                     <tr>
 
-                                        <td class="pr-0">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox"
-                                                       class="custom-control-input js-check-selected-row"
-                                                       id="customCheck1_1">
-                                                <label class="custom-control-label"
-                                                       for="customCheck1_1"><span class="text-hide">Check</span></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
+                                       <td>
 
                                             <div class="media flex-nowrap align-items-center"
                                                  style="white-space: nowrap;">
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>Juan dela cruz</strong></small>
-                                                        <small class="js-lists-values-location text-50">juan.delacruz@uz.edu.ph</small>
+                                                        <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
+                                                        <a href="mailto:{{$req->email}}">{{$req->email}}</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -100,8 +80,7 @@
 
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex d-flex flex-column">
-                                                            <p class="mb-0"><strong class="js-lists-values-lead">UCO</strong></p>
-                                                            <small class="js-lists-values-email text-50">Content Associate</small>
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{ $req->department}}</strong></p>
                                                         </div>
                                                     </div>
 
@@ -110,32 +89,52 @@
 
                                         </td>
 
-                                        <td>
+                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>15/08/2019</strong></small>
-                                                <small class="text-50">18 days ago</small>
+                                                 @if ($req->information->status == 0)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->information->status == 1)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
+                                                <span class="indicator-line rounded bg-success"></span>
+                                                @endif
+                                                 @if ($req->information->status == 2)
+                                                <small class="js-lists-values-status text-50 mb-4pt">In Progress</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif 
+                                                @if ($req->information->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Denied</small>
+                                                <span class="indicator-line rounded bg-danger"></span>
+                                                @endif
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>17/08/2019</strong></small>
-                                                <small class="text-50">2 days</small>
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                </small>
                                             </div>
                                         </td>
-                                        <td class="text-right">
-                                            <a href=""
-                                               class="text-50"><i class="material-icons">more_vert</i></a>
+                                       <td class="text-right">
+                                            <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
                                         </td>
                                     </tr>
-
+                                    @endif
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

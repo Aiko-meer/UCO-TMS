@@ -37,7 +37,8 @@ class ProductionservicesController extends Controller
         }
     ])
     ->get();
-     $actviepagi  = Publishing_requests::with('information')->paginate(5, ['fullname'], 'active_page');
+
+        $actviepagi  = Publishing_requests::with('information')->paginate(5, ['fullname'], 'active_page');
         $archivepagi =Publishing_requests::with('information')->paginate(10);
         $monthpagi =Publishing_requests::with('information')->paginate(10);
         $listpagi =Publishing_requests::with('information')->paginate(5);

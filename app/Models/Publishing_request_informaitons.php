@@ -15,15 +15,21 @@ class Publishing_request_informaitons extends Model
         'other_category',
         'specification',
         'content_information',
+        'date_event',
         'content_attachement',
         'section',
         'approve',
         'produce',
         'published',
         'status',
-        'reference'
+        'reference',
+        'sdg',
         // Add any other columns that belong to the 'socmed_requests' table here
     ];
+
+    protected $casts = [
+    'sdg' => 'array', // <-- Casting belongs over here!
+];
 
     public function request()
     {

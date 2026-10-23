@@ -25,12 +25,11 @@
                                                            data-sort="js-lists-values-employee-name">Employee</a>
                                                     </th>
                                                     <th>Id</th>
-                                                    <th style="width: 37px;">Status</th>
-
+                                                    <th style="width: 37px;">User Type</th>
                                                     
                                                     
                                                     <th style="width: 24px;"
-                                                        class="pl-0"></th>
+                                                        class="pl-0">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="list"
@@ -58,11 +57,21 @@
 
                                                     </td>
                                                      <td class="text-right">
-                                                        <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $user->id }}').modal('show');">
-                                                            <i class="material-icons">more_vert</i>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="$('#viewModal-{{ $user->id }}').modal('show');">
+                                                            <i class="fas fa-eye mr-1"></i>
                                                         </button>
+                                                        <!-- Action Button for Password Change -->
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#changePasswordModal-{{ $user->id }}').modal('show');">
+                                                            <i class="fas fa-key mr-1"></i> 
+                                                        </button>
+                                                        <!-- Delete Trigger Button -->
+                                                        <button type="button" class="btn btn-sm btn-outline-danger  " data-toggle="modal" onclick="openDeleteModal('{{ $user->id }}')">
+                                                            <i class="fas fa-trash-alt mr-1"></i> 
+                                                        </button>
+                                                       
                                                     </td>
                                                 </tr>
+                                               
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -116,3 +125,14 @@
 
                         </div>
                     </div>
+                       <script>
+function openPasswordModal() {
+    // 1. Hide the User Details modal first
+    $('#userDetailsModal').modal('hide'); // Replace #userDetailsModal with your actual User Details modal ID
+
+    // 2. Open the Change Password modal smoothly after a brief delay
+    setTimeout(function() {
+        $('#changePasswordModal').modal('show');
+    }, 300); // 300ms delay lets the first modal close cleanly
+}
+</script>

@@ -16,17 +16,19 @@ return new class extends Migration
             $table->string('request_id');
             $table->string('purpose');
             $table->date('date_needed');
-            $table->string('category');
-            $table->string('other_category')->nullable;
+            $table->string('category')->nullable();
+            $table->string('other_category')->nullable();
             $table->string('specification');
-            $table->text('content_information')->nullable;
+            $table->text('content_information')->nullable();
             $table->string('section');
             $table->string('approve');
             $table->string('produce')->nullable();
             $table->date('published')->nullable();
             $table->integer('status')->nullable();
             $table->json('content_attachement')->nullable();
+            $table->json('sdg')->nullable();
             $table->string('reference')->nullable();
+            $table->date('date_event')->nullable();
             $table->timestamps();
         });
     }

@@ -1,8 +1,12 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
+        
 @include('admin.account.user.users.newuser')
+ @include('admin.account.user.users.passwordchange')
+  @include('admin.account.user.users.delete')
 @include('admin.account.user.users.overview')
+
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>

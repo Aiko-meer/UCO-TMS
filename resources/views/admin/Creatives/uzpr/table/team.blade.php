@@ -1,4 +1,4 @@
- <div class="page-separator">
+  <div class="page-separator">
                             <div class="page-separator__text">Members</div>
                         </div>
 
@@ -24,52 +24,53 @@
                                 </div>
 
                             </div>-->
+                            @foreach($users as $member)
                             <div class="col-md-6">
-                            <div class="card card--raised">
-                                <div class="card-header d-flex align-items-center">
-                                    <div class=" d-none d-sm-flex">
-                                          <img width="32"
-                                     height="32"
-                                     class="rounded-circle mr-8pt"
-                                     src="{{ asset('assets/images/people/50/guy-3.jpg') }}"
-                                     alt="account" />   
-                                    </div>
-                                    <span class="flex d-flex flex-column mr-8pt">
-                                        <h4 class="card-title">Juan Dela Cruz</h4>
-                                        <p class="card-subtitle">Social Media Associate </p>
-                                    </span>
-                                    <div class="dropdown ">
-                                        <a href="#"
-                                           class="dropdown-toggle"
-                                           data-caret="false"
-                                           data-toggle="dropdown">
-                                            <i class="material-icons">more_horiz</i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                           <a class="dropdown-item"
-                                               href="#">View Profile</a>
-                                            <a class="dropdown-item"
-                                               href="#">Task List</a>
+                                <div class="card card--raised">
+                                    <div class="card-header d-flex align-items-center">
+                                        <div class=" d-none d-sm-flex">
+                                            <img width="32"
+                                        height="32"
+                                        class="rounded-circle mr-8pt"
+                                        src="{{ $member->image ? asset('storage/' . $member->image) : 'https://via.placeholder.com/100' }}"
+                                        alt="account" />   
+                                        </div>
+                                        <span class="flex d-flex flex-column mr-8pt">
+                                            <h4 class="card-title">{{ $member->fullname }}</h4>
+                                            <p class="card-subtitle">{{ $member->user_type }} </p>
+                                        </span>
+                                        <div class="dropdown ">
+                                            <a href="#"
+                                            class="dropdown-toggle"
+                                            data-caret="false"
+                                            data-toggle="dropdown">
+                                                <i class="material-icons">more_horiz</i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                        
+                                              <button type="button" class="btn btn-link text-50 p-0 dropdown-item" onclick="$('#viewModal-{{ $member->id }}').modal('show');">
+                                                            View Details
+                                                        </button>   
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="card-body">
+                                    <div class="card-body">
                                     <div class="flex d-flex flex-row mr-8pt">
                                         <strong class="flex">In Progress</strong>
-                                        <div class="text-50">10</div>
-                                          <strong class="flex ml-5">Pendings</strong>
-                                        <div class="text-50">10</div>
+                                        <div class="text-50">{{$member->in_progress_count}}</div> 
+                                        <strong class="flex ml-5">In Pending</strong>
+                                        <div class="text-50">{{$member->in_pending_count}}</div>                                      
                                     </div>
 
                                      <div class="flex d-flex flex-row mr-8pt">
-                                        <strong class="flex">Drafted</strong>
-                                        <div class="text-50">10</div>
-                                          <strong class="flex ml-5">Approval</strong>
-                                        <div class="text-50">10</div>
+                                         <strong class="flex ">Approved</strong>
+                                        <div class="text-50">{{$member->approved_count}}</div>
+                                         <strong class="flex ml-5">Total</strong>
+                                        <div class="text-50">{{$member->total_count}}</div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
-                        </div>
-
+                            @endforeach
                         
-                        </div>
+                        </div>                       

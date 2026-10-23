@@ -23,7 +23,7 @@
             </button>
         </div>
 
-        <form action="{{route ('layout.store')}}" method="POST" enctype="multipart/form-data">
+        <form action="{{route ('uzpost.store')}}" method="POST" enctype="multipart/form-data">
 
             @csrf
 
@@ -160,7 +160,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="full_name" class="font-weight-semibold">
-                                Purpose of Request
+                                Month of the Event
                                 <span class="text-danger">*</span>
                             </label>
 
@@ -173,29 +173,10 @@
                         </div>
                     </div>
 
-                     <!-- event -->
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="content_attachment" class="font-weight-semibold">
-                                Content Write-up
-                                <span class="text-danger">*</span>
-                            </label>
-                            <span class="d-block  small mb-2 text-danger">For attachment, Google Drive link is only allowed for easy access of the materials </span>
-                            <input type="url"
-                                class="form-control"
-                                id="content_information"
-                                name="content_information"
-                                placeholder="https://drive.google.com/..."
-                                pattern="https:\/\/.*drive\.google\.com\/.*"
-                                title="Please enter a valid Google Drive link"
-                               >
-                        </div>
-                    </div>
-
                      <div class="col-12">
                         <div class="form-group">
                             <label for="content_attachment" class="font-weight-semibold">
-                                Content  Attachment 
+                                Photos Attachment 
                                 <span class="text-danger">*</span>
                             </label>
                             <span class="d-block  small mb-2 text-danger">For attachment, Google Drive link is only allowed for easy access of the materials </span>
@@ -219,7 +200,7 @@
                     <p class="text-muted font-weight-bold mb-0">
                         NOTE: AVP needs at least 7 DAYS Production Time.
                     </p>
-                    <span>Sit-in is encouraged before the Final Cut.</span>
+                    <span>Sit-in is encouraged before the Final Cut.(optional)</span>
                 </div>
               
                         <!-- Approved -->

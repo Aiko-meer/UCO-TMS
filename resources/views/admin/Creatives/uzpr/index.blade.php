@@ -1,7 +1,9 @@
 @include ('admin.assets.headers')
 
     <body class="layout-app layout-sticky-subnav ">
-
+        @include ('admin.creatives.uzpr.newtaskmodal')
+        @include ('admin.creatives.uzpr.viewpop')
+        @include ('admin.creatives.uzpr.useroverview')
         <div class="preloader">
             <div class="sk-chase">
                 <div class="sk-chase-dot"></div>
@@ -56,11 +58,14 @@
                             </div>
                         </div>
 
-                         <div class="row"
-                             role="tablist">
+                         <div class="row" role="tablist">
                             <div class="col-auto border-left">
-                                <a href=""
-                                   class="btn btn-accent">New Task</a>
+                                <button type="button"
+                                        class="btn btn-accent"
+                                        data-toggle="modal"
+                                        data-target="#photoModal">
+                                    New Task
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -70,11 +75,11 @@
                     <div class="page-section">
 
                     <!--overview-->
-                    @include ('admin.Creatives.publishing.overview')
+                    @include ('admin.Creatives.uzpr.overview')
                     <!--endoverview-->
 
                     <!--overview-->
-                    @include ('admin.Creatives.publishing.table.team')
+                    @include ('admin.Creatives.uzpr.table.team')
                     <!--endoverview-->
 
                         <div class="page-separator">
@@ -106,51 +111,45 @@
                             <div class="row no-gutters"
                                  role="tablist">
                                 <div class="col-auto">
-                                    <a href="#active"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="true"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3">3</span>
+                                    <a href="#active" data-toggle="tab" role="tab" aria-selected="true"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
+                                        <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Active</strong>
                                             <small class="card-subtitle text-50">Ongoing Projects</small>
                                         </span>
                                     </a>
                                 </div>
+
+                                <!-- Archive Counter -->
                                 <div class="col-auto border-left border-right">
-                                    <a href="#archive"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                    <a href="#arch" data-toggle="tab" role="tab" aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-archive">{{ $approvalCount }}</span>
                                         <span class="flex d-flex flex-column">
-                                            <strong class="card-title">Archived</strong>
-                                            <small class="card-subtitle text-50">Projects Data</small>
+                                            <strong class="card-title">Archive</strong>
+                                            <small class="card-subtitle text-50">Finished Projects</small>
                                         </span>
                                     </a>
                                 </div>
+
+                                <!-- Month Counter -->
                                 <div class="col-auto border-left border-right">
-                                    <a href="#month"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+                                    <a href="#month" data-toggle="tab" role="tab" aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-month">{{ $monthCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">This month</strong>
                                             <small class="card-subtitle text-50">Past Projects</small>
                                         </span>
                                     </a>
                                 </div>
-                                 <div class="col-auto border-left border-right">
-                                    <a href="#list"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">2</span>
+
+                                <!-- Total Counter -->
+                                <div class="col-auto border-left border-right">
+                                    <a href="#list" data-toggle="tab" role="tab" aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-total">{{ $totalCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">List</strong>
                                             <small class="card-subtitle text-50">All Projects</small>
@@ -161,14 +160,40 @@
                         </div>
 
                         <div class="tab-content">
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Check if there's a saved tab in localStorage and activate it
+        let activeTab = localStorage.getItem('activeDashboardTab');
+        if (activeTab) {
+            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
+            if (tabTrigger) {
+                // Use Bootstrap's tab trigger if available, or fallback to click()
+                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+                    var tab = new bootstrap.Tab(tabTrigger);
+                    tab.show();
+                } else {
+                    tabTrigger.click();
+                }
+            }
+        }
 
+        // 2. Save the tab href to localStorage whenever a tab is clicked
+        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                let targetID = this.getAttribute('href');
+                localStorage.setItem('activeDashboardTab', targetID);
+            });
+        });
+    });
+</script>
     {{-- ACTIVE PROJECTS --}}
     <div class="tab-pane fade show active"
          id="active"
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.publishing.table.active')
+            @include ('admin.Creatives.uzpr.table.active')
         </div>
 
     </div>
@@ -178,7 +203,7 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.publishing.table.month')
+            @include ('admin.Creatives.uzpr.table.month')
         </div>
 
     </div>
@@ -188,23 +213,53 @@
          role="tabpanel">
 
         <div class="table-responsive">
-            @include ('admin.Creatives.publishing.table.list')
+            @include ('admin.Creatives.uzpr.table.list')
         </div>
 
     </div>
     {{-- ARCHIVED PROJECTS --}}
     <div class="tab-pane fade"
-         id="archive"
+         id="arch"
          role="tabpanel">
 
         <div class="table-responsive">
-           @include ('admin.Creatives.publishing.table.archive')
+           @include ('admin.Creatives.uzpr.table.archive')
         </div>
 
     </div>
 
 </div>
+<script>
+    // Real-time auto-refresh interval (e.g., every 5 seconds)
+    setInterval(function() {
+        fetch(window.location.href, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, 'text/html');
+            let newTbody = doc.querySelector('#projects');
+            
+            if (newTbody) {
+                // Keep track of current search value to prevent clearing user input
+                let searchInput = document.querySelector('.search');
+                let searchTerm = searchInput ? searchInput.value : '';
 
+                // Replace table body content with fresh data
+                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
+
+                // Re-trigger List.js search if search was active
+                if (searchTerm && window.List && window.List.lists) {
+                    // List.js handles re-initialization automatically if container matches
+                }
+            }
+        })
+        .catch(error => console.error('Error updating table:', error));
+    }, 5000); // 5000ms = 5 seconds
+</script>
                        
                         
 
@@ -269,5 +324,30 @@
         <!-- App Settings FAB -->
          @include ('admin.assets.footer')
     </body>
-
+@if(session('success') || session('error') || $errors->any())
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Good job!',
+                text: "{{ session('success') }}",
+                confirmButtonText: 'OK'
+            });
+        @elseif(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Saving Failed',
+                text: "{{ session('error') }}",
+                confirmButtonText: 'OK'
+            });
+        @elseif($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error!',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonText: 'OK'
+            });
+        @endif
+    </script>
+@endif
 </html>

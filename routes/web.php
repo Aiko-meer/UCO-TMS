@@ -9,8 +9,7 @@ use App\Http\Controllers\ProductionservicesController;
 use App\Http\Controllers\PublishingserviceController;
 use App\Http\Controllers\UzpostController;
 use App\Http\Controllers\UzprController;
-use App\Http\Controllers\ContentuserController;
-use App\Http\Controllers\CreativesuserController;
+use App\Http\Controllers\SoftcopyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,19 +36,25 @@ Route::get('/videography/dashboard', [VideoController::class, 'dashboard'])->nam
 Route::get('/layoutservices/dashboard', [LayoutservicesController::class, 'dashboard'])->name('layout.home');
 Route::POST('/layoutservices/dashboard/store', [LayoutservicesController::class, 'store'])->name('layout.store');
 Route::PUT('/layoutservices/dashboard/update/{request_id}', [LayoutservicesController::class, 'update'])->name('layout.update');
-
+//production
 Route::get('/productionservices/dashboard', [ProductionservicesController::class, 'dashboard'])->name('production.home');
 Route::POST('/productionservices/dashboard/store', [ProductionservicesController::class, 'store'])->name('production.store');
 Route::PUT('/productionservices/dashboard/update/{request_id}', [ProductionservicesController::class, 'update'])->name('production.update');
 
 Route::get('/publishingservices/dashboard', [PublishingserviceController::class, 'dashboard'])->name('publishing.home');
-
+//uzpost
 Route::get('/uzpost/dashboard', [UzpostController::class, 'dashboard'])->name('uzpost.home');
+Route::POST('/uzpost/dashboard/store', [UzpostController::class, 'store'])->name('uzpost.store');
+Route::PUT('/uzpost/dashboard/update/{request_id}', [UzpostController::class, 'update'])->name('uzpost.update');
 
 Route::get('/uzpr/dashboard', [UzprController::class, 'dashboard'])->name('uzpr.home');
+Route::POST('/uzpr/dashboard/store', [UzprController::class, 'store'])->name('uzpr.store');
+Route::PUT('/uzpr/dashboard/update/{request_id}', [UzprController::class, 'update'])->name('uzpr.update');
 
-Route::get('/creatives/dashboard', [CreativesuserController::class, 'dashboard'])->name('creativeuser.table');
-Route::get('/content/dashboard', [ContentuserController::class, 'dashboard'])->name('contentuser.table');
+Route::get('/softcopyrequest/dashboard', [SoftcopyController::class, 'dashboard'])->name('softcopy.home');
 
+//user
 Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.table');
 Route::POST('/user/dashboard/store', [UserController::class, 'store'])->name('user.store');
+Route::PUT('/user/dashboard/update/{id}', [UserController::class, 'update'])->name('user.update');
+Route::DELETE('/user/dashboard/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
