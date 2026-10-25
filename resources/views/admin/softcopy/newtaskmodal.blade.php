@@ -1,5 +1,5 @@
 <div class="modal fade" id="newTaskModal" tabindex="-1"
-     role="dialog" aria-labelledby="newTaskModalLabel" aria-hidden="true">
+    role="dialog" aria-labelledby="newTaskModalLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 shadow">
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Update route to point to your soft copy store route -->
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="{{route ('softcopy.store')}}" method="POST" enctype="multipart/form-data">
 
             @csrf
 
@@ -46,8 +46,8 @@
                             </label>
                             <input type="text"
                                    class="form-control"
-                                   id="first_name"
-                                   name="first_name"
+                                   id="f_name"
+                                   name="f_name"
                                    placeholder="First name"
                                    required>
                         </div>
@@ -75,9 +75,39 @@
                             </label>
                             <input type="text"
                                    class="form-control"
-                                   id="last_name"
-                                   name="last_name"
+                                   id="l_name"
+                                   name="l_name"
                                    placeholder="Last name"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Contact Number -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="number" class="font-weight-semibold">
+                                Contact Number <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="number"
+                                   name="number"
+                                   placeholder="09XXXXXXXXX"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Student Number  -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="student_number" class="font-weight-semibold">
+                                Student Number  <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="number"
+                                   name="id_number"
+                                   placeholder=""
                                    required>
                         </div>
                     </div>
@@ -102,18 +132,31 @@
                         </div>
                     </div>
 
-                    <!-- Contact Number -->
-                    <div class="col-md-6">
+                    <!-- Divider -->
+                    <div class="col-12">
+                        <hr class="my-3">
+                    </div>
+
+                    <!-- Status / Graduating Radio Input -->
+                    <div class="col-12 mb-3">
+                        <h6 class="text-uppercase font-weight-bold mb-1">
+                            Status
+                        </h6>
+                    </div>
+
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label for="number" class="font-weight-semibold">
-                                Contact Number <span class="text-danger">*</span>
+                            <label class="font-weight-semibold d-block">
+                                Are you graduating? <span class="text-danger">*</span>
                             </label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="number"
-                                   name="number"
-                                   placeholder="09XXXXXXXXX"
-                                   required>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="is_graduating_yes" name="is_graduating" value="Yes" class="custom-control-input" required>
+                                <label class="custom-control-label" for="is_graduating_yes">Yes</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="is_graduating_no" name="is_graduating" value="No" class="custom-control-input" required>
+                                <label class="custom-control-label" for="is_graduating_no">No</label>
+                            </div>
                         </div>
                     </div>
 
@@ -137,11 +180,30 @@
                             </label>
                             <select id="school_level" name="school_level" class="form-control" required>
                                 <option value="" selected disabled>Select School Level</option>
-                                <option value="Elementary">Elementary</option>
-                                <option value="Junior High School">Junior High School</option>
-                                <option value="Senior High School">Senior High School</option>
-                                <option value="College">College</option>
-                                <option value="Graduate School">Graduate School</option>
+                                <option value="college">College</option>
+                                <option value="gradstudies">Graduate Studies</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- school -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="school" class="font-weight-semibold">
+                                School:<span class="text-danger">*</span>
+                            </label>
+                            <select id="school" name="school" class="form-control" required>
+                                <option value="" selected disabled>Select School</option>
+                                <option value="1">School of allied medicine</option>
+                                <option value="2">school of engineering information communicatio and technology</option>
+                                <option value="3">School of Business management</option>
+                                <option value="4">Institute of Technical Education</option>
+                                <option value="5">School of Education</option>
+                                <option value="6">School of Liberal arts and science </option>
+                                <option value="7">Graduate Studies Program</option>
+                                <option value="8">School of Dentistry</option>
+                                <option value="9">Ipil Campus</option>
+                                <option value="10">Pagadian Campus</option>
                             </select>
                         </div>
                     </div>
@@ -197,7 +259,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="date_photo" class="font-weight-semibold">
-                                Date of Photo / Event <span class="text-danger">*</span>
+                                Date of Photo<span class="text-danger">*</span>
                             </label>
                             <input type="date"
                                    class="form-control"
@@ -210,18 +272,18 @@
                     <!-- ID Attachment -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_attchement" class="font-weight-semibold">
+                            <label for="id_attachment" class="font-weight-semibold">
                                 ID Attachment <span class="text-danger">*</span>
                             </label>
 
                             <div class="custom-file">
                                 <input type="file"
                                        class="custom-file-input"
-                                       id="id_attchement"
-                                       name="id_attchement"
+                                       id="id_attachment"
+                                       name="id_attachment"
                                        onchange="updateIdFileName(this)"
                                        required>
-                                <label class="custom-file-label" for="id_attchement" id="idCustomLabel">
+                                <label class="custom-file-label" for="id_attachment" id="idCustomLabel">
                                     Choose file
                                 </label>
                             </div>

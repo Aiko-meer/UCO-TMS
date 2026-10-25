@@ -21,7 +21,8 @@ class Socmed_request_information extends Model
         'produce',
         'published',
         'status',
-        'content_attachement'
+        'content_attachement',
+        'token'
         // Add any other columns that belong to the 'socmed_requests' table here
     ];
 

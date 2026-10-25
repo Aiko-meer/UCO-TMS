@@ -55,6 +55,7 @@
                                     <option value="creative_admin">Creative Supervisor</option>
                                     <option value="content_team">Content Team</option>
                                     <option value="creative_team">Creative Team</option>
+                                    <option value="yearbook_team">Yearbook Team</option>
                                     <option value="admin">Admin</option>
                                     <option value="user">Viewer</option>
                                 </select>
@@ -80,12 +81,47 @@
                     </div>
 
                    <!-- Password Field -->
-                    <div class="form-group mb-0">
-                        <label for="password" class="form-label font-weight-bold text-dark">Temporary Password <span class="text-danger">*</span></label>
+                    <div class="form-group mb-3">
+                        <label for="password" class="form-label font-weight-semibold text-dark">
+                            Temporary Password <span class="text-danger">*</span>
+                        </label>
+                        
                         <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" readonly>
+                            <input type="text" 
+                                class="form-control" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Enter or generate password" 
+                                required>
+                                
+                            <!-- Quick Auto-Generator Button -->
+                            <div class="input-group-append">
+                                <button type="button" 
+                                        class="btn btn-outline-secondary px-3" 
+                                        onclick="generateTempPassword()" 
+                                        title="Generate Secure Password">
+                                    <i class="material-icons" style="font-size: 16px; vertical-align: middle;">autorenew</i> Generate
+                                </button>
+                            </div>
                         </div>
+                        
+                        <small class="form-text text-muted mt-1">
+                            This temporary credential will be sent to the new user. They can change it after logging in.
+                        </small>
                     </div>
+
+                    <!-- Small helper script for the generator button -->
+                    <script>
+                    function generateTempPassword() {
+                        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
+                        let password = "";
+                        // Generates a secure 10-character password
+                        for (let i = 0; i < 10; i++) {
+                            password += chars.charAt(Math.floor(Math.random() * chars.length));
+                        }
+                        document.getElementById('password').value = password;
+                    }
+                    </script>
 
                 </div>
 

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('email');
             $table->string('year_level');
-            $table->string('grad');
+            $table->string('grad')->nullable();
             $table->string('school_level');
             $table->string('program');
             $table->string('number');

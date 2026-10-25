@@ -11,7 +11,8 @@ class Photo_vid_requests extends Model
         'email',
         'fullname',
         'department',
-        'request_id'
+        'request_id',
+        'token'
         // Add any other columns that belong to the 'socmed_requests' table here
     ];
 

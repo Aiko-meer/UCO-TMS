@@ -7,6 +7,8 @@ use App\Models\Photo_vid_request_informations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\Publishing_requests;
+use App\Models\Socmed_request;
 use Illuminate\Support\Facades\DB;
 
 class PhotographyController extends Controller
@@ -14,6 +16,14 @@ class PhotographyController extends Controller
     //
     public function dashboard()
     {
+         $socmed = Socmed_request::where('token', '0')->get();
+        $photovid = Photo_vid_requests::where('token', '0')->get();
+        $layout = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'layout');
+        })
+        ->get();
+          $totalNotifications = $socmed->count() + $photovid->count();
       $users = User::whereIn('user_type', ['content_team', 'content_admin'])
     ->withCount([
         'photoRequests as in_progress_count' => function ($query) {
@@ -89,6 +99,10 @@ class PhotographyController extends Controller
             'approvalPercentage',
             'inProgressCount',
             'users',
+            'socmed',
+            'photovid',
+            'layout',
+            'totalNotifications'
         ));
     }
 
@@ -124,6 +138,7 @@ class PhotographyController extends Controller
                 'email' => $validatedData['email'],
                 'fullname' => $validatedData['full_name'],
                 'department' => $validatedData['department'],
+                'token' => '0',
             ]);
 
             // 4. Save to the child table (socmed_request_information)
@@ -166,4 +181,13 @@ class PhotographyController extends Controller
 
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
+
+   public function markAsRead($id)
+    {
+        $socmed = Photo_vid_requests::findOrFail($id);
+        $socmed->token = '1'; // or 1 depending on your column type
+        $socmed->save();
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('published')->nullable();
             $table->integer('status')->nullable();
             $table->json('content_attachement')->nullable();
+            $table->string('token');
             $table->timestamps();
         });
     }

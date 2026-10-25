@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Socmed_request;
+use App\Models\Photo_vid_requests;
 use App\Models\Departments;
 use App\Models\Socmed_request_information;
 use App\Models\Publishing_requests;
@@ -19,6 +20,15 @@ class SocialmediaController extends Controller
     public function dashboard()
     {
         // Fetches parent records along with their corresponding child information
+        $socmed = Socmed_request::where('token', '0')->get();
+        $photovid = Photo_vid_requests::where('token', '0')->get();
+        $layout = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'layout');
+        })
+        ->get();
+
+        $totalNotifications = $socmed->count() + $photovid->count();
     $requests = Socmed_request::with('information')->orderBy('id', 'desc')->get();;
    $actviepagi  = Socmed_request::with('information')->paginate(5, ['fullname'], 'active_page');
     $archivepagi =Socmed_request::with('information')->paginate(10);
@@ -82,7 +92,12 @@ class SocialmediaController extends Controller
         'monthpagi',
         'listpagi',
         'monthCount',
-        'users'));
+        'users',
+        'socmed',
+        'photovid',
+        'layout',
+        'totalNotifications'
+        ));
     }
 
    public function store(Request $request)
@@ -144,6 +159,7 @@ class SocialmediaController extends Controller
                 'email' => $validatedData['email'],
                 'fullname' => $validatedData['full_name'],
                 'department' => $validatedData['department'],
+                'token' => '0',
             ]);
 
             // 4. Save to the child table (socmed_request_information)
@@ -211,4 +227,13 @@ class SocialmediaController extends Controller
 
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
+
+   public function markAsRead($id)
+    {
+        $socmed = Socmed_request::findOrFail($id);
+        $socmed->token = '1'; // or 1 depending on your column type
+        $socmed->save();
+
+        return response()->json(['success' => true]);
+    }
 }

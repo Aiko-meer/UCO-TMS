@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Socmed_request;
 use App\Models\Departments;
+use App\Models\Photo_vid_requests;
 use App\Models\User;
 use App\Models\Socmed_request_information;
 use App\Models\Publishing_requests;
@@ -17,6 +18,15 @@ class LayoutservicesController extends Controller
     //
     public function dashboard()
     {
+         $socmed = Socmed_request::where('token', '0')->get();
+        $photovid = Photo_vid_requests::where('token', '0')->get();
+        $layout = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'layout');
+        })
+        ->get();
+
+        $totalNotifications = $socmed->count() + $photovid->count();
             $departments = Departments::all();
 $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
     ->withCount([
@@ -109,7 +119,10 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                 'pendingPercentage',
                 'approvalPercentage',
                 'users',
-                
+                'photovid',
+                'socmed',
+                'layout',
+                'totalNotifications'
                 
             ));
     }
@@ -149,6 +162,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                 'email' => $validatedData['email'],
                 'fullname' => $validatedData['full_name'],
                 'department' => $validatedData['department'],
+                'token' => '0',
             ]);
 
             // 4. Save to the child table (socmed_request_information)

@@ -15,6 +15,8 @@
                         @include ('admin.softcopy.newtaskmodal')
          <!--pop-up for active  -->
                       @include ('admin.softcopy.viewpop')
+                      @include ('admin.softcopy.sendsoft')
+                      @include ('admin.softcopy.deny')
                       @include ('admin.softcopy.useroverview')      
 
                         
@@ -116,19 +118,7 @@
                         <div class="card-header p-0 nav">
                             <div class="row no-gutters"
                                  role="tablist">
-                                <div class="col-auto">
-                                    <a href="#active"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="true"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3"></span>
-                                        <span class="flex d-flex flex-column">
-                                            <strong class="card-title">Active</strong>
-                                            <small class="card-subtitle text-50">Ongoing Projects</small>
-                                        </span>
-                                    </a>
-                                </div>
+                
                                 <div class="col-auto border-left border-right">
                                     <a href="#archive"
                                        data-toggle="tab"

@@ -48,12 +48,6 @@
                                             <span class="sidebar-menu-text">Photography Services</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item {{ request()->routeIs('video.home') ? 'active' : '' }}">
-                                        <a class="sidebar-menu-button"
-                                           href="{{route ('video.home')}}">
-                                            <span class="sidebar-menu-text">Video Services</span>
-                                        </a>
-                                    </li>
 
                                     
                                 </ul>
@@ -114,14 +108,22 @@
                                     </li>
                                 </ul>
                             </li>
-                        <li class="sidebar-menu-item">
+                        <li class="sidebar-menu-item {{ request()->routeIs('softcopy.home') ? 'active' : '' }} ">
                             <a class="sidebar-menu-button" href="{{ route('softcopy.home') }}">
                                 <i class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder_shared</i>
                                 <span class="sidebar-menu-text">Soft Copy Request</span>
                             </a>
                         </li>
+
+                        <li class="sidebar-menu-item {{ request()->routeIs('trademark.home') ? 'active' : '' }} ">
+                            <a class="sidebar-menu-button" href="{{ route('trademark.home') }}">
+                                <i class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder_shared</i>
+                                <span class="sidebar-menu-text">Trademark </span>
+                            </a>
+                        </li>  
                             
-                        </ul>           
+                        </ul>   
+                               
                                 </ul>
                             </li>
                         </ul>
