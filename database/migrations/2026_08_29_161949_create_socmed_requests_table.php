@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('department');
             $table->string('fullname');
-            $table->string('token')->nullable();
+            $table->integer('token')->default(0);
             $table->timestamps();
         });
     }

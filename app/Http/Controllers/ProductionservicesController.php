@@ -6,6 +6,10 @@ use App\Models\User;
 use App\Models\Publishing_requests;
 use App\Models\Publishing_request_informaitons;
 use App\Models\Production_request_information;
+use App\Models\Socmed_request;
+use App\Models\Soft_copy_requests;
+use App\Models\TrademarkRequest;
+use App\Models\Photo_vid_requests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -15,6 +19,32 @@ class ProductionservicesController extends Controller
     //
      public function dashboard()
     {
+        $socmed = Socmed_request::where('token', '0')->get();
+        $photovid = Photo_vid_requests::where('token', '0')->get();
+        $softcopy = Soft_copy_requests::where('token', '0')->get();
+        $trade = TrademarkRequest::where('token', '0')->get();
+        $layout = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'layout');
+        })
+        ->get();
+         $production = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'production');
+        })
+        ->get();
+         $uzpr = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpr');
+        })
+        ->get();
+         $uzpost = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpost');
+        })
+        ->get();
+
+        $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
          $departments = Departments::all();
          $requests = Publishing_requests::with(['information', 'production'])
          ->whereHas('information', function ($query) {$query->where('specification', 'production');})->orderBy('id', 'desc')->get();
@@ -104,7 +134,16 @@ class ProductionservicesController extends Controller
             'pendingPercentage',
             'approvalPercentage',
             'monthCount',
-            'totalCount'    
+            'totalCount',
+            'socmed',
+            'photovid',
+            'layout',
+            'production',
+            'uzpost',
+            'uzpr',
+            'totalNotifications',
+            'softcopy',
+            'trade'
         ));
     }
 

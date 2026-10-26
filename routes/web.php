@@ -26,6 +26,7 @@ Route::get('/admin/account/edit-profile/password', [AccountController::class, 'e
 //socialmedia request
 Route::get('/socmed/dashboard', [SocialmediaController::class, 'dashboard'])->name('socmed.home');
 Route::POST('/socmed/dashboard/store', [SocialmediaController::class, 'store'])->name('socmed.store');
+Route::delete('/socmed/dashboard/delete/{request_id}', [SocialmediaController::class, 'destroy'])->name('socmed.destroy');
 Route::PUT('/socmed/dashboard/update/{request_id}', [SocialmediaController::class, 'update'])->name('socmed.update');
 Route::post('/socmed/mark-read/{id}', [SocialmediaController::class, 'markAsRead'])->name('socmed.markRead');
 

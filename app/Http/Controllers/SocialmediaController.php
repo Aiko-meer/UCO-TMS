@@ -10,9 +10,12 @@ use App\Models\Socmed_request_information;
 use App\Models\Publishing_requests;
 use App\Models\Publishing_request_informaitons;
 use Illuminate\Support\Facades\DB;
+use App\Models\Soft_copy_requests;
+use App\Models\TrademarkRequest;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class SocialmediaController extends Controller
 {
@@ -20,15 +23,32 @@ class SocialmediaController extends Controller
     public function dashboard()
     {
         // Fetches parent records along with their corresponding child information
-        $socmed = Socmed_request::where('token', '0')->get();
+         $socmed = Socmed_request::where('token', '0')->get();
         $photovid = Photo_vid_requests::where('token', '0')->get();
+        $softcopy = Soft_copy_requests::where('token', '0')->get();
+        $trade = TrademarkRequest::where('token', '0')->get();
         $layout = Publishing_requests::where('token', '0')
         ->whereHas('information', function ($query) {
             $query->where('specification', 'layout');
         })
         ->get();
+         $production = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'production');
+        })
+        ->get();
+         $uzpr = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpr');
+        })
+        ->get();
+         $uzpost = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpost');
+        })
+        ->get();
 
-        $totalNotifications = $socmed->count() + $photovid->count();
+        $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
     $requests = Socmed_request::with('information')->orderBy('id', 'desc')->get();;
    $actviepagi  = Socmed_request::with('information')->paginate(5, ['fullname'], 'active_page');
     $archivepagi =Socmed_request::with('information')->paginate(10);
@@ -96,7 +116,12 @@ class SocialmediaController extends Controller
         'socmed',
         'photovid',
         'layout',
-        'totalNotifications'
+        'totalNotifications',
+        'production',
+        'uzpost',
+        'uzpr',
+        'softcopy',
+        'trade'
         ));
     }
 
@@ -235,5 +260,44 @@ class SocialmediaController extends Controller
         $socmed->save();
 
         return response()->json(['success' => true]);
+    }
+
+   public function destroy($request_id)
+    {
+        try {
+            DB::transaction(function () use ($request_id) {
+                
+                // 1. Find the main record or fail
+                $socmedRequest = Socmed_request::where('request_id', $request_id)->firstOrFail();
+                
+                // 2. Find the information record to retrieve file paths
+                $socmedInfo = Socmed_request_information::where('request_id', $request_id)->first();
+                
+                // 3. Delete physical files from the storage disk
+                if ($socmedInfo && $socmedInfo->content_attachement) {
+                    $attachments = json_decode($socmedInfo->content_attachement, true);
+                    if (is_array($attachments)) {
+                        foreach ($attachments as $path) {
+                            if (Storage::disk('public')->exists($path)) {
+                                Storage::disk('public')->delete($path);
+                            }
+                        }
+                    }
+                }
+
+                // 4. Delete related records across all tables linked by request_id
+                Socmed_request_information::where('request_id', $request_id)->delete();
+                Publishing_request_informaitons::where('request_id', $request_id)->delete();
+                Publishing_requests::where('request_id', $request_id)->delete();
+                
+                // 5. Delete the parent record
+                $socmedRequest->delete();
+            });
+
+            return redirect()->back()->with('success', 'Request and its attachments were deleted successfully!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete: ' . $e->getMessage());
+        }
     }
 }

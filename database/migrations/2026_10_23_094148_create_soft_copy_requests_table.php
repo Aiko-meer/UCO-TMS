@@ -25,7 +25,8 @@ return new class extends Migration
             $table->string('number');
             $table->date('date_photo');
             $table->json('id_attachment')->nullable();
-            $table->string('status');
+            $table->integer('token')->default(0);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

@@ -172,7 +172,7 @@
                     </div>
                 </div>
 
-                 <!-- Specification -->
+                <!-- Specification Dropdown -->
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="priority" class="font-weight-semibold">
@@ -180,14 +180,14 @@
                             <span class="text-danger">*</span>
                         </label>
 
-                        <select id="priority"
+                        <select id="specification"
                                 name="specification"
                                 class="form-control"
                                 required>
 
                             <option value="" selected disabled>
                                 Select 
-                            </option>                  
+                            </option>             
                             <option value="Advertisements">Advertisements</option>
                             <option value="Advisory">Advisory</option>
                             <option value="Album">Album</option>
@@ -199,6 +199,30 @@
                             <option value="Guidelines">Guidelines</option>
                             <option value="Live Stream ">Live Stream </option>
                         </select>
+                    </div>
+                </div>
+
+               <!-- Conditional Album Photos Field (Hidden by default) -->
+                <div class="col-md-6" id="albumAttachmentContainer" style="display: none;">
+                    <div class="form-group">
+                        <label for="album_photos" class="font-weight-semibold text-dark">
+                            <i class="material-icons font-size-16pt text-accent align-middle mr-1" style="font-size: 18px;">photo_library</i>
+                            Album Photos Attachment
+                            <span class="text-danger">*</span>
+                        </label>
+                        
+                        <div class="custom-file-upload-wrapper p-3 border rounded bg-light">
+                            <input type="file" 
+                                name="album_photos[]" 
+                                id="album_photos" 
+                                class="form-control-file border-0 bg-transparent p-0" 
+                                multiple 
+                                accept="image/png, image/jpeg, image/jpg">
+                            <div class="d-flex align-items-center mt-2 text-muted" style="font-size: 85%;">
+                                <i class="material-icons mr-1" style="font-size: 14px;">info</i>
+                                <span>Accepted formats: JPEG, PNG. You can select multiple photos simultaneously. Max size: 10MB per file.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -425,6 +449,21 @@ document.addEventListener("DOMContentLoaded", function() {
             previewContainer.appendChild(fileBadge);
         });
     }
+</script>
+<script>
+    document.getElementById('specification').addEventListener('change', function () {
+        var albumContainer = document.getElementById('albumAttachmentContainer');
+        var albumInput = document.getElementById('album_photos');
+
+        if (this.value === 'Album') {
+            albumContainer.style.display = 'block'; // Show the field
+            albumInput.setAttribute('required', 'required'); // Make it required if Album is chosen
+        } else {
+            albumContainer.style.display = 'none'; // Hide the field
+            albumInput.removeAttribute('required'); // Remove requirement so form can submit
+            albumInput.value = ''; // Clear selected files if they switch away from Album
+        }
+    });
 </script>
                         <!-- Approved -->
                 <div class="col-12">

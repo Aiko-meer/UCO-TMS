@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\TrademarkRequest;
+use App\Models\Soft_copy_requests;
+use App\Models\Publishing_requests;
+use App\Models\Photo_vid_requests;
+use App\Models\Socmed_request;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -10,9 +14,44 @@ class TrademarkRequestController extends Controller
     //
     function dashboard()
     {
+        $socmed = Socmed_request::where('token', '0')->get();
+        $photovid = Photo_vid_requests::where('token', '0')->get();
+        $softcopy = Soft_copy_requests::where('token', '0')->get();
+        $trade = TrademarkRequest::where('token', '0')->get();
+        $layout = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'layout');
+        })
+        ->get();
+         $production = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'production');
+        })
+        ->get();
+         $uzpr = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpr');
+        })
+        ->get();
+         $uzpost = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpost');
+        })
+        ->get();
+
+        $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
         $softCopies = TrademarkRequest::latest()->get();
     return view('admin.trademark.index', compact(
-            'softCopies'
+            'softCopies',
+             'socmed',
+            'photovid',
+            'layout',
+            'production',
+            'uzpost',
+            'uzpr',
+            'totalNotifications',
+            'softcopy',
+            'trade'
     ));
     }
 

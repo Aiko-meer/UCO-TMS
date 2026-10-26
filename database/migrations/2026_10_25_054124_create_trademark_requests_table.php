@@ -31,12 +31,11 @@ return new class extends Migration
             $table->string('materials_media');
             $table->string('location_use');
             $table->text('purpose_of_use');
-            $table->text('produce');
-            $table->text('token')->nullable();
+            $table->text('produce')->nullable();
             $table->text('note')->nullable();
             $table->string('approved_by')->nullable();
             $table->integer('status')->default(0); // 0: Pending, 1: Approved, 2: Rejected
-
+             $table->integer('token')->default(0);
             $table->timestamps();
         });
     }

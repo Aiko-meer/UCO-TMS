@@ -7,6 +7,8 @@ use App\Models\Photo_vid_request_informations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\Soft_copy_requests;
+use App\Models\TrademarkRequest;
 use App\Models\Publishing_requests;
 use App\Models\Socmed_request;
 use Illuminate\Support\Facades\DB;
@@ -18,12 +20,30 @@ class PhotographyController extends Controller
     {
          $socmed = Socmed_request::where('token', '0')->get();
         $photovid = Photo_vid_requests::where('token', '0')->get();
+        $softcopy = Soft_copy_requests::where('token', '0')->get();
+        $trade = TrademarkRequest::where('token', '0')->get();
         $layout = Publishing_requests::where('token', '0')
         ->whereHas('information', function ($query) {
             $query->where('specification', 'layout');
         })
         ->get();
-          $totalNotifications = $socmed->count() + $photovid->count();
+         $production = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'production');
+        })
+        ->get();
+         $uzpr = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpr');
+        })
+        ->get();
+         $uzpost = Publishing_requests::where('token', '0')
+        ->whereHas('information', function ($query) {
+            $query->where('specification', 'uzpost');
+        })
+        ->get();
+
+        $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
       $users = User::whereIn('user_type', ['content_team', 'content_admin'])
     ->withCount([
         'photoRequests as in_progress_count' => function ($query) {
@@ -99,10 +119,15 @@ class PhotographyController extends Controller
             'approvalPercentage',
             'inProgressCount',
             'users',
-            'socmed',
+           'socmed',
             'photovid',
             'layout',
-            'totalNotifications'
+            'production',
+            'uzpost',
+            'uzpr',
+            'totalNotifications',
+            'softcopy',
+            'trade'
         ));
     }
 

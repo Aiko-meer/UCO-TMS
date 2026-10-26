@@ -100,23 +100,69 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Content Banner:</strong></label>
                             
-                           @php
-                                // Handles cases where it's stored as a JSON array string like ["attachments/file.jpg"] or plain text
-                                $rawAttachment = $req->information?->content_attachement;
-                                $decoded = json_decode($rawAttachment, true);
-                                $filePath = is_array($decoded) ? ($decoded[0] ?? null) : $rawAttachment;
-                            @endphp
+                                 @php
+                                    $rawAttachment = $req->information?->content_attachement;
+                                    
+                                    // If it's saved as a JSON string (e.g. "https:\/\/..."), decode it back to a plain string
+                                    $decodedLink = json_decode($rawAttachment, true);
+                                    $targetUrl = is_string($decodedLink) ? $decodedLink : stripslashes(trim($rawAttachment, '"'));
+                                    
+                                    // Now validate if it's a real URL
+                                    $isUrl = filter_var($targetUrl, FILTER_VALIDATE_URL);
+                                    
+                                    if (!$isUrl) {
+                                        $fileDecoded = json_decode($rawAttachment, true);
+                                        $filePath = is_array($fileDecoded) ? ($fileDecoded[0] ?? null) : $rawAttachment;
+                                    }
+                                @endphp
 
-                            @if(!empty($filePath) && $filePath != '[]')
-                                <div class="mb-2">
-                                    <span class="text-muted">Current File:</span> 
-                                    <a href="{{ asset('storage/' . $filePath) }}" target="_blank">
-                                        View Attachment
-                                    </a>
-                                </div>
+                                @if(!empty($rawAttachment) && $rawAttachment != '[]')
+                                    <div class="mb-2">
+                                        <span class="text-muted">Attachment Source:</span> 
+                                        
+                                        @if($isUrl)
+                                            <!-- Displays the Google Drive Link cleanly -->
+                                            <a href="{{ $targetUrl }}" target="_blank" class="text-primary font-weight-bold">
+                                                <i class="material-icons align-middle" style="font-size: 16px;">link</i> Open Google Drive Link
+                                            </a>
+                                        @elseif(!empty($filePaths))
+            <!-- Loops through and displays each stored file/image individually with correct paths -->
+            <div class="d-flex flex-column">
+                @foreach($filePaths as $index => $path)
+                    @php
+                        // Clean up any double slashes inside the path array if present
+                        $cleanPath = str_replace('//', '/', $path);
+                        $filenameOnly = basename($cleanPath);
+                        $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                    @endphp
+
+                    <div class="d-flex align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
+                        <!-- Thumbnail Preview or File Icon -->
+                        <div class="mr-3 flex-shrink-0">
+                            @if($isImage)
+                                <img src="{{ asset('storage/' . $cleanPath) }}" alt="{{ $filenameOnly }}" class="rounded border" style="width: 40px; height: 40px; object-fit: cover;">
                             @else
-                                <div class="mb-2 text-muted small">No file currently attached. Creative team will attach a file once it is approved.</div>
+                                <div class="d-flex align-items-center justify-content-center bg-light rounded border" style="width: 40px; height: 40px;">
+                                    <i class="material-icons text-secondary" style="font-size: 20px;">insert_drive_file</i>
+                                </div>
                             @endif
+                        </div>
+
+                        <!-- Clean Clickable Link per File -->
+                        <a href="{{ asset('storage/' . $cleanPath) }}" target="_blank" class="text-primary font-weight-bold text-truncate">
+                            <i class="material-icons align-middle" style="font-size: 16px;">visibility</i> View File {{ $index + 1 }} ({{ $filenameOnly }})
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        @else
+                                            <span class="text-muted">No valid reference found.</span>
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="mb-2 text-muted small">No file currently attached.</div>
+                                @endif
                         </div>
                     </div>
 
@@ -202,3 +248,28 @@
     </div>
 </div>
                         @endforeach
+
+                          <!-- Delete Confirmation Bootstrap Modal -->
+                                    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this request? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                                                    <form id="activeDeleteForm" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>

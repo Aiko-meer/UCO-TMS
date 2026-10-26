@@ -22,7 +22,8 @@ class Socmed_request_information extends Model
         'published',
         'status',
         'content_attachement',
-        'token'
+        'token',
+        'album_photo'
         // Add any other columns that belong to the 'socmed_requests' table here
     ];
 
