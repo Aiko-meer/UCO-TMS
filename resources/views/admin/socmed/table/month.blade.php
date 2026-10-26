@@ -154,11 +154,11 @@
                                                         <i class="material-icons font-size-16pt text-accent mr-2">visibility</i> View Details
                                                     </button>
 
-                                                    <!-- 3. Delete Action (Protected by a form and confirmation) -->
-                                                    <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this request?');">
+                                                     <!-- 3. Delete Action (Protected by a form and confirmation) -->
+                                                    <form action="{{ route('socmed.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('socmed.destroy', $req->request_id) }}')">
                                                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
                                                         </button>
                                                     </form>
@@ -236,4 +236,13 @@
         })
         .catch(error => console.error('Error updating table:', error));
     }, 5000); // 5000ms = 5 seconds
+</script>
+                                                           <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
 </script>

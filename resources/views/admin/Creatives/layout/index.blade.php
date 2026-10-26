@@ -14,6 +14,8 @@
         </div>
          <!--New Task Model-->
                         @include ('admin.creatives.layout.newtaskmodal')
+                        @include ('admin.creatives.layout.approval')
+                         @include ('admin.creatives.layout.deny')
                          @include ('admin.creatives.layout.useroverview')
          <!--pop-up for active  -->
                       @include ('admin.creatives.layout.viewpop')

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('produce')->nullable();
             $table->date('published')->nullable();
             $table->integer('status')->nullable();
-            $table->json('content_attachement')->nullable();
+            $table->string('content_attachement')->nullable();
             $table->json('album_photo')->nullable();
             $table->timestamps();
         });

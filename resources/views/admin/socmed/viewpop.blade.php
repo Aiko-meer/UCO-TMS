@@ -96,6 +96,51 @@
                         </div>
                     </div>
 
+                    <div class="row mb-3">
+                        <div class="col-md-12 form-group">
+                            <label class="font-weight-semibold text-dark mb-2">
+                                <i class="material-icons font-size-16pt text-accent align-middle mr-1" style="font-size: 18px;">photo_library</i>
+                                Album Photo Attachment
+                            </label>
+
+                            @if(!empty($req->information->album_photo))
+                                <!-- Clean Professional Attachment Card -->
+                                <div class="d-flex align-items-center p-3 border rounded bg-light">
+                                    <!-- Thumbnail Preview -->
+                                    <div class="mr-3">
+                                        <img src="{{ asset(json_decode($req->information->album_photo) ?? $req->information->album_photo) }}" 
+                                            alt="Album Photo" 
+                                            class="rounded border shadow-sm" 
+                                            style="width: 64px; height: 64px; object-fit: cover;">
+                                    </div>
+
+                                    <!-- File Info -->
+                                    <div class="flex-grow-1">
+                                        <span class="d-block font-weight-semibold text-dark">
+                                            {{ basename(json_decode($req->information->album_photo) ?? $req->information->album_photo) }}
+                                        </span>
+                                        <small class="text-muted">Uploaded Image File</small>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div>
+                                        <a href="{{ asset(json_decode($req->information->album_photo) ?? $req->album_photo) }}" 
+                                        target="_blank" 
+                                        class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
+                                            <i class="material-icons mr-1" style="font-size: 16px;">visibility</i> View Full Size
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Fallback if no photo was uploaded -->
+                                <div class="p-3 border rounded bg-light text-muted font-italic">
+                                    <i class="material-icons align-middle mr-1" style="font-size: 16px;">info</i>
+                                    No album photo attached for this request.
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Content Banner:</strong></label>
@@ -126,37 +171,7 @@
                                                 <i class="material-icons align-middle" style="font-size: 16px;">link</i> Open Google Drive Link
                                             </a>
                                         @elseif(!empty($filePaths))
-            <!-- Loops through and displays each stored file/image individually with correct paths -->
-            <div class="d-flex flex-column">
-                @foreach($filePaths as $index => $path)
-                    @php
-                        // Clean up any double slashes inside the path array if present
-                        $cleanPath = str_replace('//', '/', $path);
-                        $filenameOnly = basename($cleanPath);
-                        $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
-                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
-                    @endphp
-
-                    <div class="d-flex align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
-                        <!-- Thumbnail Preview or File Icon -->
-                        <div class="mr-3 flex-shrink-0">
-                            @if($isImage)
-                                <img src="{{ asset('storage/' . $cleanPath) }}" alt="{{ $filenameOnly }}" class="rounded border" style="width: 40px; height: 40px; object-fit: cover;">
-                            @else
-                                <div class="d-flex align-items-center justify-content-center bg-light rounded border" style="width: 40px; height: 40px;">
-                                    <i class="material-icons text-secondary" style="font-size: 20px;">insert_drive_file</i>
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Clean Clickable Link per File -->
-                        <a href="{{ asset('storage/' . $cleanPath) }}" target="_blank" class="text-primary font-weight-bold text-truncate">
-                            <i class="material-icons align-middle" style="font-size: 16px;">visibility</i> View File {{ $index + 1 }} ({{ $filenameOnly }})
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-        @else
+                                @else
                                             <span class="text-muted">No valid reference found.</span>
                                         @endif
                                     </div>
@@ -273,3 +288,4 @@
                                             </div>
                                         </div>
                                     </div>
+ 

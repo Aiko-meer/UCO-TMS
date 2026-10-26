@@ -96,26 +96,66 @@
                         </div>
                     </div>
 
-                     <div class="row mb-3">
+                    <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Content Reference:</strong></label>
-                                @if($req->information?->reference)
-                                    <a href="{{ $req->information->reference }}" 
-                                    target="_blank" 
-                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
-                                        <i class="material-icons mr-1" style="font-size: 16px;">attachment</i> 
-                                        View Attachment
-                                    </a>
-                                @else
-                                    <span class="text-muted">No attachment</span>
-                                @endif
+                            <label class="font-weight-semibold text-dark mb-2">
+                                <i class="material-icons font-size-16pt text-accent align-middle mr-1" style="font-size: 18px;">collections</i>
+                                Reference Images / Attachments
+                            </label>
+
+                            @php
+                                // Fixed typo: 'infromation' to 'information'
+                                $rawReference = $req->information->reference ?? null;
+                                
+                                // Decode the JSON column into a usable PHP array
+                                $references = is_string($rawReference) ? json_decode($rawReference, true) : $rawReference;
+                            @endphp
+
+                            @if(!empty($references) && is_array($references))
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach($references as $path)
+                                        <div class="d-flex align-items-center p-2 border rounded bg-light mb-2 mr-2" style="width: 300px;">
+                                            <!-- Thumbnail Preview -->
+                                            <div class="mr-3">
+                                                <img src="{{ asset($path) }}" 
+                                                    alt="Reference Image" 
+                                                    class="rounded border shadow-sm" 
+                                                    style="width: 50px; height: 50px; object-fit: cover;">
+                                            </div>
+
+                                            <!-- File Info -->
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <span class="d-block font-weight-semibold text-dark text-truncate" style="font-size: 13px;" title="{{ basename($path) }}">
+                                                    {{ basename($path) }}
+                                                </span>
+                                                <small class="text-muted">Image File</small>
+                                            </div>
+
+                                            <!-- Action Button -->
+                                            <div class="ml-2">
+                                                <a href="{{ asset($path) }}" 
+                                                target="_blank" 
+                                                class="btn btn-sm btn-outline-primary p-1 d-inline-flex align-items-center"
+                                                title="View Full Size">
+                                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="p-3 border rounded bg-light text-muted font-italic">
+                                    <i class="material-icons align-middle mr-1" style="font-size: 16px;">info</i>
+                                    No reference images attached.
+                                </div>
+                            @endif
                         </div>
                     </div>
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->infromation?->approve }}">
                         </div>
                     </div>
 
@@ -148,6 +188,7 @@
                                     @if($req->information->status == 0) Pending
                                     @elseif($req->information->status == 1) Approve
                                     @elseif($req->information->status == 2) in progress
+                                    @elseif($req->information->status == 4) for Approval
                                     @elseif($req->information->status == 3) Rejected
                                     @else {{ $req->information->status }}
                                     @endif
@@ -156,6 +197,7 @@
                                 <option value="2">in progress</option>
                                 <option value="0">Pending</option>
                                 <option value="3">Rejected</option>
+                                <option value="4">For Approval</option>
                             </select>
                         </div>
                     </div>
@@ -185,3 +227,37 @@
     </div>
 </div>
                         @endforeach
+
+                        <!-- Delete Confirmation Bootstrap Modal -->
+                                    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this request? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                                                    <form id="activeDeleteForm" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                            <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>

@@ -67,9 +67,7 @@
                                     name="department"
                                     class="form-control"
                                     required>
-                                 @foreach($departments as $dep)
-                                 <option value="{{$dep->code}}">{{$dep->name}}</option>
-                                 @endforeach
+                                <option value="UCO">University Communication Office</option>
                             </select>
                         </div>
                     </div>
@@ -213,7 +211,7 @@
                         
                         <div class="custom-file-upload-wrapper p-3 border rounded bg-light">
                             <input type="file" 
-                                name="album_photos[]" 
+                                name="album_photo" 
                                 id="album_photos" 
                                 class="form-control-file border-0 bg-transparent p-0" 
                                 multiple 
@@ -347,22 +345,19 @@
     const layoutSection = document.getElementById('layoutDetailsSection');
     const categorySelect = document.getElementById('priority'); 
     
-    // Content attachment elements
-    const contentAttachmentInput = document.getElementById('content_attachment');
-    const contentCustomLabel = document.getElementById('contentCustomLabel');
-    const contentPreviewContainer = document.getElementById('contentPreviewContainer');
+    // Correct element ID targeting your Cloud Storage URL field
+    const contentAttachmentUrlInput = document.getElementById('content_attachment_url');
     
     if (layoutYes.checked) {
         // Show layout section and make category required
         layoutSection.style.display = 'block';
         categorySelect.required = true; 
 
-        // Disable and reset the content attachment input
-        if (contentAttachmentInput) {
-            contentAttachmentInput.disabled = true;
-            contentAttachmentInput.value = '';
-            contentCustomLabel.textContent = 'Choose file(s)';
-            contentPreviewContainer.innerHTML = '';
+        // Disable and clear the cloud link URL input when layout is YES
+        if (contentAttachmentUrlInput) {
+            contentAttachmentUrlInput.disabled = true;
+            contentAttachmentUrlInput.value = '';
+            contentAttachmentUrlInput.removeAttribute('required'); // Removes requirement if it was mandatory before
         }
     } else {
         // Hide layout section and clear category requirement
@@ -370,9 +365,9 @@
         categorySelect.required = false; 
         categorySelect.value = ''; 
 
-        // Re-enable content attachment input
-        if (contentAttachmentInput) {
-            contentAttachmentInput.disabled = false;
+        // Re-enable cloud link URL input when layout is NO
+        if (contentAttachmentUrlInput) {
+            contentAttachmentUrlInput.disabled = false;
         }
     }
 }
@@ -484,97 +479,34 @@ document.addEventListener("DOMContentLoaded", function() {
                <!-- Attachment -->
                <div class="col-md-6">
                     <div class="form-group">
-                        <label for="content_attachment" class="font-weight-semibold">
-                            Attachments
+                        <label for="content_attachment_url" class="font-weight-semibold">
+                            Resource Link / Cloud Storage URL <span class="text-danger">*</span>
                         </label>
 
-                        <div class="custom-file">
-                            <input type="file"
-                                class="custom-file-input"
-                                id="content_attachment"
-                                name="content_attachement[]"
-                                multiple
-                                onchange="previewContentFiles(this)"
-                                required>
-
-                            <label class="custom-file-label" for="content_attachment" id="contentCustomLabel">
-                                Choose file(s)
-                            </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light text-muted">
+                                    <i class="material-icons font-size-16pt">link</i>
+                                </span>
+                            </div>
+                            <input type="url"
+                                class="form-control"
+                                id="content_attachment_url"
+                                name="content_attachement"
+                                placeholder="https://drive.google.com/... or cloud link"
+                                >
                         </div>
 
                         <small class="form-text text-muted">
-                            PDF, DOCX, JPG, PNG — Max 10 MB 
+                            Provide a shared public link (Google Drive, OneDrive, etc.) containing your reference files.
                         </small>
-
-                        <div id="contentPreviewContainer" class="mt-2 d-flex flex-wrap gap-2"></div>
+                        <small class="form-test text-danger">
+                            if no attachment please click yes for layout to proceed.
+                        </small>
                     </div>
                 </div>
 
-            <script>
-                let contentDtFiles = new DataTransfer();
-
-                function previewContentFiles(input) {
-                    const customLabel = document.getElementById('contentCustomLabel');
-                    
-                    for (let i = 0; i < input.files.length; i++) {
-                        contentDtFiles.items.add(input.files[i]);
-                    }
-                    
-                    input.files = contentDtFiles.files;
-                    renderContentPreviews();
-                    
-                    if (contentDtFiles.files.length > 0) {
-                        customLabel.textContent = `${contentDtFiles.files.length} file(s) chosen`;
-                    } else {
-                        customLabel.textContent = 'Choose file(s)';
-                    }
-                }
-
-                function removeContentFile(index) {
-                    let newDt = new DataTransfer();
-                    
-                    for (let i = 0; i < contentDtFiles.files.length; i++) {
-                        if (i !== index) {
-                            newDt.items.add(contentDtFiles.files[i]);
-                        }
-                    }
-                    
-                    contentDtFiles = newDt;
-                    const input = document.getElementById('content_attachment');
-                    const customLabel = document.getElementById('contentCustomLabel');
-                    
-                    input.files = contentDtFiles.files;
-                    renderContentPreviews();
-                    
-                    if (contentDtFiles.files.length > 0) {
-                        customLabel.textContent = `${contentDtFiles.files.length} file(s) chosen`;
-                    } else {
-                        customLabel.textContent = 'Choose file(s)';
-                        input.value = '';
-                    }
-                }
-
-                function renderContentPreviews() {
-                    const previewContainer = document.getElementById('contentPreviewContainer');
-                    previewContainer.innerHTML = '';
-                    
-                    Array.from(contentDtFiles.files).forEach((file, index) => {
-                        const fileBadge = document.createElement('div');
-                        fileBadge.className = 'badge badge-secondary p-2 m-1 d-flex align-items-center';
-                        fileBadge.style.fontSize = '0.9rem';
-                        
-                        let displayName = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
-                        
-                        fileBadge.innerHTML = `
-                            <span class="mr-2">${displayName}</span>
-                            <button type="button" class="close text-white ml-auto" style="float: none; font-size: 1.1rem; line-height: 1;" onclick="removeContentFile(${index})">
-                                &times;
-                            </button>
-                        `;
-                        previewContainer.appendChild(fileBadge);
-                    });
-                }
-            </script>
+          
 
 
 

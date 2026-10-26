@@ -145,7 +145,8 @@ class SocialmediaController extends Controller
             'produce' => 'nullable|string',
             'published' => 'nullable|string',
             'status' => 'nullable|string',
-            'content_attachement.*' => 'nullable|file|mimes:pdf,docx,jpg,png|max:10240',
+            'content_attachement' => 'nullable|url',
+            'album_photo' => 'nullable|file|mimes:pdf,docx,jpg,png|max:20480',
             'needs_layout' => 'nullable|string',
 
         ]);
@@ -153,25 +154,59 @@ class SocialmediaController extends Controller
         // 2. Wrap saving in a database transaction
         DB::transaction(function () use ($request, $validatedData) {
             
-            // Handle multiple file uploads (matching your model's 'content_attechement' spelling)
-        $attachmentPaths = [];
-                        if ($request->hasFile('content_attachement')) {
-                            $cleanPurpose = Str::slug($validatedData['purpose']);
-                            $produce = $validatedData['full_name'];
-                            
-                            foreach ($request->file('content_attachement') as $file) {
-                                $originalName = $file->getClientOriginalName();
-                                // Prefixes with unique timestamp + purpose + original filename to prevent collisions
-                                $filename = time() . '-' . $cleanPurpose . '-' . $originalName;
-                                
-                                $path = $file->storeAs('attachments', $filename, 'public');
-                                $attachmentPaths[] = $path;
-                            }
+            // 1. Handle album_photo upload
+            if ($request->hasFile('album_photo')) {
+                $file = $request->file('album_photo');
+                $originalName = $file->getClientOriginalName();
+                $destinationPath = public_path('uploads/albums');
+                
+                if (file_exists($destinationPath . '/' . $originalName)) {
+                    $originalName = time() . '_' . $originalName;
+                }
+                
+                $file->move($destinationPath, $originalName);
+                $validatedData['album_photo'] = json_encode('uploads/albums/' . $originalName);
+            } else {
+                $validatedData['album_photo'] = null;
+            }
 
-                            
-                        }else{
-                            $produce = "";
-                        }
+            // 2. Handle reference files upload
+            if ($request->hasFile('reference')) {
+                $referencePaths = [];
+                $destinationPath = public_path('uploads/reference');
+
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+
+                foreach ($request->file('reference') as $file) {
+                    $originalName = $file->getClientOriginalName();
+                    $fileName = $originalName;
+                    
+                    if (file_exists($destinationPath . '/' . $fileName)) {
+                        $fileName = time() . '_' . $originalName;
+                    }
+                    
+                    $file->move($destinationPath, $fileName);
+                    $referencePaths[] = 'uploads/reference/' . $fileName;
+                }
+                
+                $validatedData['reference'] = json_encode($referencePaths);
+            } else {
+                $validatedData['reference'] = null;
+            }
+
+            // 3. Determine $produce value based on your exact business rules
+            if ($request->hasFile('reference')) {
+                // Rule A: If reference is not empty, produce must be null
+                $produce = null;
+            } elseif ($request->hasFile('album_photo') || $request->filled('content_attachement')) {
+                // Rule B: If album_photo OR content_attachement is present, fill with full_name
+                $produce = $validatedData['full_name'] ?? null;
+            } else {
+                // Default fallback
+                $produce = null;
+            }
 
             // Generate a unique 6-character random request ID
             do {
@@ -198,9 +233,10 @@ class SocialmediaController extends Controller
                 'section' => $validatedData['section'] ?? null,
                 'approve' => $validatedData['approve'] ?? null,
                 'produce' => $produce,
+                'album_photo' => $validatedData['album_photo'] ?? null,
                 'published' => $validatedData['published'] ?? null,
                 'status' => $validatedData['status'] ?? '0', // Default status if applicable
-                'content_attachement' => json_encode($attachmentPaths),
+                'content_attachement' => $validatedData['content_attachement'] ?? null,
             ]);
 
             if ($request->input('needs_layout') == 1){
@@ -223,8 +259,8 @@ class SocialmediaController extends Controller
                 'approve' => $validatedData['approve'] ?? null,
                 'produce' => $validatedData['produce'] ?? null,
                 'published' => $validatedData['published'] ?? null,
-                'status' => $validatedData['status'] ?? '1', // Default status if applicable
-                'reference' => json_encode($attachmentPaths),
+                'status' => $validatedData['status'] ?? '0', // Default status if applicable
+                'reference' =>  $validatedData['reference'],
             ]);
             }
         });

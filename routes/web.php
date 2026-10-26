@@ -37,10 +37,14 @@ Route::PUT('/photography/dashboard/update/{request_id}', [PhotographyController:
 Route::post('/photography/mark-read/{id}', [PhotographyController::class, 'markAsRead'])->name('photography.markRead');
 //video
 Route::get('/videography/dashboard', [VideoController::class, 'dashboard'])->name('video.home');
+
 //layout
 Route::get('/layoutservices/dashboard', [LayoutservicesController::class, 'dashboard'])->name('layout.home');
 Route::POST('/layoutservices/dashboard/store', [LayoutservicesController::class, 'store'])->name('layout.store');
 Route::PUT('/layoutservices/dashboard/update/{request_id}', [LayoutservicesController::class, 'update'])->name('layout.update');
+Route::post('/layoutservices/dashboard/mark-sent/{request_id}', [LayoutservicesController::class, 'markAsSent']);
+Route::delete('/layoutservices/dashboard/delete/{request_id}', [LayoutservicesController::class, 'destroy'])->name('layout.destroy');
+
 //production
 Route::get('/productionservices/dashboard', [ProductionservicesController::class, 'dashboard'])->name('production.home');
 Route::POST('/productionservices/dashboard/store', [ProductionservicesController::class, 'store'])->name('production.store');

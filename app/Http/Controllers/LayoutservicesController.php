@@ -76,7 +76,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             // 2. Get counts for each status
         // If 'status' is inside the related 'information' table:
             $inProgressCount = Publishing_requests::whereHas('information', function($q) {
-                    $q->where('status', 2)
+                    $q->whereIn('status', [2,4])
                     ->where('specification', 'layout');
                 })->count();
 
@@ -260,4 +260,49 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
 
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
+
+        public function markAsSent(Request $request, $request_id)
+        {
+            $req = Publishing_request_informaitons::where('request_id', $request_id)->firstOrFail();
+    
+            // Update your status or database fields here
+            $req->status = 4; // Approved / Sent
+            $req->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated successfully'
+            ]);
+        }
+
+        public function destroy($request_id)
+        {
+            DB::transaction(function () use ($request_id) {
+                // 1. Delete from child and parent tables for publishing requests
+                $publishingInfo = Publishing_request_informaitons::where('request_id', $request_id)->first();
+                if ($publishingInfo) {
+                    // Optional: Delete physical files associated with reference/albums if stored locally
+                    // if ($publishingInfo->reference) { ... }
+                    $publishingInfo->delete();
+                }
+
+                Publishing_requests::where('request_id', $request_id)->delete();
+
+                // 2. Delete from child and parent tables for socmed requests (if they exist)
+                $socmedInfo = Socmed_request_information::where('request_id', $request_id)->first();
+                if ($socmedInfo) {
+                    $socmedInfo->delete();
+                }
+
+                Socmed_request::where('request_id', $request_id)->delete();
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Request deleted successfully.'
+            ]);
+            
+            // Or if you are redirecting back to a dashboard view:
+             return redirect()->back()->with('success', 'Request deleted successfully.');
+        }
 }
