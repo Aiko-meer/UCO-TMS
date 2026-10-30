@@ -35,6 +35,7 @@ Route::get('/photography/dashboard', [PhotographyController::class, 'dashboard']
 Route::POST('/photography/dashboard/store', [PhotographyController::class, 'store'])->name('photo.store');
 Route::PUT('/photography/dashboard/update/{request_id}', [PhotographyController::class, 'update'])->name('photo.update');
 Route::post('/photography/mark-read/{id}', [PhotographyController::class, 'markAsRead'])->name('photography.markRead');
+Route::delete('/photography/dashboard/deelete/{request_id}', [PhotographyController::class, 'destroy'])->name('photo.destroy');
 //video
 Route::get('/videography/dashboard', [VideoController::class, 'dashboard'])->name('video.home');
 
@@ -43,7 +44,9 @@ Route::get('/layoutservices/dashboard', [LayoutservicesController::class, 'dashb
 Route::POST('/layoutservices/dashboard/store', [LayoutservicesController::class, 'store'])->name('layout.store');
 Route::PUT('/layoutservices/dashboard/update/{request_id}', [LayoutservicesController::class, 'update'])->name('layout.update');
 Route::post('/layoutservices/dashboard/mark-sent/{request_id}', [LayoutservicesController::class, 'markAsSent']);
+Route::post('/admin/layoutservices/mark-denied/{request_id}', [LayoutservicesController::class, 'markAsDenied']);
 Route::delete('/layoutservices/dashboard/delete/{request_id}', [LayoutservicesController::class, 'destroy'])->name('layout.destroy');
+Route::post('/layoutservices/mark-read/{request_id}', [LayoutservicesController::class, 'markAsRead'])->name('layout.markRead');
 
 //production
 Route::get('/productionservices/dashboard', [ProductionservicesController::class, 'dashboard'])->name('production.home');
@@ -60,11 +63,13 @@ Route::get('/uzpr/dashboard', [UzprController::class, 'dashboard'])->name('uzpr.
 Route::POST('/uzpr/dashboard/store', [UzprController::class, 'store'])->name('uzpr.store');
 Route::PUT('/uzpr/dashboard/update/{request_id}', [UzprController::class, 'update'])->name('uzpr.update');
 
+//soft copy
 Route::get('/softcopyrequest/dashboard', [SoftcopyController::class, 'dashboard'])->name('softcopy.home');
 Route::POST('/softcopyrequest/dashboard/store', [SoftcopyController::class, 'store'])->name('softcopy.store');
 Route::post('/admin/softcopy/mark-sent/{id}', [SoftcopyController::class, 'markAsSent']);
 Route::post('/admin/softcopy/mark-denied/{id}', [SoftcopyController::class, 'markAsDenied']);
 
+//trademark
 Route::get('/trademarkrequest/dashboard', [TrademarkRequestController::class, 'dashboard'])->name('trademark.home');
 Route::post('/trademarkrequest/store', [TrademarkRequestController::class, 'store'])->name('trademark.store');
 Route::post('/admin/trademarkrequest/mark-sent/{id}', [TrademarkRequestController::class, 'markAsSent']);

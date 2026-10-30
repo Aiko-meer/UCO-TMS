@@ -23,6 +23,7 @@ class Publishing_request_informaitons extends Model
         'published',
         'status',
         'reference',
+        'date_approved',
         'sdg',
         // Add any other columns that belong to the 'socmed_requests' table here
     ];

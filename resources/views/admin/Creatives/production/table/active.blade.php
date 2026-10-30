@@ -48,13 +48,13 @@
                                                class="sort"
                                                data-sort="js-lists-values-date">Due</a>
                                         </th>
-                                        <th style="width: 24px;"></th>
+                                        <th style="width: 24px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="list"
                                        id="projects">
                                 @foreach($requests as $req)
-                                @if($req->information?->status == 2)
+                                @if(in_array($req->information?->status, [2, 4]))
                                     <tr>
 
                                        <td>
@@ -110,6 +110,10 @@
                                                 <small class="js-lists-values-status text-50 mb-4pt">in Progress</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif 
+                                                 @if ($req->information->status == 4)
+                                                <small class="js-lists-values-status text-50 mb-4pt">For Approval</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif 
                                                 @if ($req->information->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Denied</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
@@ -127,10 +131,42 @@
                                                 </small>
                                             </div>
                                         </td>
+
                                        <td class="text-right">
-                                            <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
-                                                <i class="material-icons">more_vert</i>
-                                            </button>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn btn-link text-50 p-0 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="material-icons">more_vert</i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <!-- View Action -->
+                                                    <button type="button" class="dropdown-item" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
+                                                        <i class="material-icons font-size-16pt text-accent mr-2">visibility</i> View Details
+                                                    </button>
+
+                                                     <!-- 2. Send Soft Copy Action -->
+                                                   <button type="button" class="dropdown-item" data-toggle="modal" data-target="#sendModal-{{ $req->request_id }}">
+                                                        <i class="material-icons text-muted mr-2" style="font-size: 16px;">send</i> Send Approval
+                                                    </button>
+
+                                                    <!-- Deny Request Action Button -->
+                                                     @if($req->information->status !=3)
+                                                    <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
+                                                        <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
+                                                    </button>
+                                                    @endif
+                                                    <!-- 3. Delete Action (Protected by a form and confirmation) -->
+                                                     
+                                                    <form action="{{ route('layout.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('layout.destroy', $req->request_id) }}')">
+                                                            <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
+                                                        </button>
+                                                    </form>
+                                                   
+                                                    <!-- Add more actions here if needed, e.g., Edit, Delete -->
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     @endif

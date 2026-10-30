@@ -12,7 +12,8 @@ class Production_request_information extends Model
      protected $fillable = [
         'request_id',
         'size',
-        'quantity'
+        'quantity',
+        'type_material'
         // Add any other columns that belong to the 'socmed_requests' table here
     ];
 

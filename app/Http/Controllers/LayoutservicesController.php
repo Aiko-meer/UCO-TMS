@@ -86,7 +86,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                 })->count();
 
             $approvalCount = Publishing_requests::whereHas('information', function($q) {
-                    $q->where('status', 1)
+                    $q->whereIn('status', [1, 3])
                     ->where('specification', 'layout');
                 })->count();
 
@@ -104,13 +104,18 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
         $year = request('year', date('Y')); // Defaults to current year if not selected
         $month = request('month', date('m')); // Defaults to current month if not selected
 
-        $archived = Publishing_requests::with('information')
-            ->whereHas('information', function ($query) use ($year, $month) {
-                $query->where('status', 2)
-                    ->whereYear('created_at', $year)
-                    ->whereMonth('created_at', $month);
-            })
-            ->get();
+       $archived = Publishing_requests::with('information')
+        ->whereHas('information', function ($query) use ($year, $month) {
+            $query->whereIn('status', [2, 4]); // Adjust statuses as needed
+            
+            if ($year) {
+                $query->whereYear('created_at', $year);
+            }
+            if ($month) {
+                $query->whereMonth('created_at', $month);
+            }
+        })
+        ->get();
             $actviepagi  = Publishing_requests::with('information')->paginate(5, ['fullname'], 'active_page');
         $archivepagi =Publishing_requests::with('information')->paginate(10);
         $monthpagi =Publishing_requests::with('information')->paginate(10);
@@ -239,27 +244,36 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
   } 
   
   public function update(Request $request, $request_id) {
+            // Wrap in a transaction to ensure both updates succeed together
+            DB::transaction(function () use ($request_id, $request) {
+                // Find the main request or fail with a 404
+                $req = Publishing_request_informaitons::where('request_id', $request_id)->firstOrFail();
 
-       // Wrap in a transaction to ensure both updates succeed together
-           DB::transaction(function () use ($request_id, $request) {
-            // This will fail with a 404 if the main request doesn't exist (which is usually desired)
-            $req = Publishing_request_informaitons::where('request_id', $request_id)->firstOrFail();
+                // Updates the social media record if it exists
+                Socmed_request_information::where('request_id', $request_id)->update([
+                    'produce' => $request->input('produce')
+                ]);
 
-            // Updates the social media record if it exists; safely does nothing if it doesn't
-            Socmed_request_information::where('request_id', $request_id)->update([
-                'produce' => $request->input('produce')
-            ]);
+                // Base update data
+                $updateData = [
+                    'status' => $request->input('status'),
+                    'published' => $request->input('published'),
+                    'produce' => $request->input('produce'),
+                ];
 
-            // Update main request fields
-            $req->update([
-                'status' => $request->input('status'),
-                'published' => $request->input('published'),
-                'produce' => $request->input('produce'),
-            ]);
-        });
+                // If status selected is 1, include the approval date
+                if ($request->input('status') == 1) {
+                    $updateData['date_approved'] = now(); // or date('Y-m-d H:i:s')
+                }else{
+                    $updateData['date_approved'] = null;
+                }
 
-        return redirect()->back()->with('success', 'Request updated successfully!');
-   }
+                // Perform the update once with all applicable fields
+                $req->update($updateData);
+            });
+
+            return redirect()->back()->with('success', 'Request updated successfully!');
+        }
 
         public function markAsSent(Request $request, $request_id)
         {
@@ -273,6 +287,25 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                 'success' => true,
                 'message' => 'Status updated successfully'
             ]);
+        }
+
+        public function markAsDenied(Request $request, $request_id)
+        {
+            $softCopy = Publishing_request_informaitons::where('request_id', $request_id)->firstOrFail();
+            $softCopy->status = 3; // 2 = Rejected / Denied
+            $softCopy->date_approved = null;
+            $softCopy->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        public function markAsRead($id)
+        {
+            $socmed = Publishing_requests::findOrFail($id);
+            $socmed->token = '1'; // or 1 depending on your column type
+            $socmed->save();
+
+            return response()->json(['success' => true]);
         }
 
         public function destroy($request_id)

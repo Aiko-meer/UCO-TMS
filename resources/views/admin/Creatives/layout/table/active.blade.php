@@ -105,11 +105,11 @@
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
                                                  @if ($req->information->status == 2)
-                                                <small class="js-lists-values-status text-50 mb-4pt">In Progress</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">I  n progress</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
                                                 @if ($req->information->status == 3)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">Rejected</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
                                                  @if ($req->information->status == 4)
@@ -129,7 +129,7 @@
                                                 </small>
                                             </div>
                                         </td>
-                                       <td class="text-right">
+                                         <td class="text-right">
                                             <div class="dropdown">
                                                 <button type="button" class="btn btn-link text-50 p-0 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="material-icons">more_vert</i>
@@ -140,15 +140,27 @@
                                                         <i class="material-icons font-size-16pt text-accent mr-2">visibility</i> View Details
                                                     </button>
 
+                                                     <!-- 2. Send Soft Copy Action -->
+                                                   <button type="button" class="dropdown-item" data-toggle="modal" data-target="#sendModal-{{ $req->request_id }}">
+                                                        <i class="material-icons text-muted mr-2" style="font-size: 16px;">send</i> Send Approval
+                                                    </button>
+
+                                                    <!-- Deny Request Action Button -->
+                                                     @if($req->information->status !=3)
+                                                    <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
+                                                        <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
+                                                    </button>
+                                                    @endif
                                                     <!-- 3. Delete Action (Protected by a form and confirmation) -->
-                                                    <form action="{{ route('socmed.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
+                                                     
+                                                    <form action="{{ route('layout.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('socmed.destroy', $req->request_id) }}')">
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('layout.destroy', $req->request_id) }}')">
                                                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
                                                         </button>
                                                     </form>
-                                                    
+                                                   
                                                     <!-- Add more actions here if needed, e.g., Edit, Delete -->
                                                 </div>
                                             </div>

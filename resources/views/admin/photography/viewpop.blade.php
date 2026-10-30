@@ -65,6 +65,13 @@
                     </div>
 
                     <div class="row mb-3">
+                        <div class="col-md-12 form-group">
+                            <label><strong>Purpose of Request</strong></label>
+                            <input type="text" readonly  class="form-control" value="{{ $req->information?->purpose_document }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <div class="col-md-6 form-group">
                             <label><strong>Category:</strong></label>
                             <input type="text" readonly  class="form-control" value="{{ $req->information?->category }}">
@@ -102,11 +109,9 @@
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Produce:</strong></label>
+                            <label><strong>Photographer:</strong></label>
                             
                             @if(empty($req->information?->produce))
-                                <!-- Show select dropdown when produce is empty -->
-                                <label><strong>Assign to:</strong></label>
                                 <!-- Show select dropdown when produce is empty -->
                                <select name="produce" class="form-control" required>
                                     <option value="" disabled selected>Select a user</option>
@@ -116,7 +121,7 @@
                                 </select>
                             @else
                                 <!-- Show read-only input text box when produce already exists -->
-                                <input type="text" readonly class="form-control" value="{{ $req->information?->user?->fullname ?? 'No User Found'}}">
+                                 <input type="text" class="form-control" name="produce" value="{{ $req->information?->user?->employee_id  }}" hidden>{{$req->information?->user?->fullname  }}
                             @endif
                         </div>
                     </div>
@@ -165,3 +170,27 @@
     </div>
 </div>
                         @endforeach
+                        <!-- Delete Confirmation Bootstrap Modal -->
+                                    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this request? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                                                    <form id="activeDeleteForm" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>

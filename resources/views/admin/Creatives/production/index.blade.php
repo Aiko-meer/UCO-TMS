@@ -15,6 +15,7 @@
                         @include ('admin.creatives.production.newtaskmodal')
          <!--pop-up for active  -->
                       @include ('admin.creatives.production.viewpop')
+                      @include ('admin.creatives.production.approval')
                       @include ('admin.creatives.production.useroverview')
 
 
@@ -203,6 +204,15 @@
         <div class="table-responsive">
             @include ('admin.creatives.production.table.active')
         </div>
+    </div>
+     {{-- ARCHIVED PROJECTS --}}
+    <div class="tab-pane fade"
+         id="arch"
+         role="tabpanel">
+
+        <div class="table-responsive">
+           @include ('admin.creatives.production.table.archive')
+        </div>
 
     </div>
     {{-- ARCHIVED PROJECTS --}}
@@ -225,16 +235,7 @@
         </div>
 
     </div>
-    {{-- ARCHIVED PROJECTS --}}
-    <div class="tab-pane fade"
-         id="arch"
-         role="tabpanel">
-
-        <div class="table-responsive">
-           @include ('admin.creatives.production.table.archive')
-        </div>
-
-    </div>
+   
    <script>
     // Real-time auto-refresh interval (e.g., every 5 seconds)
     setInterval(function() {

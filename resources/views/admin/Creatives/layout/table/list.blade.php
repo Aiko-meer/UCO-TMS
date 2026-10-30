@@ -105,11 +105,11 @@
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
                                                  @if ($req->information->status == 2)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">On progress</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
                                                 @if ($req->information->status == 3)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">Rejected</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
                                                  @if ($req->information->status == 4)
@@ -147,11 +147,13 @@
                                                     </button>
 
                                                     <!-- Deny Request Action Button -->
+                                                     @if($req->information->status !=3)
                                                     <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
                                                         <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
                                                     </button>
-
+                                                    @endif
                                                     <!-- 3. Delete Action (Protected by a form and confirmation) -->
+                                                     
                                                     <form action="{{ route('layout.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
                                                         @csrf
                                                         @method('DELETE')
@@ -159,7 +161,7 @@
                                                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
                                                         </button>
                                                     </form>
-                                                    
+                                                   
                                                     <!-- Add more actions here if needed, e.g., Edit, Delete -->
                                                 </div>
                                             </div>

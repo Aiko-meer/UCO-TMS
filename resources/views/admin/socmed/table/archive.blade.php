@@ -96,7 +96,9 @@
                                        id="projects">
                                 @foreach($archived as $req)
                                 @if ($req->information->status == 2)
-                                    <tr>
+                                    <!-- Added data attributes for exact YYYY-MM matching -->
+                <tr data-month="{{ $req->created_at ? \Carbon\Carbon::parse($req->created_at)->format('m') : '' }}"
+                    data-year="{{ $req->created_at ? \Carbon\Carbon::parse($req->created_at)->format('Y') : '' }}">
 
                                         <td>
 

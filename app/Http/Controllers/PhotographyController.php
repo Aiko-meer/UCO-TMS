@@ -44,7 +44,7 @@ class PhotographyController extends Controller
         ->get();
 
         $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
-      $users = User::whereIn('user_type', ['content_team', 'content_admin'])
+      $users = User::query() // or simply User::
     ->withCount([
         'photoRequests as in_progress_count' => function ($query) {
             $query->where('status', 1);
@@ -207,6 +207,27 @@ class PhotographyController extends Controller
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
 
+   public function destroy($request_id)
+    {
+        try {
+            DB::transaction(function () use ($request_id) {
+                // 1. Find the parent record or fail with a 404
+                $photoRequest = Photo_vid_requests::where('request_id', $request_id)->firstOrFail();
+
+                // 2. Delete the related child record(s) first
+                Photo_vid_request_informations::where('request_id', $request_id)->delete();
+
+                // 3. Delete the parent record
+                $photoRequest->delete();
+            });
+
+            return redirect()->back()->with('success', 'Request deleted successfully!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete: ' . $e->getMessage());
+        }
+    }
+
    public function markAsRead($id)
     {
         $socmed = Photo_vid_requests::findOrFail($id);
@@ -215,4 +236,13 @@ class PhotographyController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+ public function markAsDenied(Request $request, $id)
+        {
+            $softCopy = Soft_copy_requests::findOrFail($id);
+            $softCopy->status = 2; // 2 = Rejected / Denied
+            $softCopy->save();
+
+            return response()->json(['success' => true]);
+        }    
 }

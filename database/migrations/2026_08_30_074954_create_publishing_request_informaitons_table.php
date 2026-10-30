@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('reference')->nullable();
             $table->date('date_event')->nullable();
             $table->integer('token')->default(0);
+            $table->date('date_approve')->nullable();
             $table->timestamps();
         });
     }

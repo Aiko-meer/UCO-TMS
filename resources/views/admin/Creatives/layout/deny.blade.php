@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-0 shadow">
             
-            <form onsubmit="denyRequestAction(event, '{{ $req->request_id }}', '{{ $req->email }}', '{{ $req->f_name ?? $req->full_name }}')">
+            <form onsubmit="sendDenyEmailWithEmailJS(event, '{{ $req->request_id }}', '{{ $req->email }}', '{{ $req->f_name ?? $req->full_name }}')">
                 @csrf
                 
                 <div class="modal-header bg-light">
@@ -57,6 +57,7 @@ UCO Team</textarea>
 
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Cancel</button>
+                    <!-- Matched ID: submitDenyBtn- -->
                     <button type="submit" id="submitDenyBtn-{{ $req->request_id }}" class="btn btn-danger px-4">
                         <i class="material-icons mr-1" style="font-size: 16px; vertical-align: middle;">block</i> Confirm Denial
                     </button>
@@ -67,3 +68,56 @@ UCO Team</textarea>
     </div>
 </div>
 @endforeach
+<script>
+function sendDenyEmailWithEmailJS(event, softId, studentEmail, studentName) {
+    event.preventDefault(); // Stop default form submit / page reload
+
+    // Grab reason and submit button using IDs matching the HTML
+    const reasonText = document.getElementById('denial_reason-' + softId).value;
+    const submitBtn = document.getElementById('submitDenyBtn-' + softId);
+
+    // Disable button & show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending...';
+
+    // Parameters mapped to your EmailJS Template variables for denial
+    const templateParams = {
+        to_email: studentEmail,
+        to_name: studentName,
+        to_title: 'Update on Your Softcopy Picture Request',
+        denial_reason: reasonText
+    };
+
+    // Replace with your EmailJS Service ID and Template ID for Denied requests
+    emailjs.send('service_ydriqxs', 'template_bm1wbqa', templateParams)
+        .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            
+            // Call lightweight Laravel route to update database status to Rejected (status = 2)
+            fetch(`/admin/layoutservices/mark-denied/${softId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ reason: reasonText })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Denial notification sent successfully.');
+                location.reload(); // Refresh to reflect status update
+            })
+            .catch(err => {
+                console.error('Database update error:', err);
+                alert('Email sent, but failed to update status in database.');
+                location.reload();
+            });
+
+        }, function(error) {
+            console.log('FAILED...', error);
+            alert('Failed to send email. Please check your EmailJS configuration.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="material-icons mr-1" style="font-size: 16px; vertical-align: middle;">block</i> Confirm Denial';
+        });
+}
+</script>

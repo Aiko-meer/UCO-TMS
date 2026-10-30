@@ -53,7 +53,7 @@
                                                class="sort"
                                                data-sort="js-lists-values-date">Date Event</a>
                                         </th>
-                                        <th style="width: 24px;"></th>
+                                        <th style="width: 24px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="list"
@@ -150,12 +150,40 @@
                                             </div>
                                         </td>
                                          <td class="text-right">
-                                            <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
-                                                <i class="material-icons">more_vert</i>
-                                            </button>
+                                             <div class="dropdown">
+                                                <button type="button" class="btn btn-link text-50 p-0 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="material-icons">more_vert</i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <!-- View Action -->
+                                                    <button type="button" class="dropdown-item" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
+                                                        <i class="material-icons font-size-16pt text-accent mr-2">visibility</i> View Details
+                                                    </button>
+
+                                                    <!-- 3. Delete Action (Protected by a form and confirmation) -->
+                                                    <form action="{{ route('photo.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('photo.destroy', $req->request_id) }}')">
+                                                            <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
+                                                        </button>
+                                                    </form>
+                                                    
+                                                    <!-- Add more actions here if needed, e.g., Edit, Delete -->
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                         </div>
+                         <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>

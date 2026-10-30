@@ -98,20 +98,20 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                               @if ($req->information->status == 0)
+                                                 @if ($req->information->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
                                                  @if ($req->information->status == 1)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Approved</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
                                                  @if ($req->information->status == 2)
-                                                <small class="js-lists-values-status text-50 mb-4pt">in Progress</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">On progress</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
                                                 @if ($req->information->status == 3)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">Rejected</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
                                                  @if ($req->information->status == 4)
@@ -132,7 +132,7 @@
                                             </div>
                                         </td>
                                         
-                                         <td class="text-right">
+                                           <td class="text-right">
                                             <div class="dropdown">
                                                 <button type="button" class="btn btn-link text-50 p-0 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="material-icons">more_vert</i>
@@ -143,15 +143,27 @@
                                                         <i class="material-icons font-size-16pt text-accent mr-2">visibility</i> View Details
                                                     </button>
 
+                                                     <!-- 2. Send Soft Copy Action -->
+                                                   <button type="button" class="dropdown-item" data-toggle="modal" data-target="#sendModal-{{ $req->request_id }}">
+                                                        <i class="material-icons text-muted mr-2" style="font-size: 16px;">send</i> Send Approval
+                                                    </button>
+
+                                                    <!-- Deny Request Action Button -->
+                                                     @if($req->information->status !=3)
+                                                    <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
+                                                        <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
+                                                    </button>
+                                                    @endif
                                                     <!-- 3. Delete Action (Protected by a form and confirmation) -->
-                                                    <form action="{{ route('socmed.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
+                                                     
+                                                    <form action="{{ route('layout.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('socmed.destroy', $req->request_id) }}')">
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('layout.destroy', $req->request_id) }}')">
                                                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
                                                         </button>
                                                     </form>
-                                                    
+                                                   
                                                     <!-- Add more actions here if needed, e.g., Edit, Delete -->
                                                 </div>
                                             </div>
@@ -196,34 +208,4 @@
                             </ul>
                         </div>
                         </div>
-                        <script>
-    // Real-time auto-refresh interval (e.g., every 5 seconds)
-    setInterval(function() {
-        fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            let newTbody = doc.querySelector('#projects');
-            
-            if (newTbody) {
-                // Keep track of current search value to prevent clearing user input
-                let searchInput = document.querySelector('.search');
-                let searchTerm = searchInput ? searchInput.value : '';
-
-                // Replace table body content with fresh data
-                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
-
-                // Re-trigger List.js search if search was active
-                if (searchTerm && window.List && window.List.lists) {
-                    // List.js handles re-initialization automatically if container matches
-                }
-            }
-        })
-        .catch(error => console.error('Error updating table:', error));
-    }, 5000); // 5000ms = 5 seconds
-</script>
+                       

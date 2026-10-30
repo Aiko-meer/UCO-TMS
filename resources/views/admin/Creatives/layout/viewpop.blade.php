@@ -98,64 +98,42 @@
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label class="font-weight-semibold text-dark mb-2">
-                                <i class="material-icons font-size-16pt text-accent align-middle mr-1" style="font-size: 18px;">collections</i>
-                                Reference Images / Attachments
-                            </label>
-
-                            @php
-                                // Fixed typo: 'infromation' to 'information'
-                                $rawReference = $req->information->reference ?? null;
-                                
-                                // Decode the JSON column into a usable PHP array
-                                $references = is_string($rawReference) ? json_decode($rawReference, true) : $rawReference;
-                            @endphp
-
-                            @if(!empty($references) && is_array($references))
-                                <div class="d-flex flex-wrap gap-2">
-                                    @foreach($references as $path)
-                                        <div class="d-flex align-items-center p-2 border rounded bg-light mb-2 mr-2" style="width: 300px;">
-                                            <!-- Thumbnail Preview -->
-                                            <div class="mr-3">
-                                                <img src="{{ asset($path) }}" 
-                                                    alt="Reference Image" 
-                                                    class="rounded border shadow-sm" 
-                                                    style="width: 50px; height: 50px; object-fit: cover;">
-                                            </div>
-
-                                            <!-- File Info -->
-                                            <div class="flex-grow-1 overflow-hidden">
-                                                <span class="d-block font-weight-semibold text-dark text-truncate" style="font-size: 13px;" title="{{ basename($path) }}">
-                                                    {{ basename($path) }}
-                                                </span>
-                                                <small class="text-muted">Image File</small>
-                                            </div>
-
-                                            <!-- Action Button -->
-                                            <div class="ml-2">
-                                                <a href="{{ asset($path) }}" 
-                                                target="_blank" 
-                                                class="btn btn-sm btn-outline-primary p-1 d-inline-flex align-items-center"
-                                                title="View Full Size">
-                                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                            <label><strong>Content Attachment:</strong></label>
+                            
+                            @if($req->information?->reference)
+                                <div class="input-group">
+                                    <input type="text" readonly class="form-control bg-light" value="{{ $req->information->reference }}">
+                                    <div class="input-group-append">
+                                        <a href="{{ $req->information->reference }}" target="_blank" class="btn btn-outline-primary">
+                                            <i class="material-icons" style="font-size: 16px; vertical-align: middle;">open_in_new</i> Open Link
+                                        </a>
+                                    </div>
                                 </div>
                             @else
-                                <div class="p-3 border rounded bg-light text-muted font-italic">
-                                    <i class="material-icons align-middle mr-1" style="font-size: 16px;">info</i>
-                                    No reference images attached.
-                                </div>
+                                <input type="text" readonly class="form-control bg-light" value="No attachment provided">
                             @endif
+                            
                         </div>
                     </div>
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->infromation?->approve }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                        </div>
+                    </div>
+
+                     <div class="row mb-3">
+                        <div class="col-md-12 form-group">
+                            <label><strong>Date Approve :</strong></label>
+                             <div class="d-flex flex-column">
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->diffForHumans() : '' }}
+                                                </small>
+                                            </div>
                         </div>
                     </div>
 

@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('request_id');
             $table->string('size');
-            $table->string('quantity');
+            $table->string('quantity')->nullable();
+            $table->string('type_material');
             $table->timestamps();
         });
     }

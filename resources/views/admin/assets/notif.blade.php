@@ -66,7 +66,7 @@
 
                 @foreach ($layout as $layout)
                     <a href="{{ route('socmed.home') }}"
-                       onclick="markNotificationRead(event, '{{ $layout->id }}', '{{ route('layout.home') }}')"
+                       onclick="markNotificationReadlayout(event, '{{ $layout->id }}', '{{ route('layout.home') }}')"
                        id="notif-item-layout-{{ $layout->id }}"
                        class="list-group-item list-group-item-action unread">
                         <span class="d-flex align-items-center mb-1">
@@ -238,6 +238,30 @@ function markNotificationReadphoto(event, id, redirectUrl) {
 
     // Send AJAX request to update the token column
     fetch(`/photography/mark-read/${id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            // Redirect user to the destination page
+            window.location.href = redirectUrl;
+        }
+    })
+    .catch(error => {
+        console.error('Error updating notification:', error);
+        window.location.href = redirectUrl; // Redirect anyway even if fetch fails
+    });
+}
+
+function markNotificationReadlayout(event, id, redirectUrl) {
+    event.preventDefault(); // Stop instant navigation
+
+    // Send AJAX request to update the token column
+    fetch(`/layoutservices/mark-read/${id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

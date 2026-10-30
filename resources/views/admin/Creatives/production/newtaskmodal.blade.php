@@ -221,8 +221,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="quantity" class="font-weight-semibold">
-                                Quantity
-                                <span class="text-danger">*</span>
+                                Quantity (optional)
                             </label>
 
                             <input type="number"
@@ -230,10 +229,26 @@
                                 id="quantity"
                                 name="quantity"
                                 placeholder="Enter the quantity"
-                                required
                                 min="1">
                         </div>
                     </div>  
+
+                     <!-- Section -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="type_material" class="font-weight-semibold">
+                            Type of Material
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input type="text"
+                                class="form-control"
+                                id="type_material"
+                                name="type_material"
+                                placeholder="Enter the Type of Material"
+                                >
+                    </div>
+                </div>
 
                 <!-- event -->
                     <div class="col-12">

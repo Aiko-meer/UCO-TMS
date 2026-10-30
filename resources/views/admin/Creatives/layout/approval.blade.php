@@ -22,7 +22,7 @@
                 <div class="modal-body px-4 py-4">
                     <!-- Read-only Email -->
                     <div class="form-group mb-3">
-                        <label class="font-weight-semibold small text-muted">Student Email Address:</label>
+                        <label class="font-weight-semibold small text-muted">Email Address:</label>
                         <input type="email" class="form-control bg-light" value="{{ $req->email }}" readonly>
                     </div>
 
@@ -37,9 +37,11 @@
                                   rows="6" 
                                   placeholder="">Good day!
 
-We are pleased to inform you that your layout request has been approved. 
+We would like to inform you that your requested task has been completed and is now ready for your review and approval.
 
-Thank you for your patience, understanding, and cooperation. If you have any questions or concerns, please feel free to contact the UCO Team.
+Kindly check the completed output and let us know if it meets your expectations or if any revisions are needed.
+
+Thank you for your cooperation. Should you have any questions or concerns, please feel free to contact the UCO Team.
 
 Best regards,
 UCO Team</textarea>
@@ -86,7 +88,7 @@ UCO Team</textarea>
     // Parameters mapped to your EmailJS Template variables
     const templateParams = {
         to_email: studentEmail,
-        to_title: 'Layout Request Approved',
+        to_title: 'Completed Task – For Your Review and Approval',
         to_name: studentName,
         custom_message: customMessage || 'Your request has been approved.',
         drive_link: driveLink || 'No link provided.'

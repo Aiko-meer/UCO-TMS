@@ -126,10 +126,24 @@
                         </div>
                     </div>
 
-                     <div class="row mb-3">
+                    <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
                             <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                        </div>
+                    </div>
+
+                     <div class="row mb-3">
+                        <div class="col-md-12 form-group">
+                            <label><strong>Date Approve :</strong></label>
+                             <div class="d-flex flex-column">
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->diffForHumans() : '' }}
+                                                </small>
+                                            </div>
                         </div>
                     </div>
 
@@ -163,13 +177,14 @@
                                     @elseif($req->information->status == 1) Approve
                                     @elseif($req->information->status == 2) in progress
                                     @elseif($req->information->status == 3) Rejected
-                                    @else {{ $req->information->status }}
+                                    @elseif($req->information->status == 4) For Approval
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>
                                 <option value="2">in progress</option>
                                 <option value="0">Pending</option>
                                 <option value="3">Rejected</option>
+                                <option value="4">For Approval</option>
                             </select>
                         </div>
                     </div>

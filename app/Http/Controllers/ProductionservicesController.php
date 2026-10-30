@@ -78,7 +78,7 @@ class ProductionservicesController extends Controller
         $month = request('month', date('m')); // Defaults to current month if not selected
          $archived = Publishing_requests::with('information')
             ->whereHas('information', function ($query) use ($year, $month) {
-                $query->where('status', 2)
+                $query->whereIn('status', [2, 4])
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month);
             })
@@ -90,7 +90,7 @@ class ProductionservicesController extends Controller
             // 2. Get counts for each status
         // If 'status' is inside the related 'information' table:
             $inProgressCount = Publishing_requests::whereHas('information', function($q) {
-                    $q->where('status', 2)
+                    $q->whereIn('status', [2, 4])
                     ->where('specification', 'production');
                 })->count();
 
@@ -165,7 +165,8 @@ class ProductionservicesController extends Controller
             'category_sod' => 'string',
             'date_needed_socmed' => 'nullable|string',
             'size' => 'required|string',
-            'quantity' => 'required|string'
+            'quantity' => 'nullable|string',
+            'type_material' => 'nullable|string'
 
         ]);
 
@@ -204,6 +205,7 @@ class ProductionservicesController extends Controller
                 'request_id' => $randomRequestId, // Links both tables together
                 'size' => $validatedData['size'],
                 'quantity' => $validatedData['quantity'],
+                'type_material' => $validatedData['type_material']
             ]);
 
         });
@@ -234,6 +236,13 @@ class ProductionservicesController extends Controller
                 'status' => $request->input('status'),
                 'produce' => $request->input('produce'),
             ]);
+
+            // If status selected is 1, include the approval date
+                if ($request->input('status') == 1) {
+                    $updateData['date_approved'] = now(); // or date('Y-m-d H:i:s')
+                }else{
+                    $updateData['date_approved'] = null;
+                }
         });
 
         return redirect()->back()->with('success', 'Request updated successfully!');
