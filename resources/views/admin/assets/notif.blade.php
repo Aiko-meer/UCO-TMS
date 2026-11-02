@@ -6,12 +6,12 @@
             data-caret="false">
         <i class="material-icons">notifications</i>
             
-        <span class="badge badge-notifications badge-accent">{{$totalNotifications}}</span>
+       <span class="badge badge-notifications badge-accent" id="notif-badge">{{ $totalNotifications }}</span>
     </button>
     <div class="dropdown-menu dropdown-menu-right">
         <div data-perfect-scrollbar class="position-relative">
             <div class="dropdown-header"><strong>System notifications</strong></div>
-            <div class="list-group list-group-flush mb-0">
+          <div class="list-group list-group-flush mb-0" id="notif-list">
                 
                 <!-- Loop 1: Social Media Requests -->
                 @foreach ($socmed as $soc)
@@ -280,4 +280,35 @@ function markNotificationReadlayout(event, id, redirectUrl) {
         window.location.href = redirectUrl; // Redirect anyway even if fetch fails
     });
 }
+
+(function () {
+    function refreshNotifications() {
+        if (document.hidden) return;
+
+        fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.text())
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            // Badge number: always update
+            const badge = document.getElementById('notif-badge');
+            const newBadge = doc.getElementById('notif-badge');
+            if (badge && newBadge) badge.textContent = newBadge.textContent;
+
+            // List: only update while the dropdown is closed,
+            // so items don't jump under the cursor
+            const menu = document.querySelector('.dropdown-notifications .dropdown-menu');
+            const list = document.getElementById('notif-list');
+            const newList = doc.getElementById('notif-list');
+            if (list && newList && !(menu && menu.classList.contains('show'))) {
+                list.innerHTML = newList.innerHTML;
+            }
+        })
+        .catch(err => console.error('Notification refresh failed:', err));
+    }
+
+    setInterval(refreshNotifications, 10000);
+})();
 </script>

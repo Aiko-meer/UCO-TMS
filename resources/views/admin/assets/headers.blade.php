@@ -53,5 +53,19 @@
         <link rel="stylesheet"
               href="assets/css/sweetalert.css">
      @livewireStyles
-
+  <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.4.0/dist/web/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
+<script>
+    window.Pusher = Pusher;
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: '{{ config('reverb.apps.apps.0.key') }}',
+        cluster: 'mt1',                       // required by the client, ignored by Reverb
+        wsHost: window.location.hostname,
+        wsPort: {{ env('REVERB_PORT', 8080) }},
+        wssPort: {{ env('REVERB_PORT', 8080) }},
+        forceTLS: false,
+        enabledTransports: ['ws', 'wss'],
+    });
+</script>
     </head>

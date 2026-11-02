@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Livewire\Component;
+use App\Events\RequestsUpdated;
+
+
 
 class LayoutservicesController extends Controller
 {
@@ -101,12 +104,12 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                                 })->count();
 
             // Inside your controller method:
-        $year = request('year', date('Y')); // Defaults to current year if not selected
-        $month = request('month', date('m')); // Defaults to current month if not selected
+        $year = request('year');
+        $month = request('month');
 
        $archived = Publishing_requests::with('information')
         ->whereHas('information', function ($query) use ($year, $month) {
-            $query->whereIn('status', [2, 4]); // Adjust statuses as needed
+            $query->whereIn('status', [1, 4]); // Adjust statuses as needed
             
             if ($year) {
                 $query->whereYear('created_at', $year);
@@ -235,10 +238,12 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
         });
  try {
    DB::commit(); // Finalize all inserts if everything succeeds
+   event(new RequestsUpdated());
     return redirect()->back()->with('success', 'Request saved successfully!');
 
 } catch (\Exception $e) {
     DB::rollBack(); // Undo any partial database inserts if an error occurs
+    event(new RequestsUpdated());
     return redirect()->back()->with('error', 'Failed to save: ' . $e->getMessage());
 }
   } 
@@ -271,7 +276,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                 // Perform the update once with all applicable fields
                 $req->update($updateData);
             });
-
+            event(new RequestsUpdated());
             return redirect()->back()->with('success', 'Request updated successfully!');
         }
 
@@ -283,6 +288,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             $req->status = 4; // Approved / Sent
             $req->save();
 
+            event(new RequestsUpdated());
             return response()->json([
                 'success' => true,
                 'message' => 'Status updated successfully'
@@ -296,6 +302,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             $softCopy->date_approved = null;
             $softCopy->save();
 
+            event(new RequestsUpdated());
             return response()->json(['success' => true]);
         }
 
@@ -305,6 +312,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             $socmed->token = '1'; // or 1 depending on your column type
             $socmed->save();
 
+            event(new RequestsUpdated());
             return response()->json(['success' => true]);
         }
 
@@ -336,6 +344,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             ]);
             
             // Or if you are redirecting back to a dashboard view:
+            event(new RequestsUpdated());
              return redirect()->back()->with('success', 'Request deleted successfully.');
         }
 }

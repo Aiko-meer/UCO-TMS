@@ -95,10 +95,9 @@
         <tbody class="list"
                                        id="projects">
                                 @foreach($archived as $req)
-                                @if ($req->information->status == 2)
-                                    <!-- Added data attributes for exact YYYY-MM matching -->
-                <tr data-month="{{ $req->created_at ? \Carbon\Carbon::parse($req->created_at)->format('m') : '' }}"
-                    data-year="{{ $req->created_at ? \Carbon\Carbon::parse($req->created_at)->format('Y') : '' }}">
+                                @if ($req->socmed?->status == 2)
+                                <tr data-month="{{ $req->socmed?->created_at?->format('m') }}"
+                                    data-year="{{ $req->socmed?->created_at?->format('Y') }}">
 
                                         <td>
 
@@ -134,26 +133,26 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->socmed?->purpose ?? 'No Data' }}</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                             </div>
                                         </td>
 
                                          <td>
                                             <div class="d-flex flex-column">
-                                                 @if ($req->information->status == 0)
+                                                 @if ($req->socmed->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 1)
+                                                 @if ($req->socmed->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
-                                                 @if ($req->information->status == 2)
+                                                 @if ($req->socmed->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->information->status == 3)
+                                                @if ($req->socmed->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
@@ -163,21 +162,21 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                 <!-- Hidden or separated text value specifically for List.js search matching the month -->
-                                                <span class="d-none js-lists-values-date">{{ $req->information?->created_at?->format('F') }}</span>
+                                                <span class="d-none js-lists-values-date">{{ $req->socmed?->created_at?->format('F') }}</span>
                                                 
                                                 <!-- Visible date displayed to the user -->
-                                                <small><strong>{{ $req->information?->created_at?->format('M d, Y h:i A') }}</strong></small>
-                                                <small class="text-50">{{ $req->information?->created_at?->diffForHumans() }}</small>
+                                                <small><strong>{{ $req->socmed?->created_at?->format('M d, Y h:i A') }}</strong></small>
+                                                <small class="text-50">{{ $req->socmed?->created_at?->diffForHumans() }}</small>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->socmed?->date_needed ? \Carbon\Carbon::parse($req->socmed->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                    {{ $req->socmed?->date_needed ? \Carbon\Carbon::parse($req->socmed->date_needed)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>
@@ -210,34 +209,63 @@
                                 @endforeach
                                 </tbody>
     </table>
+       <div class="card-footer p-8pt">
+                            <ul class="pagination justify-content-start pagination-xsm m-0">
+                                <!-- Previous Page Link -->
+                                <li class="page-item {{ $monthpagi->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $monthpagi->previousPageUrl() ?? '#' }}" aria-label="Previous">
+                                        <span aria-hidden="true" class="material-icons">chevron_left</span>
+                                        <span>Prev</span>
+                                    </a>
+                                </li>
+
+                                <!-- Page Dropdown -->
+                                <li class="page-item dropdown">
+                                    <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
+                                        <span>{{ $monthpagi->currentPage() }}</span>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @foreach ($monthpagi->getUrlRange(1, $monthpagi->lastPage()) as $page => $url)
+                                            <a href="{{ $url }}" class="dropdown-item {{ $page == $monthpagi->currentPage() ? 'active' : '' }}">
+                                                {{ $page }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </li>
+
+                                <!-- Next Page Link -->
+                                <li class="page-item {{ $monthpagi->onLastPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $monthpagi->nextPageUrl() ?? '#' }}" aria-label="Next">
+                                        <span>Next</span>
+                                        <span aria-hidden="true" class="material-icons">chevron_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 </div>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const monthSelect = document.getElementById('filter-month');
-    const yearSelect = document.getElementById('filter-year');
-    const rows = document.querySelectorAll('#projects tr');
+    const yearSelect  = document.getElementById('filter-year');
+    if (!monthSelect || !yearSelect) return;
 
-    function filterTable() {
-        const selectedMonth = monthSelect.value;
-        const selectedYear = yearSelect.value;
+    // Only touch rows inside this tab, not other tabs
+    const scope = monthSelect.closest('.tab-pane') || document;
 
-        rows.forEach(row => {
-            const rowMonth = row.getAttribute('data-month');
-            const rowYear = row.getAttribute('data-year');
+    // Global, so the live refresh can call it after every update
+    window.applyArchiveFilter = function () {
+        const m = monthSelect.value;
+        const y = yearSelect.value;
 
-            let matchesMonth = !selectedMonth || rowMonth === selectedMonth;
-            let matchesYear = !selectedYear || rowYear === selectedYear;
-
-            if (matchesMonth && matchesYear) {
-                row.style.display = ""; // Show row
-            } else {
-                row.style.display = "none"; // Hide row
-            }
+        scope.querySelectorAll('tbody tr').forEach(function (row) {
+            const okMonth = !m || row.dataset.month === m;
+            const okYear  = !y || row.dataset.year === y;
+            row.style.display = (okMonth && okYear) ? '' : 'none';
         });
-    }
+    };
 
-    monthSelect.addEventListener('change', filterTable);
-    yearSelect.addEventListener('change', filterTable);
+    monthSelect.addEventListener('change', window.applyArchiveFilter);
+    yearSelect.addEventListener('change', window.applyArchiveFilter);
 });
 </script>  
                                                            <script>
@@ -248,4 +276,4 @@ function openDeleteModal(actionUrl) {
     // Show the Bootstrap modal
     $('#deleteConfirmModal').modal('show');
 }
-</script>                 
+</script>            

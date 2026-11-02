@@ -14,19 +14,19 @@
                 </div>
                 
                 <div class="modal-body text-left">
-                     <!-- Requester Information -->
+                     <!-- Requester socmed -->
                     <div class="col-12 mb-4">
                         <h6 class="text-uppercase font-weight-bold mb-1">
-                            Requester Information
+                            Requester socmed
                         </h6>
                         <p class="text-muted small mb-0">
-                            Please provide your personal and department information.
+                            Please provide your personal and department socmed.
                         </p>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 form-group">
                             <label><strong>Full Name:</strong></label>
-                            <input type="text"  class="form-control" value="{{ $req->fullname }}">
+                            <input type="text"  class="form-control" value="{{ $req->f_name }} {{ $req->l_name }} {{$req->middle}}">
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Email:</strong></label>
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Date Needed:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->socmed?->date_needed ? \Carbon\Carbon::parse($req->socmed->date_needed)->format('M d, Y') : 'N/A' }}">
                         </div>
                     </div>
 
@@ -64,35 +64,35 @@
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Purpose:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->purpose }}</textarea>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->socmed?->purpose }}</textarea>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Specification:</strong></label>
-                             <input type="text" readonly  class="form-control" value="{{ $req->information?->specification }}">
+                             <input type="text" readonly  class="form-control" value="{{ $req->socmed?->specification }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Category:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->category }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->socmed?->category }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Section:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->section }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->socmed?->section }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Content Information:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->content_information }}</textarea>
+                            <label><strong>Content socmed:</strong></label>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->socmed?->content_information }}</textarea>
                         </div>
                     </div>
 
@@ -103,12 +103,12 @@
                                 Album Photo Attachment
                             </label>
 
-                            @if(!empty($req->information->album_photo))
+                            @if(!empty($req->socmed->album_photo))
                                 <!-- Clean Professional Attachment Card -->
                                 <div class="d-flex align-items-center p-3 border rounded bg-light">
                                     <!-- Thumbnail Preview -->
                                     <div class="mr-3">
-                                        <img src="{{ asset(json_decode($req->information->album_photo) ?? $req->information->album_photo) }}" 
+                                        <img src="{{ asset(json_decode($req->socmed->album_photo) ?? $req->socmed->album_photo) }}" 
                                             alt="Album Photo" 
                                             class="rounded border shadow-sm" 
                                             style="width: 64px; height: 64px; object-fit: cover;">
@@ -117,14 +117,14 @@
                                     <!-- File Info -->
                                     <div class="flex-grow-1">
                                         <span class="d-block font-weight-semibold text-dark">
-                                            {{ basename(json_decode($req->information->album_photo) ?? $req->information->album_photo) }}
+                                            {{ basename(json_decode($req->socmed->album_photo) ?? $req->socmed->album_photo) }}
                                         </span>
                                         <small class="text-muted">Uploaded Image File</small>
                                     </div>
 
                                     <!-- Action Buttons -->
                                     <div>
-                                        <a href="{{ asset(json_decode($req->information->album_photo) ?? $req->album_photo) }}" 
+                                        <a href="{{ asset(json_decode($req->socmed->album_photo) ?? $req->album_photo) }}" 
                                         target="_blank" 
                                         class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
                                             <i class="material-icons mr-1" style="font-size: 16px;">visibility</i> View Full Size
@@ -146,7 +146,7 @@
                             <label><strong>Content Banner:</strong></label>
                             
                                  @php
-                                    $rawAttachment = $req->information?->content_attachement;
+                                    $rawAttachment = $req->socmed?->content_attachement;
                                     
                                     // If it's saved as a JSON string (e.g. "https:\/\/..."), decode it back to a plain string
                                     $decodedLink = json_decode($rawAttachment, true);
@@ -184,7 +184,7 @@
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->socmed?->approve }}">
                         </div>
                     </div>
 
@@ -192,14 +192,14 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Produce:</strong></label>
                             
-                            @if(empty($req->information?->produce))
+                            @if(empty($req->socmed?->produce))
                                 <!-- Show label when produce is empty -->
                                 <label for="">Once Creative team Done with the layout this will be updated</label>
                             @else
                                 <!-- Show read-only input text box handling both user or requestor -->
                                 <input type="text" readonly class="form-control" value="{{ 
-                                    $req->information?->user?->fullname 
-                                    ?? $req->information?->produce 
+                                    $req->socmed?->user?->fullname 
+                                    ?? $req->socmed?->produce 
                                     ?? 'No User Found' 
                                 }}">
                             @endif
@@ -209,11 +209,11 @@
                    <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Published:</strong></label>
-                            @if(empty($req->information?->published))
+                            @if(empty($req->socmed?->published))
                                 <small class="d-block text-muted mb-1">Not yet Posted</small>
                                 <input type="date" name="published" id="published-date-{{ $req->request_id }}" class="form-control">
                             @else
-                                <input type="date" readonly class="form-control" value="{{ \Carbon\Carbon::parse($req->information->published)->format('Y-m-d') }}">
+                                <input type="date" readonly class="form-control" value="{{ \Carbon\Carbon::parse($req->socmed->published)->format('Y-m-d') }}">
                             @endif
                         </div>
                     </div>
@@ -222,12 +222,12 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->information->status }}" disabled selected>
-                                    @if($req->information->status == 0) Pending
-                                    @elseif($req->information->status == 1) Approve
-                                    @elseif($req->information->status == 2) Posted
-                                    @elseif($req->information->status == 3) Rejected
-                                    @else {{ $req->information->status }}
+                               <option value="{{ $req->socmed->status }}" disabled selected>
+                                    @if($req->socmed->status == 0) Pending
+                                    @elseif($req->socmed->status == 1) Approve
+                                    @elseif($req->socmed->status == 2) Posted
+                                    @elseif($req->socmed->status == 3) Rejected
+                                    @else {{ $req->socmed->status }}
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>

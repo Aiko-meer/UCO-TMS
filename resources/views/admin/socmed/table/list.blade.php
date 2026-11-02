@@ -61,7 +61,7 @@
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
+                                                        <small class="js-lists-values-project"><strong>{{ $req->f_name }} {{ $req->l_name }}</strong></small>
                                                         <a href="mailto:{{$req->email}}">{{$req->email}}</a>
                                                     </div>
                                                 </div>
@@ -88,26 +88,26 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->socmed?->purpose ?? 'No Data' }}</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                               @if ($req->information->status == 0)
+                                               @if ($req->socmed->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 1)
+                                                 @if ($req->socmed->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
-                                                 @if ($req->information->status == 2)
+                                                 @if ($req->socmed->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->information->status == 3)
+                                                @if ($req->socmed->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
@@ -117,10 +117,10 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->created_at ? \Carbon\Carbon::parse($req->information->created_at)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->socmed?->created_at ? \Carbon\Carbon::parse($req->socmed->created_at)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->created_at ? \Carbon\Carbon::parse($req->information->created_at)->diffForHumans() : '' }}
+                                                    {{ $req->socmed?->created_at ? \Carbon\Carbon::parse($req->socmed->created_at)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>

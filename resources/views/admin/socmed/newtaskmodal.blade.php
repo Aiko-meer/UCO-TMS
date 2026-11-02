@@ -38,22 +38,49 @@
                         </h6>
                     </div>
 
-                    <!-- Full Name -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="full_name" class="font-weight-semibold">
-                                Full Name
-                                <span class="text-danger">*</span>
-                            </label>
+                  <div class="col-12">
+    <div class="custom-control custom-checkbox mb-3">
+        <input type="checkbox" class="custom-control-input" id="req_existing">
+        <label class="custom-control-label" for="req_existing">I am an existing requestor</label>
+    </div>
 
-                            <input type="text"
-                                class="form-control"
-                                id="full_name"
-                                name="full_name"
-                                placeholder="Enter your full name"
-                                required>
-                        </div>
-                    </div>
+    <div class="form-group d-none" id="req_existing_wrap">
+        <label class="font-weight-semibold">Select your name <span class="text-danger">*</span></label>
+        <select name="requestor_id" id="req_select" class="form-control" disabled>
+            <option value="">-- Select --</option>
+            @foreach($requestors as $r)
+                <option value="{{ $r->id }}"
+                        data-f="{{ $r->f_name }}"
+                        data-m="{{ $r->middle }}"
+                        data-l="{{ $r->l_name }}"
+                        data-email="{{ $r->email }}">
+                    {{ $r->l_name }}, {{ $r->f_name }} {{ $r->middle }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="form-group">
+        <label for="req_f_name" class="font-weight-semibold">First name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="req_f_name" name="f_name" placeholder="Enter first name" required>
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="form-group">
+        <label for="req_m_name" class="font-weight-semibold">Middle name</label>
+        <input type="text" class="form-control" id="req_m_name" name="middle" placeholder="Enter middle name">
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="form-group">
+        <label for="req_l_name" class="font-weight-semibold">Last name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="req_l_name" name="l_name" placeholder="Enter last name" required>
+    </div>
+</div>
 
                     <!-- Department -->
                     <div class="col-md-6">
@@ -459,6 +486,47 @@ document.addEventListener("DOMContentLoaded", function() {
             albumInput.value = ''; // Clear selected files if they switch away from Album
         }
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const chk    = document.getElementById('req_existing');
+    const wrap   = document.getElementById('req_existing_wrap');
+    const select = document.getElementById('req_select');
+    const f = document.getElementById('req_f_name');
+    const m = document.getElementById('req_m_name');
+    const l = document.getElementById('req_l_name');
+    const fields = [f, m, l];
+
+    function setLocked(locked) {
+        fields.forEach(el => { el.readOnly = locked; });
+    }
+
+    function clearFields() {
+        fields.forEach(el => { el.value = ''; });
+    }
+
+    chk.addEventListener('change', function () {
+        clearFields();
+        select.value = '';
+        if (chk.checked) {
+            wrap.classList.remove('d-none');
+            select.disabled = false;   // only submitted when checked
+            select.required = true;
+            setLocked(true);
+        } else {
+            wrap.classList.add('d-none');
+            select.disabled = true;
+            select.required = false;
+            setLocked(false);
+        }
+    });
+
+    select.addEventListener('change', function () {
+        const opt = select.options[select.selectedIndex];
+        f.value = opt.dataset.f || '';
+        m.value = opt.dataset.m || '';
+        l.value = opt.dataset.l || '';
+    });
+});
 </script>
                         <!-- Approved -->
                 <div class="col-12">

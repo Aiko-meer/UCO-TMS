@@ -41,15 +41,46 @@
                     <!-- Full Name -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="full_name" class="font-weight-semibold">
-                                Full Name
+                            <label for="first_name" class="font-weight-semibold">
+                                First name
                                 <span class="text-danger">*</span>
                             </label>
 
                             <input type="text"
                                 class="form-control"
-                                id="full_name"
-                                name="full_name"
+                                id="first_name"
+                                name="f_name"
+                                placeholder="Enter your full name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="last_name" class="font-weight-semibold">
+                                Last name
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="last_name"
+                                name="l_name"
+                                placeholder="Enter your full name"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="middle" class="font-weight-semibold">
+                                Middle
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="middle"
+                                name="middle"
                                 placeholder="Enter your full name"
                                 required>
                         </div>
@@ -67,9 +98,7 @@
                                     name="department"
                                     class="form-control"
                                     required>
-                                 @foreach($departments as $dep)
-                                 <option value="{{$dep->code}}">{{$dep->name}}</option>
-                                 @endforeach
+                                 <option value="uco">University Communication Office</option>
                             </select>
                         </div>
                     </div>

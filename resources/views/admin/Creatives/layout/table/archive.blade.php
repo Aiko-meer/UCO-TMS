@@ -1,9 +1,5 @@
                                                                      
-<div class="table-responsive"
-     data-toggle="lists"
-     data-lists-sort-by="js-lists-values-date"
-     data-lists-sort-desc="true"
-     data-lists-values='["js-lists-values-lead", "js-lists-values-project", "js-lists-values-status", "js-lists-values-budget", "js-lists-values-date"]'>
+<div class="table-responsive" id="archiveList">
 
     <!-- Card Header with Search & Archive Month/Year Filters -->
     <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -21,7 +17,7 @@
         <!-- Month & Year Archive Filters -->
         <div class="d-flex align-items-center gap-2">
             <!-- Month Filter -->
-            <select id="filter-month" class="form-control form-control-sm" style="width: 140px;">
+            <select class="form-control form-control-sm filter-month" style="width: 140px;">
                 <option value="">All Months</option>
                 <option value="01">January</option>
                 <option value="02">February</option>
@@ -38,7 +34,7 @@
             </select>
 
             <!-- Year Filter -->
-            <select id="filter-year" class="form-control form-control-sm" style="width: 110px;">
+         <select class="form-control form-control-sm filter-year" style="width: 110px;">
                 <option value="">All Years</option>
                 <!-- Dynamically generate past 5 years or list them manually -->
                 @php
@@ -201,31 +197,81 @@
     </table>
 </div>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const monthSelect = document.getElementById('filter-month');
-    const yearSelect = document.getElementById('filter-year');
-    const rows = document.querySelectorAll('#projects tr');
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.archive-wrap').forEach(function (wrap) {
+        const monthSelect = wrap.querySelector('.filter-month');
+        const yearSelect  = wrap.querySelector('.filter-year');
+        const searchInput = wrap.querySelector('.search');
 
-    function filterTable() {
-        const selectedMonth = monthSelect.value;
-        const selectedYear = yearSelect.value;
+        function filterTable() {
+            const m = monthSelect.value;
+            const y = yearSelect.value;
 
-        rows.forEach(row => {
-            const rowMonth = row.getAttribute('data-month');
-            const rowYear = row.getAttribute('data-year');
+            wrap.querySelectorAll('tbody.list tr').forEach(function (row) {
+                const okMonth = !m || row.dataset.month === m;
+                const okYear  = !y || row.dataset.year === y;
+                row.style.display = (okMonth && okYear) ? '' : 'none';
+            });
+        }
 
-            let matchesMonth = !selectedMonth || rowMonth === selectedMonth;
-            let matchesYear = !selectedYear || rowYear === selectedYear;
+        monthSelect.addEventListener('change', filterTable);
+        yearSelect.addEventListener('change', filterTable);
 
-            if (matchesMonth && matchesYear) {
-                row.style.display = ""; // Show row
-            } else {
-                row.style.display = "none"; // Hide row
+        // Re-apply after List.js re-renders on search
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function () {
+                setTimeout(filterTable, 50);
+            });
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+
+    function doRefresh() {
+        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
+
+        fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.text())
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            // 1. Update table rows in every tab
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                const newPane = doc.getElementById(pane.id);
+                if (!newPane) return;
+                const newBodies = newPane.querySelectorAll('tbody');
+                pane.querySelectorAll('tbody').forEach((body, i) => {
+                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
+                });
+            });
+
+            // 2. Update per-request modals
+            const oldModals = document.getElementById('request-modals');
+            const newModals = doc.getElementById('request-modals');
+            if (oldModals && newModals && !document.querySelector('.modal.show')) {
+                oldModals.innerHTML = newModals.innerHTML;
             }
-        });
+
+            // 3. Re-apply month/year filter
+            if (window.applyArchiveFilter) window.applyArchiveFilter();
+
+            // 4. Counters
+            ['count-active', 'count-archive', 'count-month', 'count-total'].forEach(id => {
+                const el = document.getElementById(id);
+                const newEl = doc.getElementById(id);
+                if (el && newEl) el.textContent = newEl.textContent;
+            });
+        })
+        .catch(err => console.error('Dashboard refresh failed:', err));
     }
 
-    monthSelect.addEventListener('change', filterTable);
-    yearSelect.addEventListener('change', filterTable);
+    // Auto refresh every 10 seconds
+    setInterval(function () {
+        if (document.hidden) return;
+        doRefresh();
+    }, 10000);
+
 });
 </script>                 

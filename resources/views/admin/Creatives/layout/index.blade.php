@@ -232,53 +232,64 @@
             });
         });
     });
-</script>  
- <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    setInterval(function() {
-        if (document.hidden) return;
 
-        // Find which tab is currently active
-        let activeTabPane = document.querySelector('.tab-pane.active, .tab-pane.show.active');
-        if (!activeTabPane) return;
+   document.addEventListener("DOMContentLoaded", function () {
+    let timer = null;
 
-        let activeTabId = activeTabPane.getAttribute('id'); // e.g., 'active', 'month', 'list', 'archive'
+    function doRefresh() {
+        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
 
         fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(response => response.text())
+        .then(r => r.text())
         .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            
-            // 1. Update the active tab's table content
-            let newPane = doc.querySelector(`#${activeTabId}`);
-            if (newPane) {
-                activeTabPane.innerHTML = newPane.innerHTML;
+            const doc = new DOMParser().parseFromString(html, 'text/html');
 
-                // If List.js is running on the archive tab, trigger a resize/refresh event
-                if (activeTabId === 'archive') {
-                    window.dispatchEvent(new Event('resize'));
-                }
+            // 1. Update table rows in every tab
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                const newPane = doc.getElementById(pane.id);
+                if (!newPane) return;
+                const newBodies = newPane.querySelectorAll('tbody');
+                pane.querySelectorAll('tbody').forEach((body, i) => {
+                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
+                });
+            });
+
+            // 2. Update per-request modals so new rows' buttons work
+            const oldModals = document.getElementById('request-modals');
+            const newModals = doc.getElementById('request-modals');
+            if (oldModals && newModals && !document.querySelector('.modal.show')) {
+                oldModals.innerHTML = newModals.innerHTML;
             }
 
-            // 2. Update all the counters dynamically
-            const counters = ['count-active', 'count-archive', 'count-month', 'count-total'];
-            counters.forEach(id => {
-                let element = document.getElementById(id);
-                let newElement = doc.getElementById(id);
-                if (element && newElement) {
-                    element.textContent = newElement.textContent;
-                }
+            // 3. Re-apply month/year filter
+            if (window.applyArchiveFilter) window.applyArchiveFilter();
+
+            // 4. Counters
+            ['count-active', 'count-archive', 'count-month', 'count-total'].forEach(id => {
+                const el = document.getElementById(id);
+                const newEl = doc.getElementById(id);
+                if (el && newEl) el.textContent = newEl.textContent;
             });
         })
-        .catch(error => console.error('Error updating dashboard data:', error));
-    }, 5000); // 5000ms = 5 seconds
+        .catch(err => console.error('Dashboard refresh failed:', err));
+    }
+
+    // Debounce: several events in a row cause just one fetch
+    function refreshDashboard() {
+        clearTimeout(timer);
+        timer = setTimeout(doRefresh, 300);
+    }
+
+    if (window.Echo) {
+        window.Echo.channel('requests').listen('.requests.updated', refreshDashboard);
+    } else {
+        console.error('Echo is not loaded, live updates are disabled.');
+    }
 });
-</script>
+</script>  
+
 
                     </div>
 

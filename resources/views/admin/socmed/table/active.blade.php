@@ -59,7 +59,7 @@
                                 <tbody class="list"
                                        id="projects">
                                 @foreach($requests as $req)
-                                @if ($req->information->status == 1)
+                                @if ($req->socmed->status == 1)
                                     <tr>
                                         <td>
 
@@ -95,26 +95,26 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->socmed?->purpose ?? 'No Data' }}</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                 @if ($req->information->status == 0)
+                                                 @if ($req->socmed->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 1)
+                                                 @if ($req->socmed->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">In Progress</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 2)
+                                                 @if ($req->socmed->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->information->status == 3)
+                                                @if ($req->socmed->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
@@ -124,10 +124,10 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->created_at ? \Carbon\Carbon::parse($req->information->created_at)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->socmed?->created_at ? \Carbon\Carbon::parse($req->socmed->created_at)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->created_at ? \Carbon\Carbon::parse($req->information->created_at)->diffForHumans() : '' }}
+                                                    {{ $req->socmed?->created_at ? \Carbon\Carbon::parse($req->socmed->created_at)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>
@@ -135,10 +135,10 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->socmed?->date_needed ? \Carbon\Carbon::parse($req->socmed->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                    {{ $req->socmed?->date_needed ? \Carbon\Carbon::parse($req->socmed->date_needed)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>

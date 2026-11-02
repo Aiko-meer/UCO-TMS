@@ -114,28 +114,27 @@
 
                          <div class="card dashboard-area-tabs p-relative o-hidden mb-lg-32pt">
                         <div class="card-header p-0 nav">
-                            <div class="row no-gutters"
-                                 role="tablist">
-                                <div class="col-auto">
-                                    <a href="#active"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="true"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-                                        <span class="h2 mb-0 mr-3">{{$inProgressCount}}</span>
-                                        <span class="flex d-flex flex-column">
-                                            <strong class="card-title">Active</strong>
-                                            <small class="card-subtitle text-50">Ongoing Projects</small>
-                                        </span>
-                                    </a>
-                                </div>
+                           <div class="row no-gutters" role="tablist">
+    <div class="col-auto">
+        <a href="#active"
+           data-toggle="tab"
+           role="tab"
+           aria-selected="true"
+           class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
+            <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
+            <span class="flex d-flex flex-column">
+                <strong class="card-title">Active</strong>
+                <small class="card-subtitle text-50">Ongoing Projects</small>
+            </span>
+        </a>
+    </div>
                                 <div class="col-auto border-left border-right">
                                     <a href="#archive"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">{{$postedCount}}</span>
+                                    data-toggle="tab"
+                                    role="tab"
+                                    aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-archive">{{ $postedCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">Archived</strong>
                                             <small class="card-subtitle text-50">Projects Data</small>
@@ -144,24 +143,24 @@
                                 </div>
                                 <div class="col-auto border-left border-right">
                                     <a href="#month"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">{{$monthCount}}</span>
+                                    data-toggle="tab"
+                                    role="tab"
+                                    aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-month">{{ $monthCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">This month</strong>
                                             <small class="card-subtitle text-50">Past Projects</small>
                                         </span>
                                     </a>
                                 </div>
-                                 <div class="col-auto border-left border-right">
+                                <div class="col-auto border-left border-right">
                                     <a href="#list"
-                                       data-toggle="tab"
-                                       role="tab"
-                                       aria-selected="false"
-                                       class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
-                                        <span class="h2 mb-0 mr-3">{{$totalCount}}</span>
+                                    data-toggle="tab"
+                                    role="tab"
+                                    aria-selected="false"
+                                    class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start">
+                                        <span class="h2 mb-0 mr-3" id="count-total">{{ $totalCount }}</span>
                                         <span class="flex d-flex flex-column">
                                             <strong class="card-title">List</strong>
                                             <small class="card-subtitle text-50">All Projects</small>
@@ -169,32 +168,72 @@
                                     </a>
                                 </div>
                             </div>
-                            <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 1. Check if there's a saved tab in localStorage and activate it
-        let activeTab = localStorage.getItem('activeDashboardTab');
-        if (activeTab) {
-            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
-            if (tabTrigger) {
-                // Use Bootstrap's tab trigger if available, or fallback to click()
-                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
-                    var tab = new bootstrap.Tab(tabTrigger);
-                    tab.show();
-                } else {
-                    tabTrigger.click();
-                }
-            }
-        }
+                          <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-        // 2. Save the tab href to localStorage whenever a tab is clicked
-        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function (e) {
-                let targetID = this.getAttribute('href');
-                localStorage.setItem('activeDashboardTab', targetID);
-            });
+    // ---- Remember the selected tab ----
+    const saved = localStorage.getItem('activeDashboardTab');
+    if (saved) {
+        const trigger = document.querySelector('a[href="' + saved + '"][data-toggle="tab"]');
+        if (trigger) trigger.click();
+    }
+    document.querySelectorAll('.dashboard-area-tabs__tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            localStorage.setItem('activeDashboardTab', this.getAttribute('href'));
         });
     });
+
+    // ---- Live refresh ----
+    function doRefresh() {
+        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
+
+        fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            cache: 'no-store'
+        })
+        .then(r => r.text())
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                const newPane = doc.getElementById(pane.id);
+                if (!newPane) return;
+                const newBodies = newPane.querySelectorAll('tbody');
+                pane.querySelectorAll('tbody').forEach((body, i) => {
+                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
+                });
+            });
+
+            const oldModals = document.getElementById('request-modals');
+            const newModals = doc.getElementById('request-modals');
+            if (oldModals && newModals) oldModals.innerHTML = newModals.innerHTML;
+
+            if (window.applyArchiveFilter) window.applyArchiveFilter();
+
+            document.querySelectorAll('[id^="count-"]').forEach(el => {
+                const newEl = doc.getElementById(el.id);
+                if (newEl) el.textContent = newEl.textContent;
+            });
+        })
+        .catch(err => console.error('Dashboard refresh failed:', err));
+    }
+
+    let timer = null;
+    function scheduleRefresh() {
+        clearTimeout(timer);
+        timer = setTimeout(doRefresh, 300);
+    }
+
+    if (window.Echo) {
+        window.Echo.channel('requests').listen('.requests.updated', scheduleRefresh);
+    } else {
+        console.error('Echo is not loaded, falling back to polling.');
+    }
+
+    setInterval(function () {
+    if (!document.hidden) doRefresh();
+}, 30000);
+});
 </script>
                         </div>
 
@@ -240,37 +279,6 @@
         </div>
 
     </div>
-   <script>
-    // Real-time auto-refresh interval (e.g., every 5 seconds)
-    setInterval(function() {
-        fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            let newTbody = doc.querySelector('#projects');
-            
-            if (newTbody) {
-                // Keep track of current search value to prevent clearing user input
-                let searchInput = document.querySelector('.search');
-                let searchTerm = searchInput ? searchInput.value : '';
-
-                // Replace table body content with fresh data
-                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
-
-                // Re-trigger List.js search if search was active
-                if (searchTerm && window.List && window.List.lists) {
-                    // List.js handles re-initialization automatically if container matches
-                }
-            }
-        })
-        .catch(error => console.error('Error updating table:', error));
-    }, 5000); // 5000ms = 5 seconds
-</script>
 </div>
         
                     </div>
