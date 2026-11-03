@@ -1,4 +1,4 @@
-<div class="table-responsive"
+<div class="table-responsive" 
                              data-toggle="lists"
                              data-lists-sort-by="js-lists-values-date"
                              data-lists-sort-desc="true"
@@ -95,20 +95,20 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                               @if ($req->socmed->status == 0)
+                                               @if ($req->socmed?->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->socmed->status == 1)
+                                                 @if ($req->socmed?->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
-                                                 @if ($req->socmed->status == 2)
+                                                 @if ($req->socmed?->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->socmed->status == 3)
-                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                @if ($req->socmed?->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Rejected</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
                                             </div>

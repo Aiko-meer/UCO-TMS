@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Date Needed:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->date_needed ? \Carbon\Carbon::parse($req->photo->date_needed)->format('M d, Y') : 'N/A' }}">
                         </div>
                     </div>
 
@@ -60,50 +60,50 @@
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Event</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->event }}</textarea>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->photo?->event }}</textarea>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Purpose of Request</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->purpose_document }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->purpose_document }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6 form-group">
                             <label><strong>Category:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->category }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->category }}">
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Section:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->section }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->section }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6 form-group">
                             <label><strong>Time Start:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->start_time }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->start_time }}">
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Time End:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->end_time }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->end_time }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6 form-group">
                             <label><strong>Venue:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->venue }}</textarea>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->photo?->venue }}</textarea>
                         </div>
                     </div>
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->photo?->approve }}">
                         </div>
                     </div>
 
@@ -111,7 +111,7 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Photographer:</strong></label>
                             
-                            @if(empty($req->information?->produce))
+                            @if(empty($req->photo?->produce))
                                 <!-- Show select dropdown when produce is empty -->
                                <select name="produce" class="form-control" required>
                                     <option value="" disabled selected>Select a user</option>
@@ -121,7 +121,7 @@
                                 </select>
                             @else
                                 <!-- Show read-only input text box when produce already exists -->
-                                 <input type="text" class="form-control" name="produce" value="{{ $req->information?->user?->employee_id  }}" hidden>{{$req->information?->user?->fullname  }}
+                                 <input type="text" class="form-control" name="produce" value="{{ $req->photo?->user?->employee_id  }}" hidden>{{$req->photo?->user?->fullname  }}
                             @endif
                         </div>
                     </div>
@@ -129,12 +129,12 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->information->status }}"  selected>
-                                    @if($req->information->status == 0) Pending
-                                    @elseif($req->information->status == 1) Approve
-                                    @elseif($req->information->status == 2) Posted
-                                    @elseif($req->information->status == 3) Rejected
-                                    @else {{ $req->information->status }}
+                               <option value="{{ $req->photo->status }}"  selected>
+                                    @if($req->photo->status == 0) Pending
+                                    @elseif($req->photo->status == 1) Approve
+                                    @elseif($req->photo->status == 2) Posted
+                                    @elseif($req->photo->status == 3) Rejected
+                                    @else {{ $req->photo->status }}
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>

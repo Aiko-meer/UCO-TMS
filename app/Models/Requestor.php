@@ -23,6 +23,11 @@ class Requestor extends Model
         return $this->hasOne(Socmed_request_information::class, 'request_id','request_id');
     }
 
+    public function photo()
+    {
+        return $this->hasOne(Photo_vid_request_informations::class, 'request_id','request_id');
+    }
+
     public function publishing()
     {
         return $this->hasOne(Publishing_request_informaitons::class, 'request_id','request_id');

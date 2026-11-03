@@ -102,7 +102,7 @@
 
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex d-flex flex-column">
-                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{$req->information->event}}</strong></p>
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{$req->photo->event}}</strong></p>
                                                         </div>
                                                     </div>
 
@@ -113,19 +113,19 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                @if ($req->information->status == 0)
+                                                @if ($req->photo->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 1)
+                                                 @if ($req->photo->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">On progress</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 2)
+                                                 @if ($req->photo->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->information->status == 3)
+                                                @if ($req->photo->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
@@ -134,7 +134,7 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-date"><strong>{{$req->information->venue}}</strong></small>
+                                                <small class="js-lists-values-date"><strong>{{$req->photo->venue}}</strong></small>
                                                 <small class="text-50"></small>
                                             </div>
                                         </td>
@@ -142,10 +142,10 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->photo?->date_needed ? \Carbon\Carbon::parse($req->photo->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                    {{ $req->photo?->date_needed ? \Carbon\Carbon::parse($req->photo->date_needed)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>

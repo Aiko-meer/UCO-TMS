@@ -1,4 +1,5 @@
 <div class="table-responsive"
+                            
                              data-toggle="lists"
                              data-lists-sort-by="js-lists-values-date"
                              data-lists-sort-desc="true"
@@ -206,37 +207,6 @@
                             </ul>
                         </div>
                         </div>
-                        <script>
-    // Real-time auto-refresh interval (e.g., every 5 seconds)
-    setInterval(function() {
-        fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            let newTbody = doc.querySelector('#projects');
-            
-            if (newTbody) {
-                // Keep track of current search value to prevent clearing user input
-                let searchInput = document.querySelector('.search');
-                let searchTerm = searchInput ? searchInput.value : '';
-
-                // Replace table body content with fresh data
-                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
-
-                // Re-trigger List.js search if search was active
-                if (searchTerm && window.List && window.List.lists) {
-                    // List.js handles re-initialization automatically if container matches
-                }
-            }
-        })
-        .catch(error => console.error('Error updating table:', error));
-    }, 5000); // 5000ms = 5 seconds
-</script>
                                                            <script>
 function openDeleteModal(actionUrl) {
     // Set the form action URL dynamically to the specific request route

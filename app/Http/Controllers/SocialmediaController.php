@@ -15,9 +15,11 @@ use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Events\SocmedRequestUpdated;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
+\App\Events\NotificationsUpdated::dispatch();
 class SocialmediaController extends Controller
 {
     //
@@ -54,7 +56,7 @@ class SocialmediaController extends Controller
         $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
     $requests = Requestor::with('socmed')->orderBy('id', 'desc')->get();
     $requestors = Requestor::orderBy('l_name')->get();
-   $actviepagi  = Requestor::with('socmed')->paginate(5, ['f_name'], 'active_page');
+   $actviepagi = Requestor::with('socmed')->paginate(5, ['*'], 'active_page');
     $archivepagi =Requestor::with('socmed')->paginate(10);
     $monthpagi =Requestor::with('socmed')->paginate(10);
     $listpagi =Requestor::with('socmed')->paginate(5);
@@ -220,34 +222,7 @@ class SocialmediaController extends Controller
                 $randomRequestId = Str::random(6);
             } while (Socmed_request::where('request_id', $randomRequestId)->exists());
 
-            $f = trim($validatedData['f_name']);
-$m = trim($validatedData['m_name'] ?? '');
-$l = trim($validatedData['l_name']);
-
-$requestor = Requestor::whereRaw('LOWER(f_name) = ?', [strtolower($f)])
-    ->whereRaw('LOWER(l_name) = ?', [strtolower($l)])
-    ->where(function ($q) use ($m) {
-        $m === ''
-            ? $q->whereNull('m_name')->orWhere('m_name', '')
-            : $q->whereRaw('LOWER(m_name) = ?', [strtolower($m)]);
-    })
-    ->first();
-
-if ($requestor) {
-    // Already exists: increase the counter
-    $requestor->increment('request_count');
-} else {
-    // New person: save with the default user type
-    $requestor = Requestor::create([
-        'f_name'        => $f,
-        'm_name'        => $m ?: null,
-        'l_name'        => $l,
-        'email'         => $validatedData['email'] ?? null,
-        'user_type'     => 'requestor',
-        'request_count' => 1,
-        'request_id' => $randomRequestId,
-    ]);
-}
+        
 
             // 3. Save to the parent table (socmed_requests)
             $socmedRequest = Requestor::create([
@@ -298,6 +273,8 @@ if ($requestor) {
 
        try {
    DB::commit(); // Finalize all inserts if everything succeeds
+   SocmedRequestUpdated::dispatch();
+   
     return redirect()->back()->with('success', 'Request saved successfully!');
 
 } catch (\Exception $e) {
@@ -317,6 +294,8 @@ if ($requestor) {
             'published' => $request->input('published'),
         ]);
 
+        SocmedRequestUpdated::dispatch();
+
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
 
@@ -325,7 +304,7 @@ if ($requestor) {
         $socmed = Requestor::findOrFail($id);
         $socmed->token = '1'; // or 1 depending on your column type
         $socmed->save();
-
+        SocmedRequestUpdated::dispatch();
         return response()->json(['success' => true]);
     }
 
@@ -335,7 +314,7 @@ if ($requestor) {
             DB::transaction(function () use ($request_id) {
                 
                 // 1. Find the main record or fail
-                $socmedRequest = Socmed_request::where('request_id', $request_id)->firstOrFail();
+                $socmedRequest = Requestor::where('request_id', $request_id)->firstOrFail();
                 
                 // 2. Find the information record to retrieve file paths
                 $socmedInfo = Socmed_request_information::where('request_id', $request_id)->first();
@@ -360,7 +339,7 @@ if ($requestor) {
                 // 5. Delete the parent record
                 $socmedRequest->delete();
             });
-
+           SocmedRequestUpdated::dispatch();
             return redirect()->back()->with('success', 'Request and its attachments were deleted successfully!');
 
         } catch (\Exception $e) {

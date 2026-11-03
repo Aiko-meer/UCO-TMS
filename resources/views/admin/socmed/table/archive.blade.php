@@ -1,5 +1,6 @@
                                                                      
 <div class="table-responsive"
+    
      data-toggle="lists"
      data-lists-sort-by="js-lists-values-date"
      data-lists-sort-desc="true"

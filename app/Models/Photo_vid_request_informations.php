@@ -28,7 +28,7 @@ class Photo_vid_request_informations extends Model
 
      public function request()
     {
-        return $this->belongsTo(Photo_vid_requests::class, 'request_id');
+        return $this->belongsTo(Requestor::class, 'request_id', 'request_id');
     }
 
      public function user()

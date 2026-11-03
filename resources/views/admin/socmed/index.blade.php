@@ -112,23 +112,26 @@
                             </div>
                         </div>
 
-                         <div class="card dashboard-area-tabs p-relative o-hidden mb-lg-32pt">
-                        <div class="card-header p-0 nav">
-                           <div class="row no-gutters" role="tablist">
-    <div class="col-auto">
-        <a href="#active"
-           data-toggle="tab"
-           role="tab"
-           aria-selected="true"
-           class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
-            <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
-            <span class="flex d-flex flex-column">
-                <strong class="card-title">Active</strong>
-                <small class="card-subtitle text-50">Ongoing Projects</small>
-            </span>
-        </a>
-    </div>
-                                <div class="col-auto border-left border-right">
+                        <div id="socmed-live">
+    <div class="card dashboard-area-tabs p-relative o-hidden mb-lg-32pt">
+        <div class="card-header p-0 nav">
+            <div class="row no-gutters" role="tablist">
+
+           <div class="col-auto">
+                <a href="#active-table"
+                data-toggle="tab"
+                role="tab"
+                aria-selected="true"
+                class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
+                    <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
+                    <span class="flex d-flex flex-column">
+                        <strong class="card-title">Active</strong>
+                        <small class="card-subtitle text-50">Ongoing Projects</small>
+                    </span>
+                </a>
+            </div>
+
+           <div class="col-auto border-left border-right">
                                     <a href="#archive"
                                     data-toggle="tab"
                                     role="tab"
@@ -140,7 +143,8 @@
                                             <small class="card-subtitle text-50">Projects Data</small>
                                         </span>
                                     </a>
-                                </div>
+                                </div> 
+
                                 <div class="col-auto border-left border-right">
                                     <a href="#month"
                                     data-toggle="tab"
@@ -153,8 +157,9 @@
                                             <small class="card-subtitle text-50">Past Projects</small>
                                         </span>
                                     </a>
-                                </div>
-                                <div class="col-auto border-left border-right">
+                                </div>  
+                                
+                                 <div class="col-auto border-left border-right">
                                     <a href="#list"
                                     data-toggle="tab"
                                     role="tab"
@@ -167,81 +172,14 @@
                                         </span>
                                     </a>
                                 </div>
-                            </div>
-                          <script>
-document.addEventListener("DOMContentLoaded", function () {
+            </div>
+        </div>
+    </div>
 
-    // ---- Remember the selected tab ----
-    const saved = localStorage.getItem('activeDashboardTab');
-    if (saved) {
-        const trigger = document.querySelector('a[href="' + saved + '"][data-toggle="tab"]');
-        if (trigger) trigger.click();
-    }
-    document.querySelectorAll('.dashboard-area-tabs__tab').forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            localStorage.setItem('activeDashboardTab', this.getAttribute('href'));
-        });
-    });
-
-    // ---- Live refresh ----
-    function doRefresh() {
-        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
-
-        fetch(window.location.href, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            cache: 'no-store'
-        })
-        .then(r => r.text())
-        .then(html => {
-            const doc = new DOMParser().parseFromString(html, 'text/html');
-
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                const newPane = doc.getElementById(pane.id);
-                if (!newPane) return;
-                const newBodies = newPane.querySelectorAll('tbody');
-                pane.querySelectorAll('tbody').forEach((body, i) => {
-                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
-                });
-            });
-
-            const oldModals = document.getElementById('request-modals');
-            const newModals = doc.getElementById('request-modals');
-            if (oldModals && newModals) oldModals.innerHTML = newModals.innerHTML;
-
-            if (window.applyArchiveFilter) window.applyArchiveFilter();
-
-            document.querySelectorAll('[id^="count-"]').forEach(el => {
-                const newEl = doc.getElementById(el.id);
-                if (newEl) el.textContent = newEl.textContent;
-            });
-        })
-        .catch(err => console.error('Dashboard refresh failed:', err));
-    }
-
-    let timer = null;
-    function scheduleRefresh() {
-        clearTimeout(timer);
-        timer = setTimeout(doRefresh, 300);
-    }
-
-    if (window.Echo) {
-        window.Echo.channel('requests').listen('.requests.updated', scheduleRefresh);
-    } else {
-        console.error('Echo is not loaded, falling back to polling.');
-    }
-
-    setInterval(function () {
-    if (!document.hidden) doRefresh();
-}, 30000);
-});
-</script>
-                        </div>
-
-                        <div class="tab-content">
-
-    {{-- ACTIVE PROJECTS --}}
+    <div class="tab-content">
+         {{-- ACTIVE PROJECTS --}}
     <div class="tab-pane fade show active"
-         id="active"
+         id="active-table"
          role="tabpanel">
 
         <div class="table-responsive">
@@ -279,10 +217,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
     </div>
+    </div>
 </div>
-        
-                    </div>
-
                     </div>
                 </div>
 
@@ -297,7 +233,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- App Settings FAB -->
          @include ('admin.assets.footer')
-    </body>
+         <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const saved = localStorage.getItem('activeDashboardTab');
+    if (saved) {
+        const trigger = document.querySelector('a[href="' + saved + '"][data-toggle="tab"]');
+        if (trigger) trigger.click();
+    }
+    // delegated, so it still works after the container is refreshed
+    document.addEventListener('click', function (e) {
+        const tab = e.target.closest('.dashboard-area-tabs__tab');
+        if (tab) localStorage.setItem('activeDashboardTab', tab.getAttribute('href'));
+    });
+});
+
+let refreshTimer = null;
+let pendingRefresh = false;
+
+function refreshSocmedTable() {
+    console.log('[socmed] refresh called');
+
+    if (document.querySelector('.modal.show')) {
+        console.log('[socmed] modal open, deferring');
+        pendingRefresh = true;
+        return;
+    }
+    pendingRefresh = false;
+
+    fetch(window.location.href, {
+        cache: 'no-store',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => {
+        console.log('[socmed] fetch status', r.status);
+        if (!r.ok) throw new Error('Server returned ' + r.status);
+        return r.text();
+    })
+    .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const fresh = doc.getElementById('socmed-live');
+        const current = document.getElementById('socmed-live');
+        console.log('[socmed] found containers', !!fresh, !!current);
+        if (!fresh || !current) return;
+
+        const activeHref = current.querySelector('.dashboard-area-tabs__tab.active')?.getAttribute('href');
+        current.innerHTML = fresh.innerHTML;
+        if (activeHref) current.querySelector('a[href="' + activeHref + '"][data-toggle="tab"]')?.click();
+        if (window.domFactory?.handler) domFactory.handler.upgradeAll();
+        console.log('[socmed] table updated');
+    })
+    .catch(err => console.error('[socmed] refresh failed', err));
+}
+
+$(document).on('hidden.bs.modal', '.modal', function () {
+    if (pendingRefresh) refreshSocmedTable();
+});
+
+window.addEventListener('load', function () {
+    window.Echo.channel('admin.socmed').listen('.socmed.updated', () => {
+        console.log('[socmed] event received');
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(refreshSocmedTable, 300);
+    });
+    console.log('[socmed] listener registered');
+});
+</script>
 @if(session('success') || session('error') || $errors->any())
     <script>
         @if(session('success'))
@@ -324,4 +324,5 @@ document.addEventListener("DOMContentLoaded", function () {
         @endif
     </script>
 @endif
+    </body>
 </html>

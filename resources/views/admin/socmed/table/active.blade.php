@@ -1,4 +1,4 @@
-<div class="table-responsive"
+<div class="table-responsive" 
                              data-toggle="lists"
                              data-lists-sort-by="js-lists-values-date"
                              data-lists-sort-desc="true"
@@ -59,7 +59,7 @@
                                 <tbody class="list"
                                        id="projects">
                                 @foreach($requests as $req)
-                                @if ($req->socmed->status == 1)
+                                @if ($req->socmed?->status == 1)
                                     <tr>
                                         <td>
 
@@ -218,5 +218,7 @@ function openDeleteModal(actionUrl) {
     $('#deleteConfirmModal').modal('show');
 }
 </script>
+
+
 
                      

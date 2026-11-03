@@ -281,34 +281,5 @@ function markNotificationReadlayout(event, id, redirectUrl) {
     });
 }
 
-(function () {
-    function refreshNotifications() {
-        if (document.hidden) return;
 
-        fetch(window.location.href, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(r => r.text())
-        .then(html => {
-            const doc = new DOMParser().parseFromString(html, 'text/html');
-
-            // Badge number: always update
-            const badge = document.getElementById('notif-badge');
-            const newBadge = doc.getElementById('notif-badge');
-            if (badge && newBadge) badge.textContent = newBadge.textContent;
-
-            // List: only update while the dropdown is closed,
-            // so items don't jump under the cursor
-            const menu = document.querySelector('.dropdown-notifications .dropdown-menu');
-            const list = document.getElementById('notif-list');
-            const newList = doc.getElementById('notif-list');
-            if (list && newList && !(menu && menu.classList.contains('show'))) {
-                list.innerHTML = newList.innerHTML;
-            }
-        })
-        .catch(err => console.error('Notification refresh failed:', err));
-    }
-
-    setInterval(refreshNotifications, 10000);
-})();
 </script>

@@ -29,7 +29,7 @@ class Socmed_request_information extends Model
 
     public function request()
     {
-        return $this->belongsTo(Socmed_request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Requestor::class, 'request_id', 'request_id');
     }
 
     public function user()

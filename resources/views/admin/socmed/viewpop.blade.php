@@ -222,12 +222,12 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->socmed->status }}" disabled selected>
-                                    @if($req->socmed->status == 0) Pending
-                                    @elseif($req->socmed->status == 1) Approve
-                                    @elseif($req->socmed->status == 2) Posted
-                                    @elseif($req->socmed->status == 3) Rejected
-                                    @else {{ $req->socmed->status }}
+                               <option value="{{ $req->socmed?->status }}" disabled selected>
+                                    @if($req->socmed?->status == 0) Pending
+                                    @elseif($req->socmed?->status == 1) Approve
+                                    @elseif($req->socmed?->status == 2) Posted
+                                    @elseif($req->socmed?->status == 3) Rejected
+                                    @else { $req->socmed?->status }
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>

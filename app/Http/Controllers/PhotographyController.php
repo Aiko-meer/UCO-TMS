@@ -11,34 +11,37 @@ use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
 use App\Models\Publishing_requests;
 use App\Models\Socmed_request;
+use App\Models\Requestor;
+use App\Events\SocmedRequestUpdated;
 use Illuminate\Support\Facades\DB;
 
+\App\Events\NotificationsUpdated::dispatch();
 class PhotographyController extends Controller
 {
     //
     public function dashboard()
     {
-         $socmed = Socmed_request::where('token', '0')->get();
-        $photovid = Photo_vid_requests::where('token', '0')->get();
+         $socmed = Requestor::where('token', '0')->has('socmed')->get();
+        $photovid = Requestor::where('token', '0')->has('photo')->get();
         $softcopy = Soft_copy_requests::where('token', '0')->get();
         $trade = TrademarkRequest::where('token', '0')->get();
-        $layout = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+        $layout = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'layout');
         })
         ->get();
-         $production = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $production = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'production');
         })
         ->get();
-         $uzpr = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpr = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpr');
         })
         ->get();
-         $uzpost = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpost = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpost');
         })
         ->get();
@@ -55,44 +58,44 @@ class PhotographyController extends Controller
     ])
     ->get();
         // Fetches parent records along with their corresponding child information
-       $requests = Photo_vid_requests::with('information')
-    ->whereHas('information', function ($query) {
+       $requests = Requestor::with('photo')
+    ->whereHas('photo', function ($query) {
         $query->whereIn('category', ['photo', 'audio', 'soft copy']);
     })
     ->orderBy('id', 'desc')
     ->get();
         $departments = Departments::all();
-         $actviepagi  = Photo_vid_requests::with('information')->paginate(5, ['fullname'], 'active_page');
-    $archivepagi =Photo_vid_requests::with('information')->paginate(10);
-    $monthpagi =Photo_vid_requests::with('information')->paginate(10);
-    $listpagi =Photo_vid_requests::with('information')->paginate(5);
-    $totalRequests = Photo_vid_requests::count();
+         $actviepagi  = Requestor::with('photo')->paginate(5, ['*'], 'active_page');
+    $archivepagi =Requestor::with('photo')->paginate(10);
+    $monthpagi =Requestor::with('photo')->paginate(10);
+    $listpagi =Requestor::with('photo')->paginate(5);
+    $totalRequests = Requestor::count();
     // 2. Get counts for each status
     // If 'status' is inside the related 'information' table:
-        $inProgressCount = Photo_vid_requests::whereHas('information', function($q) {
+        $inProgressCount = Requestor::whereHas('photo', function($q) {
             $q->where('status', 1); // Change to your actual in-progress status code
         })->count();
 
-        $postedCount = Photo_vid_requests::whereHas('information', function($q) {
+        $postedCount = Requestor::whereHas('photo', function($q) {
             $q->where('status', 2); // Posted status code
         })->count();
 
-        $approvalCount = Photo_vid_requests::whereHas('information', function($q) {
+        $approvalCount = Requestor::whereHas('photo', function($q) {
             $q->where('status', 0); // Change to your actual approval status code (must be unique!)
         })->count();
 
-        $monthCount = Photo_vid_requests::whereHas('information', function($q) {
+        $monthCount = Requestor::whereHas('photo', function($q) {
             $q->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year);
         })->count();
 
-        $totalCount = Photo_vid_requests::count();
+        $totalCount = Requestor::whereHas('photo')->count();
 
          // 3. Calculate percentages safely (avoiding division by zero)
     $inProgressPercentage = $totalRequests > 0 ? round(($inProgressCount / $totalRequests) * 100) : 0;
     $postedPercentage = $totalRequests > 0 ? round(($postedCount / $totalRequests) * 100) : 0;
     $approvalPercentage = $totalRequests > 0 ? round(($approvalCount / $totalRequests) * 100) : 0;
-
+         $requestors = Requestor::orderBy('l_name')->get();
      $month = request('month', date('m')); // Defaults to current month if not selected
      $year = request('year', date('Y')); // Defaults to current year if not selected
         $archived = Photo_vid_requests::with('information')
@@ -127,7 +130,8 @@ class PhotographyController extends Controller
             'uzpr',
             'totalNotifications',
             'softcopy',
-            'trade'
+            'trade',
+            'requestors'
         ));
     }
 
@@ -136,7 +140,9 @@ class PhotographyController extends Controller
          // 1. Validate all form inputs matching your models
         $validatedData = $request->validate([
             'email' => 'required|email',
-            'full_name' => 'required|string',
+            'f_name' => 'required|string',
+            'l_name' => 'required|string',
+            'middle' => 'nullable|string',
             'department' => 'required|string',
             'event' => 'required|string',
             'venue' => 'required|string',
@@ -155,13 +161,15 @@ class PhotographyController extends Controller
          // Generate a unique 6-character random request ID
             do {
                 $randomRequestId = Str::random(6);
-            } while (Photo_vid_requests::where('request_id', $randomRequestId)->exists());
+            } while (Requestor::where('request_id', $randomRequestId)->exists());
 
          // 3. Save to the parent table (socmed_requests)
-            $photoRequest = Photo_vid_requests::create([
+            $photoRequest = Requestor::create([
                 'request_id' => $randomRequestId,
                 'email' => $validatedData['email'],
-                'fullname' => $validatedData['full_name'],
+                'f_name' => $validatedData['f_name'],
+                'l_name' => $validatedData['l_name'],
+                'middle' => $validatedData['middle'],
                 'department' => $validatedData['department'],
                 'token' => '0',
             ]);
@@ -185,6 +193,8 @@ class PhotographyController extends Controller
          });
           try {
    DB::commit(); // Finalize all inserts if everything succeeds
+   SocmedRequestUpdated::dispatch();
+   
     return redirect()->back()->with('success', 'Request saved successfully!');
 
 } catch (\Exception $e) {
@@ -203,7 +213,8 @@ class PhotographyController extends Controller
             'status' => $request->input('status'),
             'produce' => $request->input('produce'),
         ]);
-
+        SocmedRequestUpdated::dispatch();
+   
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
 
@@ -220,7 +231,8 @@ class PhotographyController extends Controller
                 // 3. Delete the parent record
                 $photoRequest->delete();
             });
-
+            SocmedRequestUpdated::dispatch();
+   
             return redirect()->back()->with('success', 'Request deleted successfully!');
 
         } catch (\Exception $e) {
@@ -230,7 +242,7 @@ class PhotographyController extends Controller
 
    public function markAsRead($id)
     {
-        $socmed = Photo_vid_requests::findOrFail($id);
+        $socmed = Requestor::findOrFail($id);
         $socmed->token = '1'; // or 1 depending on your column type
         $socmed->save();
 
