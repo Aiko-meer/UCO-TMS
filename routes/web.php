@@ -11,6 +11,7 @@ use App\Http\Controllers\UzpostController;
 use App\Http\Controllers\UzprController;
 use App\Http\Controllers\SoftcopyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TrademarkRequestController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +36,7 @@ Route::get('/photography/dashboard', [PhotographyController::class, 'dashboard']
 Route::POST('/photography/dashboard/store', [PhotographyController::class, 'store'])->name('photo.store');
 Route::PUT('/photography/dashboard/update/{request_id}', [PhotographyController::class, 'update'])->name('photo.update');
 Route::post('/photography/mark-read/{id}', [PhotographyController::class, 'markAsRead'])->name('photography.markRead');
-Route::delete('/photography/dashboard/deelete/{request_id}', [PhotographyController::class, 'destroy'])->name('photo.destroy');
+Route::delete('/photography/dashboard/delete/{request_id}', [PhotographyController::class, 'destroy'])->name('photo.destroy');
 //video
 Route::get('/videography/dashboard', [VideoController::class, 'dashboard'])->name('video.home');
 
@@ -81,3 +82,13 @@ Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.
 Route::POST('/user/dashboard/store', [UserController::class, 'store'])->name('user.store');
 Route::PUT('/user/dashboard/update/{id}', [UserController::class, 'update'])->name('user.update');
 Route::DELETE('/user/dashboard/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+Route::put('/users/dashboard/user-type/{user}', [UserController::class, 'updateUserType'])->name('users.updateType');
+
+//login
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'authenticate'])->name('login.store');
+});
+
+// Optional: keep the old URL working
+Route::redirect('/admin-login', '/login');

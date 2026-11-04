@@ -252,87 +252,69 @@
         @endif
     </script>
 @endif
- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 1. Check if there's a saved tab in localStorage and activate it
-        let activeTab = localStorage.getItem('activeDashboardTab');
-        if (activeTab) {
-            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
-            if (tabTrigger) {
-                // Use Bootstrap's tab trigger if available, or fallback to click()
-                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
-                    var tab = new bootstrap.Tab(tabTrigger);
-                    tab.show();
-                } else {
-                    tabTrigger.click();
-                }
-            }
-        }
-
-        // 2. Save the tab href to localStorage whenever a tab is clicked
-        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function (e) {
-                let targetID = this.getAttribute('href');
-                localStorage.setItem('activeDashboardTab', targetID);
-            });
-        });
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const saved = localStorage.getItem('activeDashboardTab');
+    if (saved) {
+        const trigger = document.querySelector('a[href="' + saved + '"][data-toggle="tab"]');
+        if (trigger) trigger.click();
+    }
+    // delegated, so it still works after the container is refreshed
+    document.addEventListener('click', function (e) {
+        const tab = e.target.closest('.dashboard-area-tabs__tab');
+        if (tab) localStorage.setItem('activeDashboardTab', tab.getAttribute('href'));
     });
+});
 
-   document.addEventListener("DOMContentLoaded", function () {
-    let timer = null;
+let refreshTimer = null;
+let pendingRefresh = false;
 
-    function doRefresh() {
-        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
+function refreshSocmedTable() {
+    console.log('[socmed] refresh called');
 
-        fetch(window.location.href, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(r => r.text())
-        .then(html => {
-            const doc = new DOMParser().parseFromString(html, 'text/html');
-
-            // 1. Update table rows in every tab
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                const newPane = doc.getElementById(pane.id);
-                if (!newPane) return;
-                const newBodies = newPane.querySelectorAll('tbody');
-                pane.querySelectorAll('tbody').forEach((body, i) => {
-                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
-                });
-            });
-
-            // 2. Update per-request modals so new rows' buttons work
-            const oldModals = document.getElementById('request-modals');
-            const newModals = doc.getElementById('request-modals');
-            if (oldModals && newModals && !document.querySelector('.modal.show')) {
-                oldModals.innerHTML = newModals.innerHTML;
-            }
-
-            // 3. Re-apply month/year filter
-            if (window.applyArchiveFilter) window.applyArchiveFilter();
-
-            // 4. Counters
-            ['count-active', 'count-archive', 'count-month', 'count-total'].forEach(id => {
-                const el = document.getElementById(id);
-                const newEl = doc.getElementById(id);
-                if (el && newEl) el.textContent = newEl.textContent;
-            });
-        })
-        .catch(err => console.error('Dashboard refresh failed:', err));
+    if (document.querySelector('.modal.show')) {
+        console.log('[socmed] modal open, deferring');
+        pendingRefresh = true;
+        return;
     }
+    pendingRefresh = false;
 
-    // Debounce: several events in a row cause just one fetch
-    function refreshDashboard() {
-        clearTimeout(timer);
-        timer = setTimeout(doRefresh, 300);
-    }
+    fetch(window.location.href, {
+        cache: 'no-store',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => {
+        console.log('[socmed] fetch status', r.status);
+        if (!r.ok) throw new Error('Server returned ' + r.status);
+        return r.text();
+    })
+    .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const fresh = doc.getElementById('socmed-live');
+        const current = document.getElementById('socmed-live');
+        console.log('[socmed] found containers', !!fresh, !!current);
+        if (!fresh || !current) return;
 
-    if (window.Echo) {
-        window.Echo.channel('requests').listen('.requests.updated', refreshDashboard);
-    } else {
-        console.error('Echo is not loaded, live updates are disabled.');
-    }
+        const activeHref = current.querySelector('.dashboard-area-tabs__tab.active')?.getAttribute('href');
+        current.innerHTML = fresh.innerHTML;
+        if (activeHref) current.querySelector('a[href="' + activeHref + '"][data-toggle="tab"]')?.click();
+        if (window.domFactory?.handler) domFactory.handler.upgradeAll();
+        console.log('[socmed] table updated');
+    })
+    .catch(err => console.error('[socmed] refresh failed', err));
+}
+
+$(document).on('hidden.bs.modal', '.modal', function () {
+    if (pendingRefresh) refreshSocmedTable();
+});
+
+window.addEventListener('load', function () {
+    window.Echo.channel('admin.socmed').listen('.socmed.updated', () => {
+        console.log('[socmed] event received');
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(refreshSocmedTable, 300);
+    });
+    console.log('[socmed] listener registered');
 });
 </script>
     </body>

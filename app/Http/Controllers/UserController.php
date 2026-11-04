@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use App\Models\Publishing_requests;
-use App\Models\Photo_vid_requests;
 use App\Models\Requestor;
 use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash; // Don't forget to import Hash
+use App\Events\SocmedRequestUpdated;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -77,49 +77,52 @@ class UserController extends Controller
             ));
     }
 
-    public function store(Request $request)
-    {
-        // 1. Validate all form inputs
-        $validatedData = $request->validate([
-            'emp_id' => 'required|string',
-            'name' => 'required|string',
-            'password' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'user_type' => 'required|string',
-            'image' => 'nullable|file|mimes:pdf,docx,jpg,png|max:10240',
-        ]);
-
-        DB::beginTransaction();
-
-        try {
-            $imagePath = null;
-
-            // 2. Handle single file upload if present
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $imagePath = $file->storeAs('profile', $filename, 'public');
-            }
-
-            // 3. Save to the database
-            User::create([
-                'employee_id' => $validatedData['emp_id'],
-                'fullname' => $validatedData['name'],
-                'password' => Hash::make($validatedData['password']), // Securely hash the temporary password
-                'email' => $validatedData['email'],
-                'user_type' => $validatedData['user_type'],
-                'image' => $imagePath, // Save the file path string
-                'verified' => 0,
+  public function store(Request $request)
+        {
+            // 1. Validate all form inputs (duplicates are rejected here, before saving)
+            $validatedData = $request->validate([
+                'emp_id'    => 'required|string|unique:users,employee_id',
+                'name'      => 'required|string|unique:users,fullname',
+                'password'  => 'required|string',
+                'email'     => 'required|email|unique:users,email',
+                'user_type' => 'required|string',
+                'image'     => 'nullable|file|mimes:pdf,docx,jpg,png|max:10240',
+            ], [
+                'emp_id.unique' => 'This Employee ID already exists.',
+                'name.unique'   => 'This full name already exists.',
+                'email.unique'  => 'This email already exists.',
             ]);
 
-            DB::commit(); // Finalize database inserts if everything succeeds
-            return redirect()->back()->with('success', 'User saved successfully!');
+            DB::beginTransaction();
 
-        } catch (\Exception $e) {
-            DB::rollBack(); // Undo database inserts if an error occurs
-            return redirect()->back()->with('error', 'Failed to save: ' . $e->getMessage());
+            try {
+                $imagePath = null;
+
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $imagePath = $file->storeAs('profile', $filename, 'public');
+                }
+
+                User::create([
+                    'employee_id' => $validatedData['emp_id'],
+                    'fullname'    => $validatedData['name'],
+                    'password'    => Hash::make($validatedData['password']),
+                    'email'       => $validatedData['email'],
+                    'user_type'   => $validatedData['user_type'],
+                    'image'       => $imagePath,
+                    'verified'    => 0,
+                ]);
+
+                DB::commit();
+                SocmedRequestUpdated::dispatch();
+                return redirect()->back()->with('success', 'User saved successfully!');
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Failed to save: ' . $e->getMessage());
+            }
         }
-    }
 
     public function update(Request $request, $id)
         {
@@ -153,6 +156,7 @@ class UserController extends Controller
             $user->save();
 
             // 4. Return back with a success message
+            SocmedRequestUpdated::dispatch();
             return redirect()->back()->with('success', 'Password updated successfully!');
         }
 
@@ -161,6 +165,28 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
+            SocmedRequestUpdated::dispatch();   
             return redirect()->back()->with('success', 'User deleted successfully!');
+        }
+
+        public function updateUserType(Request $request, User $user)
+        {
+            $validated = $request->validate([
+                'user_type' => ['required', 'string', Rule::in(array_keys(config('user_types')))],
+            ]);
+
+            // Optional: stop admins from changing their own role by accident
+            if (auth()->id() === $user->id) {
+                return redirect()->back()->with('error', 'You cannot change your own user type.');
+            }
+
+            try {
+                $user->update(['user_type' => $validated['user_type']]);
+
+                return redirect()->back()->with('success', "User type updated for {$user->fullname}.");
+            } catch (\Exception $e) {
+                Log::error($e);
+                return redirect()->back()->with('error', 'Failed to update user type.');
+            }
         }
 }

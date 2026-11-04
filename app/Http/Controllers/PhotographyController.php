@@ -9,8 +9,6 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
-use App\Models\Publishing_requests;
-use App\Models\Socmed_request;
 use App\Models\Requestor;
 use App\Events\SocmedRequestUpdated;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +56,7 @@ class PhotographyController extends Controller
     ])
     ->get();
         // Fetches parent records along with their corresponding child information
-       $requests = Requestor::with('photo')
+       $requests = Requestor::has('photo')
     ->whereHas('photo', function ($query) {
         $query->whereIn('category', ['photo', 'audio', 'soft copy']);
     })
@@ -98,8 +96,8 @@ class PhotographyController extends Controller
          $requestors = Requestor::orderBy('l_name')->get();
      $month = request('month', date('m')); // Defaults to current month if not selected
      $year = request('year', date('Y')); // Defaults to current year if not selected
-        $archived = Photo_vid_requests::with('information')
-        ->whereHas('information', function ($query) use ($year, $month) {
+        $archived = Requestor::with('photo')
+        ->whereHas('photo', function ($query) use ($year, $month) {
             $query->where('status', 2)
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $month);

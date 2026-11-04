@@ -79,8 +79,9 @@
                         </div>
 
                       <!--table-->
+                     <div id="socmed-live">
                       @include ('admin.account.user.users.table.user')
-
+                     </div>
                     </div>
                 </div>
 
@@ -95,7 +96,58 @@
 
         <!-- App Settings FAB -->
          @include ('admin.assets.footer')
-    </body>
+           <script>
+let refreshTimer = null;
+let pendingRefresh = false;
+
+function refreshSocmedTable() {
+    console.log('[socmed] refresh called');
+
+    if (document.querySelector('.modal.show')) {
+        console.log('[socmed] modal open, deferring');
+        pendingRefresh = true;
+        return;
+    }
+    pendingRefresh = false;
+
+    fetch(window.location.href, {
+        cache: 'no-store',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => {
+        console.log('[socmed] fetch status', r.status);
+        if (!r.ok) throw new Error('Server returned ' + r.status);
+        return r.text();
+    })
+    .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const fresh = doc.getElementById('socmed-live');
+        const current = document.getElementById('socmed-live');
+        console.log('[socmed] found containers', !!fresh, !!current);
+        if (!fresh || !current) return;
+
+        const activeHref = current.querySelector('.dashboard-area-tabs__tab.active')?.getAttribute('href');
+        current.innerHTML = fresh.innerHTML;
+        if (activeHref) current.querySelector('a[href="' + activeHref + '"][data-toggle="tab"]')?.click();
+        if (window.domFactory?.handler) domFactory.handler.upgradeAll();
+        console.log('[socmed] table updated');
+    })
+    .catch(err => console.error('[socmed] refresh failed', err));
+}
+
+$(document).on('hidden.bs.modal', '.modal', function () {
+    if (pendingRefresh) refreshSocmedTable();
+});
+
+window.addEventListener('load', function () {
+    window.Echo.channel('admin.socmed').listen('.socmed.updated', () => {
+        console.log('[socmed] event received');
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(refreshSocmedTable, 300);
+    });
+    console.log('[socmed] listener registered');
+});
+</script>
 @if(session('success') || session('error') || $errors->any())
     <script>
         @if(session('success'))
@@ -122,4 +174,6 @@
         @endif
     </script>
 @endif
+    </body>
+
 </html>

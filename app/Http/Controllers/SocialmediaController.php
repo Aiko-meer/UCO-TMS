@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Photo_vid_requests;
 use App\Models\Requestor;
 use App\Models\Departments;
 use App\Models\Socmed_request_information;
@@ -25,10 +24,8 @@ class SocialmediaController extends Controller
     public function dashboard()
     {
         // Fetches parent records along with their corresponding child information
-         $socmed = Requestor::where('token', '0')
-        ->whereHas('socmed', fn ($q) => $q->where('status', 0))
-        ->get();
-        $photovid = Photo_vid_requests::where('token', '0')->get();
+         $socmed = Requestor::where('token', '0')->has('socmed')->get();
+        $photovid = Requestor::where('token', '0')->has('photo')->get();
         $softcopy = Soft_copy_requests::where('token', '0')->get();
         $trade = TrademarkRequest::where('token', '0')->get();
         $layout = Requestor::where('token', '0')
@@ -53,13 +50,7 @@ class SocialmediaController extends Controller
         ->get();
 
         $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
-    $requests = Requestor::with('socmed')->orderBy('id', 'desc')->get();
-    $requestors = Requestor::orderBy('l_name')->get();
-   $actviepagi = Requestor::with('socmed')->paginate(5, ['*'], 'active_page');
-    $archivepagi =Requestor::with('socmed')->paginate(10);
-    $monthpagi =Requestor::with('socmed')->paginate(10);
-    $listpagi =Requestor::with('socmed')->paginate(5);
-    $departments = Departments::all(); 
+    $requests = Requestor::has('socmed')->orderBy('id', 'desc')->get();
     $users = User::where('user_type', 'content_team')->get();
     // Inside your controller method:
     $year = request('year', date('Y')); // Defaults to current year if not selected
@@ -103,7 +94,6 @@ class SocialmediaController extends Controller
     // In your controller before returning the view
     //dd($requests->first()->information);
     return view('admin.socmed.index', compact('requests',
-        'departments',
         'archived',
         'inProgressCount', 
         'inProgressPercentage', 
@@ -112,10 +102,6 @@ class SocialmediaController extends Controller
         'approvalCount', 
         'approvalPercentage',
         'totalCount',
-        'actviepagi',
-        'archivepagi',
-        'monthpagi',
-        'listpagi',
         'monthCount',
         'users',
         'socmed',
@@ -126,8 +112,7 @@ class SocialmediaController extends Controller
         'uzpost',
         'uzpr',
         'softcopy',
-        'trade',
-        'requestors'
+        'trade'
         ));
     }
 
@@ -139,7 +124,7 @@ class SocialmediaController extends Controller
             'email' => 'required|email',
             'f_name' => 'required|string',
             'l_name' => 'required|string',
-            'middle' => 'required|string',
+            'middle' => 'nullable|string',
             'department' => 'required|string',
             'purpose' => 'required|string',
             'date_needed' => 'required|string',

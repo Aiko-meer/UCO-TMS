@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('user_type');
             $table->integer('verified')->nullable;
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

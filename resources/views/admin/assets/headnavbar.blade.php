@@ -32,18 +32,37 @@
                             <a href="#"
                                class="nav-link d-flex align-items-center dropdown-toggle"
                                data-toggle="dropdown">
-                                <img width="32"
-                                     height="32"
-                                     class="rounded-circle mr-8pt"
-                                     src="{{ asset('assets/images/people/50/guy-3.jpg') }}"
-                                     alt="account" />
-                                <span class="flex d-flex flex-column mr-8pt">
-                                    <span class="navbar-text-100">Laza Bogdan</span>
-                                    <small class="navbar-text-50">Administrator</small>
-                                </span>
+                                @auth
+                                    @php($currentUser = auth()->user())
+                                    <img width="32"
+                                         height="32"
+                                         class="rounded-circle mr-8pt"
+                                         src="{{ $currentUser->image ? \Illuminate\Support\Facades\Storage::disk('public')->url($currentUser->image) : asset('assets/images/people/50/guy-3.jpg') }}"
+                                         alt="{{ $currentUser->fullname }}" />
+                                    <span class="flex d-flex flex-column mr-8pt">
+                                        <span class="navbar-text-100">{{ $currentUser->fullname }}</span>
+                                        <small class="navbar-text-50">{{ $currentUser->user_type ?: 'User' }}</small>
+                                    </span>
+                                @else
+                                    <img width="32"
+                                         height="32"
+                                         class="rounded-circle mr-8pt"
+                                         src="{{ asset('assets/images/people/50/guy-3.jpg') }}"
+                                         alt="account" />
+                                    <span class="navbar-text-100">Guest</span>
+                                @endauth
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-header"><strong>Account</strong></div>
+                                @auth
+                                    <div class="dropdown-header">
+                                        <strong>{{ auth()->user()->fullname }}</strong>
+                                        <div class="text-muted">{{ auth()->user()->email }}</div>
+                                        <div class="text-muted">Employee ID: {{ auth()->user()->employee_id }}</div>
+                                        <div class="text-muted">Role: {{ auth()->user()->user_type ?: 'User' }}</div>
+                                    </div>
+                                @else
+                                    <div class="dropdown-header"><strong>Account</strong></div>
+                                @endauth
                                 <a class="dropdown-item"
                                    href="{{ route('admin.account')}}">Edit Account</a>
                                 <a class="dropdown-item"
