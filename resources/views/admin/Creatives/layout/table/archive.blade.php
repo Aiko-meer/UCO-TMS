@@ -91,14 +91,14 @@
        <tbody class="list" id="projects">
     @foreach($archived as $req)
         <!-- Added data attributes for exact YYYY-MM matching -->
-               <tr data-month="{{ $req->information?->created_at ? \Carbon\Carbon::parse($req->information->created_at)->format('m') : '' }}"
-                    data-year="{{ $req->information?->created_at ? \Carbon\Carbon::parse($req->information->created_at)->format('Y') : '' }}">
+               <tr data-month="{{ $req->publishing?->created_at ? \Carbon\Carbon::parse($req->publishing->created_at)->format('m') : '' }}"
+                    data-year="{{ $req->publishing?->created_at ? \Carbon\Carbon::parse($req->publishing->created_at)->format('Y') : '' }}">
 
             <td>
                 <div class="media flex-nowrap align-items-center" style="white-space: nowrap;">
                     <div class="media-body">
                         <div class="d-flex flex-column">
-                            <small class="js-lists-values-project"><strong>{{ $req->fullname }}</strong></small>
+                            <small class="js-lists-values-project"><strong>{{ $req->f_name }} {{ $req->middle }} {{ $req->l_name }}</strong></small>
                             <a href="mailto:{{ $req->email }}">{{ $req->email }}</a>
                         </div>
                     </div>
@@ -119,27 +119,27 @@
 
             <td>
                 <div class="d-flex flex-column">
-                    <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
+                    <small class="js-lists-values-status text-50 mb-4pt">{{ $req->publishing?->purpose ?? 'No Data' }}</small>
                     <span class="indicator-line rounded bg-warning"></span>
                 </div>
             </td>
 
             <td>
                 <div class="d-flex flex-column">
-                    @if ($req->information?->status == 0)
+                    @if ($req->publishing?->status == 0)
                         <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                         <span class="indicator-line rounded bg-warning"></span>
                     @endif
-                    @if ($req->information?->status == 1)
+                    @if ($req->publishing?->status == 1)
                         <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                         <span class="indicator-line rounded bg-success"></span>
                     @endif
-                    @if ($req->information?->status == 2)
+                    @if ($req->publishing?->status == 2)
                         <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                         <span class="indicator-line rounded bg-info"></span>
                     @endif 
-                    @if ($req->information?->status == 3 || $req->information?->status == 4)
-                        <small class="js-lists-values-status text-50 mb-4pt">Status {{ $req->information->status }}</small>
+                    @if ($req->publishing?->status == 3 || $req->publishing?->status == 4)
+                        <small class="js-lists-values-status text-50 mb-4pt">Status {{ $req->publishing->status }}</small>
                         <span class="indicator-line rounded bg-danger"></span>
                     @endif
                 </div>
@@ -147,19 +147,19 @@
 
             <td>
                 <div class="d-flex flex-column">
-                    <span class="d-none js-lists-values-date">{{ $req->information?->created_at?->format('F') }}</span>
-                    <small><strong>{{ $req->information?->created_at?->format('M d, Y h:i A') }}</strong></small>
-                    <small class="text-50">{{ $req->information?->created_at?->diffForHumans() }}</small>
+                    <span class="d-none js-lists-values-date">{{ $req->publishing?->created_at?->format('F') }}</span>
+                    <small><strong>{{ $req->publishing?->created_at?->format('M d, Y h:i A') }}</strong></small>
+                    <small class="text-50">{{ $req->publishing?->created_at?->diffForHumans() }}</small>
                 </div>
             </td>
 
             <td>
                 <div class="d-flex flex-column">
                     <small class="js-lists-values-date">
-                        <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                        <strong>{{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                     </small>
                     <small class="text-50">
-                        {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                        {{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->diffForHumans() : '' }}
                     </small>
                 </div>
             </td>
@@ -176,7 +176,7 @@
                         <button type="button" class="dropdown-item" data-toggle="modal" data-target="#sendModal-{{ $req->request_id }}">
                             <i class="material-icons text-muted mr-2" style="font-size: 16px;">send</i> Send Approval
                         </button>
-                        @if($req->information?->status != 3)
+                        @if($req->publishing?->status != 3)
                         <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
                         </button>
@@ -197,81 +197,40 @@
     </table>
 </div>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.archive-wrap').forEach(function (wrap) {
-        const monthSelect = wrap.querySelector('.filter-month');
-        const yearSelect  = wrap.querySelector('.filter-year');
-        const searchInput = wrap.querySelector('.search');
+document.addEventListener("DOMContentLoaded", function() {
+    const monthSelect = document.getElementById('filter-month');
+    const yearSelect = document.getElementById('filter-year');
+    const rows = document.querySelectorAll('#projects tr');
 
-        function filterTable() {
-            const m = monthSelect.value;
-            const y = yearSelect.value;
+    function filterTable() {
+        const selectedMonth = monthSelect.value;
+        const selectedYear = yearSelect.value;
 
-            wrap.querySelectorAll('tbody.list tr').forEach(function (row) {
-                const okMonth = !m || row.dataset.month === m;
-                const okYear  = !y || row.dataset.year === y;
-                row.style.display = (okMonth && okYear) ? '' : 'none';
-            });
-        }
+        rows.forEach(row => {
+            const rowMonth = row.getAttribute('data-month');
+            const rowYear = row.getAttribute('data-year');
 
-        monthSelect.addEventListener('change', filterTable);
-        yearSelect.addEventListener('change', filterTable);
+            let matchesMonth = !selectedMonth || rowMonth === selectedMonth;
+            let matchesYear = !selectedYear || rowYear === selectedYear;
 
-        // Re-apply after List.js re-renders on search
-        if (searchInput) {
-            searchInput.addEventListener('keyup', function () {
-                setTimeout(filterTable, 50);
-            });
-        }
-    });
-});
-document.addEventListener("DOMContentLoaded", function () {
-
-    function doRefresh() {
-        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
-
-        fetch(window.location.href, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(r => r.text())
-        .then(html => {
-            const doc = new DOMParser().parseFromString(html, 'text/html');
-
-            // 1. Update table rows in every tab
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                const newPane = doc.getElementById(pane.id);
-                if (!newPane) return;
-                const newBodies = newPane.querySelectorAll('tbody');
-                pane.querySelectorAll('tbody').forEach((body, i) => {
-                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
-                });
-            });
-
-            // 2. Update per-request modals
-            const oldModals = document.getElementById('request-modals');
-            const newModals = doc.getElementById('request-modals');
-            if (oldModals && newModals && !document.querySelector('.modal.show')) {
-                oldModals.innerHTML = newModals.innerHTML;
+            if (matchesMonth && matchesYear) {
+                row.style.display = ""; // Show row
+            } else {
+                row.style.display = "none"; // Hide row
             }
-
-            // 3. Re-apply month/year filter
-            if (window.applyArchiveFilter) window.applyArchiveFilter();
-
-            // 4. Counters
-            ['count-active', 'count-archive', 'count-month', 'count-total'].forEach(id => {
-                const el = document.getElementById(id);
-                const newEl = doc.getElementById(id);
-                if (el && newEl) el.textContent = newEl.textContent;
-            });
-        })
-        .catch(err => console.error('Dashboard refresh failed:', err));
+        });
     }
 
-    // Auto refresh every 10 seconds
-    setInterval(function () {
-        if (document.hidden) return;
-        doRefresh();
-    }, 10000);
-
+    monthSelect.addEventListener('change', filterTable);
+    yearSelect.addEventListener('change', filterTable);
 });
-</script>                 
+</script> 
+                                                               <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>  

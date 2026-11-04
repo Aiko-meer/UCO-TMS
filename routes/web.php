@@ -52,6 +52,7 @@ Route::post('/layoutservices/mark-read/{request_id}', [LayoutservicesController:
 Route::get('/productionservices/dashboard', [ProductionservicesController::class, 'dashboard'])->name('production.home');
 Route::POST('/productionservices/dashboard/store', [ProductionservicesController::class, 'store'])->name('production.store');
 Route::PUT('/productionservices/dashboard/update/{request_id}', [ProductionservicesController::class, 'update'])->name('production.update');
+Route::delete('/productionservices/dashboard/delete/{request_id}', [ProductionservicesController::class, 'destroy'])->name('production.destroy');
 
 Route::get('/publishingservices/dashboard', [PublishingserviceController::class, 'dashboard'])->name('publishing.home');
 //uzpost

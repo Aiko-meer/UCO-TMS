@@ -139,3 +139,12 @@
                                 </tbody>
                             </table>
                         </div>
+                                                 <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>

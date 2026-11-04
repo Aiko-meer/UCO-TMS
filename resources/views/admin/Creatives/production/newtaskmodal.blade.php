@@ -38,19 +38,47 @@
                         </h6>
                     </div>
 
-                    <!-- Full Name -->
-                    <div class="col-md-6">
+                   <!-- Full Name -->
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="full_name" class="font-weight-semibold">
-                                Full Name
-                                <span class="text-danger">*</span>
+                            <label for="first_name" class="font-weight-semibold">
+                                First name <span class="text-danger">*</span>
                             </label>
-
                             <input type="text"
                                 class="form-control"
-                                id="full_name"
-                                name="full_name"
-                                placeholder="Enter your full name"
+                                id="first_name"
+                                name="f_name"
+                                placeholder="e.g. Juan"
+                                autocomplete="given-name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="middle_name" class="font-weight-semibold">
+                                Middle name <small class="text-muted font-weight-normal">(optional)</small>
+                            </label>
+                            <input type="text"
+                                class="form-control"
+                                id="middle_name"
+                                name="middle"
+                                placeholder="e.g. Santos"
+                                autocomplete="additional-name">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name" class="font-weight-semibold">
+                                Last name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                class="form-control"
+                                id="last_name"
+                                name="l_name"
+                                placeholder="e.g. Dela Cruz"
+                                autocomplete="family-name"
                                 required>
                         </div>
                     </div>
@@ -67,9 +95,7 @@
                                     name="department"
                                     class="form-control"
                                     required>
-                                 @foreach($departments as $dep)
-                                 <option value="{{$dep->code}}">{{$dep->name}}</option>
-                                 @endforeach
+                                <option value="UCO" class="">University Communication Office </option>
                             </select>
                         </div>
                     </div>

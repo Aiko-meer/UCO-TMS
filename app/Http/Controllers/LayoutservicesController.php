@@ -3,47 +3,43 @@
 namespace App\Http\Controllers;
 use App\Models\Socmed_request;
 use App\Models\Departments;
-use App\Models\Photo_vid_requests;
 use App\Models\User;
 use App\Models\Socmed_request_information;
-use App\Models\Publishing_requests;
 use App\Models\Publishing_request_informaitons;
 use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Livewire\Component;
-use App\Events\RequestsUpdated;
-
-
+use App\Models\Requestor;
+use App\Events\SocmedRequestUpdated;
 
 class LayoutservicesController extends Controller
 {
     //
     public function dashboard()
     {
-         $socmed = Socmed_request::where('token', '0')->get();
-        $photovid = Photo_vid_requests::where('token', '0')->get();
+         $socmed = Requestor::where('token', '0')->has('socmed')->get();
+        $photovid = Requestor::where('token', '0')->has('photo')->get();
         $softcopy = Soft_copy_requests::where('token', '0')->get();
         $trade = TrademarkRequest::where('token', '0')->get();
-        $layout = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+        $layout = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'layout');
         })
         ->get();
-        $production = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+        $production = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'production');
         })
         ->get();
-         $uzpr = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpr = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpr');
         })
         ->get();
-         $uzpost = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpost = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpost');
         })
         ->get();
@@ -69,37 +65,37 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
         }
     ])
     ->get();
-            $requests = Publishing_requests::with('information')
-        ->whereHas('information', 
+            $requests = Requestor::with('publishing')
+        ->whereHas('publishing', 
         function ($query) { $query->where('specification', 'layout'); })->orderBy('id', 'desc')->get();
 
-        $totalRequests = Publishing_requests::whereHas('information', function($q) {
+        $totalRequests = Requestor::whereHas('publishing', function($q) {
     $q->where('specification', 'layout');
 })->count();
             // 2. Get counts for each status
         // If 'status' is inside the related 'information' table:
-            $inProgressCount = Publishing_requests::whereHas('information', function($q) {
+            $inProgressCount = Requestor::whereHas('publishing', function($q) {
                     $q->whereIn('status', [2,4])
                     ->where('specification', 'layout');
                 })->count();
 
-            $pendingCount = Publishing_requests::whereHas('information', function($q) {
+            $pendingCount = Requestor::whereHas('publishing', function($q) {
                     $q->where('status', 0)
                     ->where('specification', 'layout');
                 })->count();
 
-            $approvalCount = Publishing_requests::whereHas('information', function($q) {
+            $approvalCount = Requestor::whereHas('publishing', function($q) {
                     $q->whereIn('status', [1, 3])
                     ->where('specification', 'layout');
                 })->count();
 
-            $monthCount = Publishing_requests::whereHas('information', function($q) {
+            $monthCount = Requestor::whereHas('publishing', function($q) {
                 $q->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->where('specification', 'layout');
             })->count();
 
-            $totalCount =  Publishing_requests::whereHas('information', function($q) {
+            $totalCount =  Requestor::whereHas('publishing', function($q) {
                                     $q->where('specification', 'layout');
                                 })->count();
 
@@ -107,8 +103,8 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
         $year = request('year');
         $month = request('month');
 
-       $archived = Publishing_requests::with('information')
-        ->whereHas('information', function ($query) use ($year, $month) {
+       $archived = Requestor::with('publishing')
+        ->whereHas('publishing', function ($query) use ($year, $month) {
             $query->whereIn('status', [1, 4]); // Adjust statuses as needed
             
             if ($year) {
@@ -119,10 +115,10 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             }
         })
         ->get();
-            $actviepagi  = Publishing_requests::with('information')->paginate(5, ['fullname'], 'active_page');
-        $archivepagi =Publishing_requests::with('information')->paginate(10);
-        $monthpagi =Publishing_requests::with('information')->paginate(10);
-        $listpagi =Publishing_requests::with('information')->paginate(5);
+            $actviepagi  = Requestor::with('publishing')->paginate(5, ['*'], 'active_page');
+        $archivepagi =Requestor::with('publishing')->paginate(10);
+        $monthpagi =Requestor::with('publishing')->paginate(10);
+        $listpagi =Requestor::with('publishing')->paginate(5);
 
          // 3. Calculate percentages safely (avoiding division by zero)
     $inProgressPercentage = $totalRequests > 0 ? round(($inProgressCount / $totalRequests) * 100) : 0;
@@ -163,7 +159,9 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
     {
         // 1. Validate all form inputs matching your models
         $validatedData = $request->validate([
-            'full_name' => 'required|string',
+            'f_name' => 'required|string',
+            'l_name' => 'required|string',
+            'middle' => 'nullable|string',
             'department' => 'required|string',
             'email' => 'required|email',
             'date_needed' => 'required|string',
@@ -186,13 +184,15 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             // Generate a unique 6-character random request ID
             do {
                 $randomRequestId = Str::random(6);
-            } while (Publishing_requests::where('request_id', $randomRequestId)->exists());
+            } while (Requestor::where('request_id', $randomRequestId)->exists());
 
             // 3. Save to the parent table (socmed_requests)
-            $publishingRequest = Publishing_requests::create([
+            $publishingRequest = Requestor::create([
                 'request_id' => $randomRequestId,
                 'email' => $validatedData['email'],
-                'fullname' => $validatedData['full_name'],
+                'f_name' => $validatedData['f_name'],
+                'l_name' => $validatedData['l_name'],
+                'middle' => $validatedData['middle'],
                 'department' => $validatedData['department'],
                 'token' => '0',
             ]);
@@ -214,13 +214,6 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
 
             if ($request->input('needs_layout') == 1){
 
-                $socmedrequest = Socmed_request::create([
-                'request_id' => $randomRequestId,
-                'email' => $validatedData['email'],
-                'fullname' => $validatedData['full_name'],
-                'department' => $validatedData['department'],
-            ]);
-
                 Socmed_request_information::create([
                 'request_id' => $randomRequestId, // Links both tables together
                 'purpose' => $validatedData['purpose'],
@@ -238,12 +231,12 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
         });
  try {
    DB::commit(); // Finalize all inserts if everything succeeds
-   event(new RequestsUpdated());
+    SocmedRequestUpdated::dispatch();
     return redirect()->back()->with('success', 'Request saved successfully!');
 
 } catch (\Exception $e) {
     DB::rollBack(); // Undo any partial database inserts if an error occurs
-    event(new RequestsUpdated());
+    
     return redirect()->back()->with('error', 'Failed to save: ' . $e->getMessage());
 }
   } 
@@ -276,7 +269,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                 // Perform the update once with all applicable fields
                 $req->update($updateData);
             });
-            event(new RequestsUpdated());
+           SocmedRequestUpdated::dispatch();
             return redirect()->back()->with('success', 'Request updated successfully!');
         }
 
@@ -288,7 +281,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             $req->status = 4; // Approved / Sent
             $req->save();
 
-            event(new RequestsUpdated());
+            SocmedRequestUpdated::dispatch();
             return response()->json([
                 'success' => true,
                 'message' => 'Status updated successfully'
@@ -302,17 +295,17 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             $softCopy->date_approved = null;
             $softCopy->save();
 
-            event(new RequestsUpdated());
+            SocmedRequestUpdated::dispatch();
             return response()->json(['success' => true]);
         }
 
         public function markAsRead($id)
         {
-            $socmed = Publishing_requests::findOrFail($id);
+            $socmed = Requestor::findOrFail($id);
             $socmed->token = '1'; // or 1 depending on your column type
             $socmed->save();
 
-            event(new RequestsUpdated());
+            SocmedRequestUpdated::dispatch();
             return response()->json(['success' => true]);
         }
 
@@ -327,7 +320,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
                     $publishingInfo->delete();
                 }
 
-                Publishing_requests::where('request_id', $request_id)->delete();
+                Requestor::where('request_id', $request_id)->delete();
 
                 // 2. Delete from child and parent tables for socmed requests (if they exist)
                 $socmedInfo = Socmed_request_information::where('request_id', $request_id)->first();
@@ -344,7 +337,7 @@ $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
             ]);
             
             // Or if you are redirecting back to a dashboard view:
-            event(new RequestsUpdated());
+           SocmedRequestUpdated::dispatch();
              return redirect()->back()->with('success', 'Request deleted successfully.');
         }
 }

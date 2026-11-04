@@ -113,7 +113,7 @@
                                      aria-valuemax="100"></div>
                             </div>
                         </div>
-
+                        <div id="socmed-live">
                          <div class="card dashboard-area-tabs p-relative o-hidden mb-lg-32pt">
                         <div class="card-header p-0 nav">
                             <div class="row no-gutters"
@@ -165,112 +165,53 @@
                                     </a>
                                 </div>
                             </div>
-                            <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 1. Check if there's a saved tab in localStorage and activate it
-        let activeTab = localStorage.getItem('activeDashboardTab');
-        if (activeTab) {
-            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
-            if (tabTrigger) {
-                // Use Bootstrap's tab trigger if available, or fallback to click()
-                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
-                    var tab = new bootstrap.Tab(tabTrigger);
-                    tab.show();
-                } else {
-                    tabTrigger.click();
-                }
-            }
-        }
-
-        // 2. Save the tab href to localStorage whenever a tab is clicked
-        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function (e) {
-                let targetID = this.getAttribute('href');
-                localStorage.setItem('activeDashboardTab', targetID);
-            });
-        });
-    });
-</script>
                         </div>
 
                         <div class="tab-content">
 
-    {{-- ACTIVE PROJECTS --}}
-    <div class="tab-pane fade show active"
-         id="active"
-         role="tabpanel">
+                            {{-- ACTIVE PROJECTS --}}
+                            <div class="tab-pane fade show active"
+                                id="active"
+                                role="tabpanel">
 
-        <div class="table-responsive">
-            @include ('admin.creatives.production.table.active')
-        </div>
-    </div>
-     {{-- ARCHIVED PROJECTS --}}
-    <div class="tab-pane fade"
-         id="arch"
-         role="tabpanel">
+                                <div class="table-responsive">
+                                    @include ('admin.creatives.production.table.active')
+                                </div>
+                            </div>
+                            {{-- ARCHIVED PROJECTS --}}
+                            <div class="tab-pane fade"
+                                id="arch"
+                                role="tabpanel">
 
-        <div class="table-responsive">
-           @include ('admin.creatives.production.table.archive')
-        </div>
+                                <div class="table-responsive">
+                                @include ('admin.creatives.production.table.archive')
+                                </div>
 
-    </div>
-    {{-- ARCHIVED PROJECTS --}}
-    <div class="tab-pane fade show fade"
-         id="month"
-         role="tabpanel">
+                            </div>
+                            {{-- ARCHIVED PROJECTS --}}
+                            <div class="tab-pane fade show fade"
+                                id="month"
+                                role="tabpanel">
 
-        <div class="table-responsive">
-            @include ('admin.creatives.production.table.month')
-        </div>
+                                <div class="table-responsive">
+                                    @include ('admin.creatives.production.table.month')
+                                </div>
 
-    </div>
-    {{-- ARCHIVED PROJECTS --}}
-    <div class="tab-pane fade show fade"
-         id="list"
-         role="tabpanel">
+                            </div>
+                            {{-- ARCHIVED PROJECTS --}}
+                            <div class="tab-pane fade show fade"
+                                id="list"
+                                role="tabpanel">
 
-        <div class="table-responsive">
-            @include ('admin.creatives.production.table.list')
-        </div>
+                                <div class="table-responsive">
+                                    @include ('admin.creatives.production.table.list')
+                                </div>
 
-    </div>
-   
-   <script>
-    // Real-time auto-refresh interval (e.g., every 5 seconds)
-    setInterval(function() {
-        fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            let newTbody = doc.querySelector('#projects');
-            
-            if (newTbody) {
-                // Keep track of current search value to prevent clearing user input
-                let searchInput = document.querySelector('.search');
-                let searchTerm = searchInput ? searchInput.value : '';
-
-                // Replace table body content with fresh data
-                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
-
-                // Re-trigger List.js search if search was active
-                if (searchTerm && window.List && window.List.lists) {
-                    // List.js handles re-initialization automatically if container matches
-                }
-            }
-        })
-        .catch(error => console.error('Error updating table:', error));
-    }, 5000); // 5000ms = 5 seconds
-</script>
-</div>
+                            </div>
+                        </div>
         
                     </div>
-
+                    </div>
                     </div>
                 </div>
 
@@ -285,8 +226,7 @@
 
         <!-- App Settings FAB -->
          @include ('admin.assets.footer')
-    </body>
-@if(session('success') || session('error') || $errors->any())
+         @if(session('success') || session('error') || $errors->any())
     <script>
         @if(session('success'))
             Swal.fire({
@@ -312,4 +252,89 @@
         @endif
     </script>
 @endif
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Check if there's a saved tab in localStorage and activate it
+        let activeTab = localStorage.getItem('activeDashboardTab');
+        if (activeTab) {
+            let tabTrigger = document.querySelector(`a[href="${activeTab}"]`);
+            if (tabTrigger) {
+                // Use Bootstrap's tab trigger if available, or fallback to click()
+                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+                    var tab = new bootstrap.Tab(tabTrigger);
+                    tab.show();
+                } else {
+                    tabTrigger.click();
+                }
+            }
+        }
+
+        // 2. Save the tab href to localStorage whenever a tab is clicked
+        const tabs = document.querySelectorAll('.dashboard-area-tabs__tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                let targetID = this.getAttribute('href');
+                localStorage.setItem('activeDashboardTab', targetID);
+            });
+        });
+    });
+
+   document.addEventListener("DOMContentLoaded", function () {
+    let timer = null;
+
+    function doRefresh() {
+        if (document.querySelector('.dropdown-menu.show, .modal.show')) return;
+
+        fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.text())
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            // 1. Update table rows in every tab
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                const newPane = doc.getElementById(pane.id);
+                if (!newPane) return;
+                const newBodies = newPane.querySelectorAll('tbody');
+                pane.querySelectorAll('tbody').forEach((body, i) => {
+                    if (newBodies[i]) body.innerHTML = newBodies[i].innerHTML;
+                });
+            });
+
+            // 2. Update per-request modals so new rows' buttons work
+            const oldModals = document.getElementById('request-modals');
+            const newModals = doc.getElementById('request-modals');
+            if (oldModals && newModals && !document.querySelector('.modal.show')) {
+                oldModals.innerHTML = newModals.innerHTML;
+            }
+
+            // 3. Re-apply month/year filter
+            if (window.applyArchiveFilter) window.applyArchiveFilter();
+
+            // 4. Counters
+            ['count-active', 'count-archive', 'count-month', 'count-total'].forEach(id => {
+                const el = document.getElementById(id);
+                const newEl = doc.getElementById(id);
+                if (el && newEl) el.textContent = newEl.textContent;
+            });
+        })
+        .catch(err => console.error('Dashboard refresh failed:', err));
+    }
+
+    // Debounce: several events in a row cause just one fetch
+    function refreshDashboard() {
+        clearTimeout(timer);
+        timer = setTimeout(doRefresh, 300);
+    }
+
+    if (window.Echo) {
+        window.Echo.channel('requests').listen('.requests.updated', refreshDashboard);
+    } else {
+        console.error('Echo is not loaded, live updates are disabled.');
+    }
+});
+</script>
+    </body>
+
 </html>

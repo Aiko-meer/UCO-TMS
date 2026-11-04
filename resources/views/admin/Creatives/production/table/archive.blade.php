@@ -102,7 +102,7 @@
                 <div class="media flex-nowrap align-items-center" style="white-space: nowrap;">
                     <div class="media-body">
                         <div class="d-flex flex-column">
-                            <small class="js-lists-values-project"><strong>{{ $req->fullname }}</strong></small>
+                            <small class="js-lists-values-project"><strong>{{ $req->f_name }} {{ $req->middle }} {{ $req->l_name }}</strong></small>
                             <a href="mailto:{{ $req->email }}">{{ $req->email }}</a>
                         </div>
                     </div>
@@ -123,27 +123,27 @@
 
             <td>
                 <div class="d-flex flex-column">
-                    <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
+                    <small class="js-lists-values-status text-50 mb-4pt">{{ $req->publishing?->purpose ?? 'No Data' }}</small>
                     <span class="indicator-line rounded bg-warning"></span>
                 </div>
             </td>
 
             <td>
                 <div class="d-flex flex-column">
-                    @if ($req->information?->status == 0)
+                    @if ($req->publishing?->status == 0)
                         <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                         <span class="indicator-line rounded bg-warning"></span>
                     @endif
-                    @if ($req->information?->status == 1)
+                    @if ($req->publishing?->status == 1)
                         <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                         <span class="indicator-line rounded bg-success"></span>
                     @endif
-                    @if ($req->information?->status == 2)
+                    @if ($req->publishing?->status == 2)
                         <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                         <span class="indicator-line rounded bg-info"></span>
                     @endif 
-                    @if ($req->information?->status == 3 || $req->information?->status == 4)
-                        <small class="js-lists-values-status text-50 mb-4pt">Status {{ $req->information->status }}</small>
+                    @if ($req->publishing?->status == 3 || $req->publishing?->status == 4)
+                        <small class="js-lists-values-status text-50 mb-4pt">Status {{ $req->publishing->status }}</small>
                         <span class="indicator-line rounded bg-danger"></span>
                     @endif
                 </div>
@@ -151,19 +151,19 @@
 
             <td>
                 <div class="d-flex flex-column">
-                    <span class="d-none js-lists-values-date">{{ $req->information?->created_at?->format('F') }}</span>
-                    <small><strong>{{ $req->information?->created_at?->format('M d, Y h:i A') }}</strong></small>
-                    <small class="text-50">{{ $req->information?->created_at?->diffForHumans() }}</small>
+                    <span class="d-none js-lists-values-date">{{ $req->publishing?->created_at?->format('F') }}</span>
+                    <small><strong>{{ $req->publishing?->created_at?->format('M d, Y h:i A') }}</strong></small>
+                    <small class="text-50">{{ $req->publishing?->created_at?->diffForHumans() }}</small>
                 </div>
             </td>
 
             <td>
                 <div class="d-flex flex-column">
                     <small class="js-lists-values-date">
-                        <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                        <strong>{{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                     </small>
                     <small class="text-50">
-                        {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                        {{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->diffForHumans() : '' }}
                     </small>
                 </div>
             </td>
@@ -185,13 +185,13 @@
                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
                         </button>
                         @endif
-                        <form action="{{ route('layout.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('layout.destroy', $req->request_id) }}')">
-                                <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
-                            </button>
-                        </form>
+                        <form action="{{ route('production.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('production.destroy', $req->request_id) }}')">
+                                                            <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
+                                                        </button>
+                                                    </form>
                     </div>
                 </div>
             </td>
@@ -228,4 +228,13 @@ document.addEventListener("DOMContentLoaded", function() {
     monthSelect.addEventListener('change', filterTable);
     yearSelect.addEventListener('change', filterTable);
 });
-</script>                 
+</script>    
+                                                 <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>             

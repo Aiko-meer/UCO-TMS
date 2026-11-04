@@ -64,7 +64,7 @@
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
+                                                        <small class="js-lists-values-project"><strong>{{ $req->f_name }} {{ $req->middle }} {{ $req->l_name }}</strong></small>
                                                         <small class="js-lists-values-location text-50">{{ $req->email}}</small>
                                                     </div>
                                                 </div>
@@ -208,4 +208,13 @@
                             </ul>
                         </div>
                         </div>
+                                                 <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>
                        

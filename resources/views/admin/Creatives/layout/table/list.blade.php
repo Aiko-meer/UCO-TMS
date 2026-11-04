@@ -62,7 +62,7 @@
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
+                                                        <small class="js-lists-values-project"><strong>{{ $req->f_name }} {{ $req->middle }} {{ $req->l_name }}</strong></small>
                                                         <a href="mailto:{{$req->email}}">{{$req->email}}</a>
                                                     </div>
                                                 </div>
@@ -96,23 +96,23 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                 @if ($req->information->status == 0)
+                                                 @if ($req->publishing->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 1)
+                                                 @if ($req->publishing->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Approve</small>
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
-                                                 @if ($req->information->status == 2)
+                                                 @if ($req->publishing->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">On progress</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->information->status == 3)
+                                                @if ($req->publishing->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Rejected</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
-                                                 @if ($req->information->status == 4)
+                                                 @if ($req->publishing->status == 4)
                                                 <small class="js-lists-values-status text-50 mb-4pt">for Approval</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif
@@ -122,10 +122,10 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                    {{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>
@@ -147,7 +147,7 @@
                                                     </button>
 
                                                     <!-- Deny Request Action Button -->
-                                                     @if($req->information->status !=3)
+                                                     @if($req->publishing?->status !=3)
                                                     <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
                                                         <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
                                                     </button>
@@ -171,43 +171,15 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                              <div class="card-footer p-8pt">
-    <ul class="pagination justify-content-start pagination-xsm m-0">
-        <!-- Previous Page Link -->
-        <li class="page-item {{ $actviepagi->onFirstPage() ? 'disabled' : '' }}">
-            <a class="page-link" href="{{ $actviepagi->withQueryString()->previousPageUrl() ?? '0' }}" aria-label="Previous">
-                <span aria-hidden="true" class="material-icons">chevron_left</span>
-                <span>Prev</span>
-            </a>
-        </li>
-
-        <!-- Page Dropdown -->
-        <li class="page-item dropdown">
-            <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
-                <span>{{ $actviepagi->currentPage() }}</span>
-            </a>
-            <div class="dropdown-menu">
-                @foreach ($actviepagi->getUrlRange(1, $actviepagi->lastPage()) as $page => $url)
-                    @php
-                        // Manually append the query string to each dropdown item URL to preserve other active table states
-                        $parsedUrl = $url . '&' . http_build_query(request()->except($actviepagi->getPageName()));
-                    @endphp
-                    <a href="{{ $parsedUrl }}" class="dropdown-item {{ $page == $actviepagi->currentPage() ? 'active' : '' }}">
-                        {{ $page }}
-                    </a>
-                @endforeach
-            </div>
-        </li>
-
-        <!-- Next Page Link -->
-        <li class="page-item {{ $actviepagi->onLastPage() ? 'disabled' : '' }}">
-            <a class="page-link" href="{{ $actviepagi->withQueryString()->nextPageUrl() ?? '0' }}" aria-label="Next">
-                <span>Next</span>
-                <span aria-hidden="true" class="material-icons">chevron_right</span>
-            </a>
-        </li>
-    </ul>
-</div>
                         </div>
+                                                 <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>
 
                      

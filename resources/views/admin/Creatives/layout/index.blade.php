@@ -108,6 +108,7 @@
                            
                         </div>
 
+                        <div id="socmed-live">
                          <div class="card dashboard-area-tabs p-relative o-hidden mb-lg-32pt">
                         <div class="card-header p-0 nav">
                             <div class="row no-gutters"
@@ -292,7 +293,7 @@
 
 
                     </div>
-
+                    </div>
                     </div>
                 </div>
 

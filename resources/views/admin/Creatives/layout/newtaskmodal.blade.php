@@ -39,49 +39,46 @@
                     </div>
 
                     <!-- Full Name -->
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="first_name" class="font-weight-semibold">
-                                First name
-                                <span class="text-danger">*</span>
+                                First name <span class="text-danger">*</span>
                             </label>
-
                             <input type="text"
                                 class="form-control"
                                 id="first_name"
                                 name="f_name"
-                                placeholder="Enter your full name"
+                                placeholder="e.g. Juan"
+                                autocomplete="given-name"
                                 required>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="middle_name" class="font-weight-semibold">
+                                Middle name <small class="text-muted font-weight-normal">(optional)</small>
+                            </label>
+                            <input type="text"
+                                class="form-control"
+                                id="middle_name"
+                                name="middle"
+                                placeholder="e.g. Santos"
+                                autocomplete="additional-name">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="last_name" class="font-weight-semibold">
-                                Last name
-                                <span class="text-danger">*</span>
+                                Last name <span class="text-danger">*</span>
                             </label>
-
                             <input type="text"
                                 class="form-control"
                                 id="last_name"
                                 name="l_name"
-                                placeholder="Enter your full name"
-                                required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="middle" class="font-weight-semibold">
-                                Middle
-                                <span class="text-danger">*</span>
-                            </label>
-
-                            <input type="text"
-                                class="form-control"
-                                id="middle"
-                                name="middle"
-                                placeholder="Enter your full name"
+                                placeholder="e.g. Dela Cruz"
+                                autocomplete="family-name"
                                 required>
                         </div>
                     </div>

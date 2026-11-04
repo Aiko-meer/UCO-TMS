@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Date Needed:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->format('M d, Y') : 'N/A' }}">
                         </div>
                     </div>
 
@@ -64,47 +64,47 @@
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Purpose:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->purpose }}</textarea>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->publishing?->purpose }}</textarea>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Specification:</strong></label>
-                             <input type="text" readonly  class="form-control" value="{{ $req->information?->specification }}">
+                             <input type="text" readonly  class="form-control" value="{{ $req->publishing?->specification }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Category:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->category }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->category }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Section:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->section }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->section }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Content Information:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->content_information }}</textarea>
+                            <label><strong>Information:</strong></label>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->publishing?->content_information }}</textarea>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Content Attachment:</strong></label>
+                            <label><strong>Layout Attachment:</strong></label>
                             
-                            @if($req->information?->reference)
+                            @if($req->publishing?->reference)
                                 <div class="input-group">
-                                    <input type="text" readonly class="form-control bg-light" value="{{ $req->information->reference }}">
+                                    <input type="text" readonly class="form-control bg-light" value="{{ $req->publishing->reference }}">
                                     <div class="input-group-append">
-                                        <a href="{{ $req->information->reference }}" target="_blank" class="btn btn-outline-primary">
+                                        <a href="{{ $req->publishing->reference }}" target="_blank" class="btn btn-outline-primary">
                                             <i class="material-icons" style="font-size: 16px; vertical-align: middle;">open_in_new</i> Open Link
                                         </a>
                                     </div>
@@ -119,7 +119,7 @@
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->approve }}">
                         </div>
                     </div>
 
@@ -128,10 +128,10 @@
                             <label><strong>Date Approve :</strong></label>
                              <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->publishing?->date_approved ? \Carbon\Carbon::parse($req->publishing->date_approved)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->diffForHumans() : '' }}
+                                                    {{ $req->publishing?->date_approved ? \Carbon\Carbon::parse($req->publishing->date_approved)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                         </div>
@@ -139,7 +139,7 @@
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            @if(empty($req->information?->produce))
+                            @if(empty($req->publishing?->produce))
                             <label><strong>Assign to:</strong></label>
                                 <!-- Show select dropdown when produce is empty -->
                                <select name="produce" class="form-control" required>
@@ -151,7 +151,7 @@
                             @else
 
                             <label><strong>Assigned:</strong></label>  
-                            <input type="text" class="form-control" name="produce" value="{{ $req->information?->user?->employee_id  }}" hidden>{{$req->information?->user?->fullname  }}
+                            <input type="text" class="form-control" name="produce" value="{{ $req->publishing?->user?->employee_id  }}" hidden>{{$req->publishing?->user?->fullname  }}
                             @endif
                         </div>
                     </div>
@@ -162,13 +162,13 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->information->status }}"  selected>
-                                    @if($req->information->status == 0) Pending
-                                    @elseif($req->information->status == 1) Approve
-                                    @elseif($req->information->status == 2) in progress
-                                    @elseif($req->information->status == 4) for Approval
-                                    @elseif($req->information->status == 3) Rejected
-                                    @else {{ $req->information->status }}
+                               <option value="{{ $req->publishing->status }}"  selected>
+                                    @if($req->publishing->status == 0) Pending
+                                    @elseif($req->publishing->status == 1) Approve
+                                    @elseif($req->publishing->status == 2) in progress
+                                    @elseif($req->publishing->status == 4) for Approval
+                                    @elseif($req->publishing->status == 3) Rejected
+                                    @else {{ $req->publishing->status }}
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>

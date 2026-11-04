@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Socmed_request;
 use App\Models\Photo_vid_requests;
 use App\Models\Requestor;
 use App\Models\Departments;
@@ -220,7 +219,7 @@ class SocialmediaController extends Controller
             // Generate a unique 6-character random request ID
             do {
                 $randomRequestId = Str::random(6);
-            } while (Socmed_request::where('request_id', $randomRequestId)->exists());
+            } while (Requestor::where('request_id', $randomRequestId)->exists());
 
         
 

@@ -53,7 +53,7 @@
                                 <tbody class="list"
                                        id="projects">
                                 @foreach($requests as $req)
-                              @if ($req->information?->created_at && \Carbon\Carbon::parse($req->information->created_at)->isCurrentMonth())
+                              @if ($req->publishing?->created_at && \Carbon\Carbon::parse($req->publishing->created_at)->isCurrentMonth())
                                    
                                     <tr>
 
@@ -64,7 +64,7 @@
                                                 
                                                 <div class="media-body">
                                                     <div class="d-flex flex-column">
-                                                        <small class="js-lists-values-project"><strong>{{ $req->fullname}}</strong></small>
+                                                        <small class="js-lists-values-project"><strong>{{ $req->f_name }} {{ $req->middle }} {{ $req->l_name }}</strong></small>
                                                         <small class="js-lists-values-location text-50">{{ $req->email}}</small>
                                                     </div>
                                                 </div>
@@ -91,26 +91,26 @@
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->information?->purpose ?? 'No Data' }}</small>
+                                                <small class="js-lists-values-status text-50 mb-4pt">{{ $req->publishing?->purpose ?? 'No Data' }}</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="d-flex flex-column">
-                                               @if ($req->information->status == 0)
+                                               @if ($req->publishing->status == 0)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
                                                 <span class="indicator-line rounded bg-warning"></span>
                                                 @endif
-                                                 @if ($req->information->status == 1)
+                                                 @if ($req->publishing->status == 1)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Approved</small>
                                                 <span class="indicator-line rounded bg-success"></span>
                                                 @endif
-                                                 @if ($req->information->status == 2)
+                                                 @if ($req->publishing->status == 2)
                                                 <small class="js-lists-values-status text-50 mb-4pt">in Progress</small>
                                                 <span class="indicator-line rounded bg-info"></span>
                                                 @endif 
-                                                @if ($req->information->status == 3)
+                                                @if ($req->publishing->status == 3)
                                                 <small class="js-lists-values-status text-50 mb-4pt">Done</small>
                                                 <span class="indicator-line rounded bg-danger"></span>
                                                 @endif
@@ -120,10 +120,10 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->diffForHumans() : '' }}
+                                                    {{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                                         </td>
@@ -144,17 +144,17 @@
                                                     </button>
 
                                                     <!-- Deny Request Action Button -->
-                                                     @if($req->information->status !=3)
+                                                     @if($req->publishing->status !=3)
                                                     <button type="button" class="dropdown-item text-danger" data-toggle="modal" data-target="#denyModal-{{ $req->request_id }}">
                                                         <i class="material-icons text-danger mr-2" style="font-size: 16px;">cancel</i> Deny Request
                                                     </button>
                                                     @endif
                                                     <!-- 3. Delete Action (Protected by a form and confirmation) -->
                                                      
-                                                    <form action="{{ route('layout.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
+                                                   <form action="{{ route('production.destroy', $req->request_id) }}" method="POST" class="m-0 delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('layout.destroy', $req->request_id) }}')">
+                                                        <button type="button" class="dropdown-item text-danger" onclick="openDeleteModal('{{ route('production.destroy', $req->request_id) }}')">
                                                             <i class="material-icons text-danger mr-2" style="font-size: 16px;">delete</i> Delete
                                                         </button>
                                                     </form>
@@ -169,68 +169,13 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                               <div class="card-footer p-8pt">
-                            <ul class="pagination justify-content-start pagination-xsm m-0">
-                                <!-- Previous Page Link -->
-                                <li class="page-item {{ $monthpagi->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $monthpagi->previousPageUrl() ?? '#' }}" aria-label="Previous">
-                                        <span aria-hidden="true" class="material-icons">chevron_left</span>
-                                        <span>Prev</span>
-                                    </a>
-                                </li>
-
-                                <!-- Page Dropdown -->
-                                <li class="page-item dropdown">
-                                    <a class="page-link dropdown-toggle" data-toggle="dropdown" href="#" aria-label="Page">
-                                        <span>{{ $monthpagi->currentPage() }}</span>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        @foreach ($monthpagi->getUrlRange(1, $monthpagi->lastPage()) as $page => $url)
-                                            <a href="{{ $url }}" class="dropdown-item {{ $page == $monthpagi->currentPage() ? 'active' : '' }}">
-                                                {{ $page }}
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                </li>
-
-                                <!-- Next Page Link -->
-                                <li class="page-item {{ $monthpagi->onLastPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $monthpagi->nextPageUrl() ?? '#' }}" aria-label="Next">
-                                        <span>Next</span>
-                                        <span aria-hidden="true" class="material-icons">chevron_right</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </div>
-                        </div>
-                        <script>
-    // Real-time auto-refresh interval (e.g., every 5 seconds)
-    setInterval(function() {
-        fetch(window.location.href, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
-            let newTbody = doc.querySelector('#projects');
-            
-            if (newTbody) {
-                // Keep track of current search value to prevent clearing user input
-                let searchInput = document.querySelector('.search');
-                let searchTerm = searchInput ? searchInput.value : '';
-
-                // Replace table body content with fresh data
-                document.querySelector('#projects').innerHTML = newTbody.innerHTML;
-
-                // Re-trigger List.js search if search was active
-                if (searchTerm && window.List && window.List.lists) {
-                    // List.js handles re-initialization automatically if container matches
-                }
-            }
-        })
-        .catch(error => console.error('Error updating table:', error));
-    }, 5000); // 5000ms = 5 seconds
+                                                                   <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
 </script>

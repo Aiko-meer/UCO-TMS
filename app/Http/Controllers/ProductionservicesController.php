@@ -3,51 +3,49 @@
 namespace App\Http\Controllers;
 use App\Models\Departments;
 use App\Models\User;
-use App\Models\Publishing_requests;
+use App\Models\Requestor;
 use App\Models\Publishing_request_informaitons;
-use App\Models\Production_request_information;
-use App\Models\Socmed_request;
 use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
-use App\Models\Photo_vid_requests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Events\SocmedRequestUpdated;
 
 class ProductionservicesController extends Controller
 {
     //
      public function dashboard()
     {
-        $socmed = Socmed_request::where('token', '0')->get();
-        $photovid = Photo_vid_requests::where('token', '0')->get();
+        $socmed = Requestor::where('token', '0')->has('socmed')->get();
+        $photovid = Requestor::where('token', '0')->has('photo')->get();
         $softcopy = Soft_copy_requests::where('token', '0')->get();
         $trade = TrademarkRequest::where('token', '0')->get();
-        $layout = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+        $layout = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'layout');
         })
         ->get();
-         $production = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $production = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'production');
         })
         ->get();
-         $uzpr = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpr = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpr');
         })
         ->get();
-         $uzpost = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpost = Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpost');
         })
         ->get();
 
         $totalNotifications = $socmed->count() + $photovid->count() + $layout->count() + $production->count() + $uzpr->count() + $uzpost->count() + $softcopy->count() + $trade->count();
          $departments = Departments::all();
-         $requests = Publishing_requests::with(['information', 'production'])
-         ->whereHas('information', function ($query) {$query->where('specification', 'production');})->orderBy('id', 'desc')->get();
+         $requests = Requestor::with('publishing')
+         ->whereHas('publishing', function ($query) {$query->where('specification', 'production');})->orderBy('id', 'desc')->get();
          $users = User::whereIn('user_type', ['creative_team', 'creative_admin'])
     ->withCount([
         'layoutRequests as in_progress_count' => function ($query) {
@@ -68,49 +66,45 @@ class ProductionservicesController extends Controller
     ])
     ->get();
 
-        $actviepagi  = Publishing_requests::with('information')->paginate(5, ['fullname'], 'active_page');
-        $archivepagi =Publishing_requests::with('information')->paginate(10);
-        $monthpagi =Publishing_requests::with('information')->paginate(10);
-        $listpagi =Publishing_requests::with('information')->paginate(5);
         
           // Inside your controller method:
         $year = request('year', date('Y')); // Defaults to current year if not selected
         $month = request('month', date('m')); // Defaults to current month if not selected
-         $archived = Publishing_requests::with('information')
-            ->whereHas('information', function ($query) use ($year, $month) {
+         $archived = Requestor::with('publishing')
+            ->whereHas('publishing', function ($query) use ($year, $month) {
                 $query->whereIn('status', [2, 4])
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month);
             })
             ->get();
 
-             $totalRequests = Publishing_requests::whereHas('information', function($q) {
+             $totalRequests = Requestor::whereHas('publishing', function($q) {
                                     $q->where('specification', 'production');
                                 })->count();
             // 2. Get counts for each status
         // If 'status' is inside the related 'information' table:
-            $inProgressCount = Publishing_requests::whereHas('information', function($q) {
+            $inProgressCount = Requestor::whereHas('publishing', function($q) {
                     $q->whereIn('status', [2, 4])
                     ->where('specification', 'production');
                 })->count();
 
-            $pendingCount = Publishing_requests::whereHas('information', function($q) {
+            $pendingCount = Requestor::whereHas('publishing', function($q) {
                     $q->where('status', 0)
                     ->where('specification', 'production');
                 })->count();
 
-            $approvalCount = Publishing_requests::whereHas('information', function($q) {
+            $approvalCount = Requestor::whereHas('publishing', function($q) {
                     $q->where('status', 1)
                     ->where('specification', 'production');
                 })->count();
 
-            $monthCount = Publishing_requests::whereHas('information', function($q) {
+            $monthCount = Requestor::whereHas('publishing', function($q) {
                 $q->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->where('specification', 'production');
             })->count();
 
-            $totalCount =  Publishing_requests::whereHas('information', function($q) {
+            $totalCount =  Requestor::whereHas('publishing', function($q) {
                                     $q->where('specification', 'production');
                                 })->count();
 
@@ -122,10 +116,6 @@ class ProductionservicesController extends Controller
             'departments',
             'requests',
             'users',
-            'actviepagi',
-            'archivepagi',
-            'monthpagi',
-            'listpagi',
             'archived',
             'inProgressCount',
             'pendingCount',
@@ -151,7 +141,9 @@ class ProductionservicesController extends Controller
     {
         // 1. Validate all form inputs matching your models
         $validatedData = $request->validate([
-            'full_name' => 'required|string',
+            'f_name' => 'required|string',
+            'l_name' => 'required|string',
+            'middle' => 'required|string',
             'department' => 'required|string',
             'email' => 'required|email',
             'date_needed' => 'required|string',
@@ -175,13 +167,15 @@ class ProductionservicesController extends Controller
             // Generate a unique 6-character random request ID
             do {
                 $randomRequestId = Str::random(6);
-            } while (Publishing_requests::where('request_id', $randomRequestId)->exists());
+            } while (Requestor::where('request_id', $randomRequestId)->exists());
 
             // 3. Save to the parent table (socmed_requests)
-            $publishingRequest = Publishing_requests::create([
+            $publishingRequest = Requestor::create([
                 'request_id' => $randomRequestId,
                 'email' => $validatedData['email'],
-                'fullname' => $validatedData['full_name'],
+                'f_name' => $validatedData['f_name'],
+                'l_name' => $validatedData['l_name'],
+                'middle' => $validatedData['middle'],
                 'department' => $validatedData['department'],
             ]);
 
@@ -198,11 +192,6 @@ class ProductionservicesController extends Controller
                 'approve' => $validatedData['approve'],
                 'status' => '0', // Default status if applicable
                 'reference' => $validatedData['content_attachment']?? null,
-            ]);
-
-             // 4. Save to the child table (socmed_request_information)
-            Production_request_information::create([
-                'request_id' => $randomRequestId, // Links both tables together
                 'size' => $validatedData['size'],
                 'quantity' => $validatedData['quantity'],
                 'type_material' => $validatedData['type_material']
@@ -211,6 +200,7 @@ class ProductionservicesController extends Controller
         });
          try {
    DB::commit(); // Finalize all inserts if everything succeeds
+    SocmedRequestUpdated::dispatch();
     return redirect()->back()->with('success', 'Request saved successfully!');
 
 } catch (\Exception $e) {
@@ -244,8 +234,25 @@ class ProductionservicesController extends Controller
                     $updateData['date_approved'] = null;
                 }
         });
-
+                SocmedRequestUpdated::dispatch();
         return redirect()->back()->with('success', 'Request updated successfully!');
    }
+
+   public function destroy($requestId)
+    {
+        try {
+            DB::transaction(function () use ($requestId) {
+                // Delete the child first, then the parent
+                Publishing_request_informaitons::where('request_id', $requestId)->delete();
+                Requestor::where('request_id', $requestId)->delete();
+            });
+
+            SocmedRequestUpdated::dispatch(); // refresh live tables
+
+            return redirect()->back()->with('success', 'Request deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete: ' . $e->getMessage());
+        }
+    }
 }
 

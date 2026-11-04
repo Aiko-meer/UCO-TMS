@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Publishing_requests;
 use App\Models\Photo_vid_requests;
-use App\Models\Socmed_request;
+use App\Models\Requestor;
 use App\Models\Soft_copy_requests;
 use App\Models\TrademarkRequest;
 use Illuminate\Http\Request;
@@ -17,27 +17,27 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-        $socmed = Socmed_request::where('token', '0')->get();
-        $photovid = Photo_vid_requests::where('token', '0')->get();
+         $socmed = Requestor::where('token', '0')->has('socmed')->get();
+        $photovid = Requestor::where('token', '0')->has('photo')->get();
         $softcopy = Soft_copy_requests::where('token', '0')->get();
         $trade = TrademarkRequest::where('token', '0')->get();
-        $layout = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+        $layout =Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'layout');
         })
         ->get();
-         $production = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $production =Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'production');
         })
         ->get();
-         $uzpr = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpr =Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpr');
         })
         ->get();
-         $uzpost = Publishing_requests::where('token', '0')
-        ->whereHas('information', function ($query) {
+         $uzpost =Requestor::where('token', '0')
+        ->whereHas('publishing', function ($query) {
             $query->where('specification', 'uzpost');
         })
         ->get();

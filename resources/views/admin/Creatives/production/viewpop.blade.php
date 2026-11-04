@@ -14,19 +14,19 @@
                 </div>
                 
                 <div class="modal-body text-left">
-                     <!-- Requester Information -->
+                     <!-- Requester publishing -->
                     <div class="col-12 mb-4">
                         <h6 class="text-uppercase font-weight-bold mb-1">
-                            Requester Information
+                            Requester publishing
                         </h6>
                         <p class="text-muted small mb-0">
-                            Please provide your personal and department information.
+                            Please provide your personal and department publishing.
                         </p>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 form-group">
                             <label><strong>Full Name:</strong></label>
-                            <input type="text"  class="form-control" value="{{ $req->fullname }}">
+                            <input type="text"  class="form-control" value="{{ $req->f_name }} {{ $req->middle }} {{ $req->l_name }} ">
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Email:</strong></label>
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label><strong>Date Needed:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->date_needed ? \Carbon\Carbon::parse($req->information->date_needed)->format('M d, Y') : 'N/A' }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->date_needed ? \Carbon\Carbon::parse($req->publishing->date_needed)->format('M d, Y') : 'N/A' }}">
                         </div>
                     </div>
 
@@ -64,43 +64,43 @@
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Purpose:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->purpose }}</textarea>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->publishing?->purpose }}</textarea>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Specification:</strong></label>
-                             <input type="text" readonly  class="form-control" value="{{ $req->information?->specification }}">
+                             <input type="text" readonly  class="form-control" value="{{ $req->publishing?->specification }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Category:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->category }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->category }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Section:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->section }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->section }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            <label><strong>Content Information:</strong></label>
-                            <textarea  class="form-control" rows="3" readonly>{{ $req->information?->content_information }}</textarea>
+                            <label><strong>Information:</strong></label>
+                            <textarea  class="form-control" rows="3" readonly>{{ $req->publishing?->content_information }}</textarea>
                         </div>
                     </div>
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Content Reference:</strong></label>
-                                @if($req->information?->reference)
-                                    <a href="{{ $req->information->reference }}" 
+                                @if($req->publishing?->reference)
+                                    <a href="{{ $req->publishing->reference }}" 
                                     target="_blank" 
                                     class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
                                         <i class="material-icons mr-1" style="font-size: 16px;">attachment</i> 
@@ -115,21 +115,21 @@
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Size:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->production?->size }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->size }}">
                         </div>
                     </div>
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Quantity:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->production?->quantity }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->quantity }}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-12 form-group">
                             <label><strong>Approve by:</strong></label>
-                            <input type="text" readonly  class="form-control" value="{{ $req->information?->approve }}">
+                            <input type="text" readonly  class="form-control" value="{{ $req->publishing?->approve }}">
                         </div>
                     </div>
 
@@ -138,10 +138,10 @@
                             <label><strong>Date Approve :</strong></label>
                              <div class="d-flex flex-column">
                                                <small class="js-lists-values-date">
-                                                    <strong>{{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->format('M d, Y') : 'N/A' }}</strong>
+                                                    <strong>{{ $req->publishing?->date_approved ? \Carbon\Carbon::parse($req->publishing->date_approved)->format('M d, Y') : 'N/A' }}</strong>
                                                 </small>
                                                 <small class="text-50">
-                                                    {{ $req->information?->date_approved ? \Carbon\Carbon::parse($req->information->date_approved)->diffForHumans() : '' }}
+                                                    {{ $req->publishing?->date_approved ? \Carbon\Carbon::parse($req->publishing->date_approved)->diffForHumans() : '' }}
                                                 </small>
                                             </div>
                         </div>
@@ -149,7 +149,7 @@
 
                      <div class="row mb-3">
                         <div class="col-md-12 form-group">
-                            @if(empty($req->information?->produce))
+                            @if(empty($req->publishing?->produce))
                             <label><strong>Assign to:</strong></label>
                                 <!-- Show select dropdown when produce is empty -->
                                <select name="produce" class="form-control" required>
@@ -161,7 +161,7 @@
                             @else
 
                             <label><strong>Assigned:</strong></label>  
-                            <input type="text" class="form-control" name="produce" value="{{ $req->information?->user?->employee_id  }}" hidden>{{$req->information?->user?->fullname  }}
+                            <input type="text" class="form-control" name="produce" value="{{ $req->publishing?->user?->employee_id  }}" hidden>{{$req->publishing?->user?->fullname  }}
                             @endif
                         </div>
                     </div>
@@ -172,12 +172,12 @@
                         <div class="col-md-12 form-group">
                             <label><strong>Status:</strong></label>
                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
-                               <option value="{{ $req->information->status }}"  selected>
-                                    @if($req->information->status == 0) Pending
-                                    @elseif($req->information->status == 1) Approve
-                                    @elseif($req->information->status == 2) in progress
-                                    @elseif($req->information->status == 3) Rejected
-                                    @elseif($req->information->status == 4) For Approval
+                               <option value="{{ $req->publishing->status }}"  selected>
+                                    @if($req->publishing->status == 0) Pending
+                                    @elseif($req->publishing->status == 1) Approve
+                                    @elseif($req->publishing->status == 2) in progress
+                                    @elseif($req->publishing->status == 3) Rejected
+                                    @elseif($req->publishing->status == 4) For Approval
                                     @endif
                                 </option>
                                 <option value="1">Approve</option>
@@ -214,3 +214,27 @@
     </div>
 </div>
                         @endforeach
+                         <!-- Delete Confirmation Bootstrap Modal -->
+                                    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this request? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                                                    <form id="activeDeleteForm" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
