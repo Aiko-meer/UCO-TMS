@@ -50,13 +50,6 @@
                             </div>
                         </div>
 
-                        <div class="row"
-                             role="tablist">
-                            <div class="col-auto border-left">
-                                <a href=""
-                                   class="btn btn-accent">New Task</a>
-                            </div>
-                        </div>
 
                     </div>
                 </div>
@@ -66,54 +59,7 @@
 
                         <!--overview-->
                         @include ('admin.assets.overview')
-
-                        <!--Task-->
-                        @include ('admin.assets.task')
-
-                        <div class="card p-8pt mb-0 d-inline-block">
-
-                            <ul class="pagination justify-content-start pagination-xsm m-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Previous">
-                                        <span aria-hidden="true"
-                                              class="material-icons">chevron_left</span>
-                                        <span>Prev</span>
-                                    </a>
-                                </li>
-                                <li class="page-item dropdown">
-                                    <a class="page-link dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       href="#"
-                                       aria-label="Page">
-                                        <span>1</span>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a href=""
-                                           class="dropdown-item active">1</a>
-                                        <a href=""
-                                           class="dropdown-item">2</a>
-                                        <a href=""
-                                           class="dropdown-item">3</a>
-                                        <a href=""
-                                           class="dropdown-item">4</a>
-                                        <a href=""
-                                           class="dropdown-item">5</a>
-                                    </div>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Next">
-                                        <span>Next</span>
-                                        <span aria-hidden="true"
-                                              class="material-icons">chevron_right</span>
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </div>
+                        
 
                     </div>
                 </div>

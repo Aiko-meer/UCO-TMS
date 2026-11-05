@@ -26,6 +26,7 @@
 
                         <div class="sidebar-heading">UCO-TEAM</div>
                         <ul class="sidebar-menu">
+                             
                             <li class="sidebar-menu-item {{ request()->routeIs('socmed.home', 'photo.home', 'video.home') ? 'open' : '' }}">
                                 <a class="sidebar-menu-button js-sidebar-collapse"
                                    data-toggle="collapse"
@@ -36,22 +37,25 @@
                                 </a>
                                 <ul class="sidebar-submenu collapse sm-indent"
                                     id="enterprise_menu">
+                                    @if (in_array(auth()->user()->user_type, ['content_team', 'content_admin','admin' , 'superadmin'], true))
                                     <li class="sidebar-menu-item {{ request()->routeIs('socmed.home') ? 'active' : '' }}">
                                         <a class="sidebar-menu-button"
                                            href="{{route ('socmed.home')}}">
                                             <span class="sidebar-menu-text">Social Media Services</span>
                                         </a>
                                     </li>
+                                    @endif
+
                                     <li class="sidebar-menu-item {{ request()->routeIs('photo.home') ? 'active' : '' }}">
                                         <a class="sidebar-menu-button"
                                            href="{{route ('photo.home')}}">
                                             <span class="sidebar-menu-text">Photography Services</span>
                                         </a>
                                     </li>
-
-                                    
                                 </ul>
                             </li>
+
+                              @if (in_array(auth()->user()->user_type, ['creative_team', 'creative_admin','admin' , 'superadmin'], true))
                             <li class="sidebar-menu-item {{ request()->routeIs('production.home','layout.home', 'publishing.home','uzpost.home','uzpr.home') ? 'open' : '' }}">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
@@ -89,7 +93,8 @@
                                  
                                 </ul>
                             </li>
-                           
+                            @endif
+
                             <li class="sidebar-menu-item {{ request()->routeIs('user.table') ? 'open' : '' }}">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
@@ -108,20 +113,24 @@
                                     </li>
                                 </ul>
                             </li>
+
+                             @if (in_array(auth()->user()->user_type, ['yearbook_team','admin' , 'superadmin'], true))
                         <li class="sidebar-menu-item {{ request()->routeIs('softcopy.home') ? 'active' : '' }} ">
                             <a class="sidebar-menu-button" href="{{ route('softcopy.home') }}">
                                 <i class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder_shared</i>
                                 <span class="sidebar-menu-text">Soft Copy Request</span>
                             </a>
                         </li>
+                        @endif
 
+                         @if (in_array(auth()->user()->user_type, ['admin' , 'superadmin'], true))
                         <li class="sidebar-menu-item {{ request()->routeIs('trademark.home') ? 'active' : '' }} ">
                             <a class="sidebar-menu-button" href="{{ route('trademark.home') }}">
                                 <i class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder_shared</i>
                                 <span class="sidebar-menu-text">Trademark </span>
                             </a>
                         </li>  
-                            
+                        @endif
                         </ul>   
                                
                                 </ul>
