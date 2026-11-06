@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UCO-TMS · Submit a Request</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={darkMode:'media'}</script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.08)}}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes grad{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.blob{animation:float 9s ease-in-out infinite}
+.gtext{background:linear-gradient(90deg,#6366f1,#ec4899,#f59e0b,#6366f1);background-size:200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:grad 6s linear infinite}
+.reveal{opacity:0;transform:translateY(28px);transition:all .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.show{opacity:1;transform:none}
+.modal-box{animation:pop .35s ease both}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased">
+
+<!-- NAV -->
+<header class="sticky top-0 z-30 backdrop-blur bg-white/70 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#" class="font-extrabold text-xl tracking-tight">UCO<span class="text-indigo-500">-TMS</span></a>
+    <nav class="hidden sm:flex gap-6 text-sm font-medium">
+      <a class="hover:text-indigo-500" href="#requests">Requests</a>
+      <a class="hover:text-indigo-500" href="#how">How it works</a>
+      <a class="hover:text-indigo-500" href="#track">Track</a>
+    </nav>
+    <a href="#requests" class="rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 transition hover:scale-105">Start a request</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative overflow-hidden">
+  <div class="blob absolute -top-24 -left-24 w-96 h-96 rounded-full bg-indigo-400/30 blur-3xl"></div>
+  <div class="blob absolute top-20 right-0 w-96 h-96 rounded-full bg-pink-400/30 blur-3xl" style="animation-delay:-3s"></div>
+  <div class="blob absolute bottom-0 left-1/3 w-80 h-80 rounded-full bg-amber-300/30 blur-3xl" style="animation-delay:-6s"></div>
+  <div class="relative max-w-4xl mx-auto px-5 py-24 sm:py-32 text-center">
+    <span class="reveal inline-block rounded-full border border-indigo-300 dark:border-indigo-700 bg-white/60 dark:bg-slate-900/60 px-4 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-300">Online request portal</span>
+    <h1 class="reveal mt-6 text-4xl sm:text-6xl font-extrabold leading-tight" style="transition-delay:.1s">Need something done?<br><span class="gtext">Request it in minutes.</span></h1>
+    <p class="reveal mt-6 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto" style="transition-delay:.2s">Pick a request type, fill out a short form, and get a reference number to follow your request from submission to completion.</p>
+    <div class="reveal mt-10 flex flex-wrap justify-center gap-4" style="transition-delay:.3s">
+      <a href="#requests" class="rounded-xl bg-indigo-600 text-white font-semibold px-7 py-3 shadow-lg shadow-indigo-500/30 hover:-translate-y-1 transition">Choose a request</a>
+      <a href="#track" class="rounded-xl border border-slate-300 dark:border-slate-700 font-semibold px-7 py-3 hover:-translate-y-1 transition">Track my request</a>
+    </div>
+    <div class="reveal mt-14 grid grid-cols-3 gap-4 max-w-xl mx-auto" style="transition-delay:.4s">
+      <div><div class="text-3xl font-extrabold" data-count="5">0</div><div class="text-xs text-slate-500">Request types</div></div>
+      <div><div class="text-3xl font-extrabold" data-count="24">0</div><div class="text-xs text-slate-500">Hours avg. response</div></div>
+      <div><div class="text-3xl font-extrabold" data-count="100">0</div><div class="text-xs text-slate-500">% tracked online</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REQUEST CARDS -->
+<section id="requests" class="max-w-6xl mx-auto px-5 py-20">
+  <h2 class="reveal text-3xl font-extrabold text-center">What do you need?</h2>
+  <p class="reveal text-center text-slate-500 mt-2">Select a request type to open its form.</p>
+  <div id="cards" class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800">
+  <div class="max-w-6xl mx-auto px-5 py-20">
+    <h2 class="reveal text-3xl font-extrabold text-center">How it works</h2>
+    <div class="mt-12 grid md:grid-cols-4 gap-8 text-center">
+      <div class="reveal"><div class="mx-auto w-14 h-14 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 grid place-items-center text-xl font-bold">1</div><h3 class="mt-4 font-bold">Choose</h3><p class="text-sm text-slate-500 mt-1">Pick the request type you need.</p></div>
+      <div class="reveal" style="transition-delay:.1s"><div class="mx-auto w-14 h-14 rounded-full bg-pink-100 dark:bg-pink-950 text-pink-600 grid place-items-center text-xl font-bold">2</div><h3 class="mt-4 font-bold">Fill the form</h3><p class="text-sm text-slate-500 mt-1">Give the details we need.</p></div>
+      <div class="reveal" style="transition-delay:.2s"><div class="mx-auto w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 grid place-items-center text-xl font-bold">3</div><h3 class="mt-4 font-bold">Get a reference no.</h3><p class="text-sm text-slate-500 mt-1">Save it to follow your request.</p></div>
+      <div class="reveal" style="transition-delay:.3s"><div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 grid place-items-center text-xl font-bold">4</div><h3 class="mt-4 font-bold">Track</h3><p class="text-sm text-slate-500 mt-1">See the status until it’s done.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACK -->
+<section id="track" class="max-w-2xl mx-auto px-5 py-20 text-center">
+  <h2 class="reveal text-3xl font-extrabold">Track your request</h2>
+  <form id="trackForm" class="reveal mt-8 flex gap-3">
+    <input id="trackRef" required placeholder="e.g. TMS-2026-1A2B3C" class="flex-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500">
+    <button class="rounded-xl bg-indigo-600 text-white font-semibold px-6">Track</button>
+  </form>
+  <p id="trackMsg" class="mt-4 text-sm text-slate-500"></p>
+</section>
+
+<footer class="text-center text-sm text-slate-500 py-8 border-t border-slate-200 dark:border-slate-800">© 2026 UCO-TMS. All rights reserved.</footer>
+
+<!-- MODAL -->
+<div id="modal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm overflow-y-auto p-4">
+  <div class="modal-box max-w-xl mx-auto my-8 rounded-2xl bg-white dark:bg-slate-900 shadow-2xl p-6 sm:p-8">
+    <div class="flex items-start justify-between">
+      <div><div id="mIcon" class="text-3xl"></div><h3 id="mTitle" class="text-2xl font-extrabold mt-1"></h3></div>
+      <button id="mClose" class="text-2xl text-slate-400 hover:text-slate-700 dark:hover:text-white" aria-label="Close">×</button>
+    </div>
+    <form id="mForm" class="mt-6 space-y-4"></form>
+    <div id="mDone" class="hidden text-center py-8">
+      <div class="mx-auto w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 grid place-items-center text-3xl">✓</div>
+      <h4 class="mt-4 text-xl font-bold">Request submitted!</h4>
+      <p class="text-slate-500 mt-1">Your reference number:</p>
+      <p id="mRef" class="mt-2 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 font-mono font-bold"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 1. Edit this list to match YOUR system's request types and fields =====
+// NOTE: field lists below are placeholders until copied from the real project forms
+const TYPES = [
+  {id:'socmed', icon:'📱', title:'Social Media Request', color:'indigo', desc:'Posts, announcements, and social media coverage.',
+   fields:[{n:'platform',l:'Platform',t:'select',o:['Facebook','Instagram','X / Twitter','TikTok','YouTube']},{n:'post_date',l:'Preferred posting date',t:'date'},{n:'details',l:'Post details',t:'textarea'}]},
+  {id:'layout', icon:'🎨', title:'Layout Request', color:'pink', desc:'Posters, tarpaulins, flyers, and other designs.',
+   fields:[{n:'layout_type',l:'Layout type',t:'select',o:['Poster','Tarpaulin','Flyer','Certificate','Other']},{n:'needed_by',l:'Needed by',t:'date'},{n:'details',l:'Content and instructions',t:'textarea'}]},
+  {id:'production', icon:'🎬', title:'Production Request', color:'amber', desc:'Video, photo, and event production services.',
+   fields:[{n:'production_type',l:'Production type',t:'select',o:['Video','Photography','Livestream','Audio']},{n:'event_date',l:'Event date',t:'date'},{n:'details',l:'Details',t:'textarea'}]},
+  {id:'trademark', icon:'™️', title:'Trademark Request', color:'emerald', desc:'Use of the official name, logo, and marks.',
+   fields:[{n:'purpose',l:'Purpose of use',t:'text'},{n:'mark',l:'Name / logo to be used',t:'text'},{n:'details',l:'Where will it be used?',t:'textarea'}]},
+  {id:'softcopy', icon:'📁', title:'Soft Copy Request', color:'sky', desc:'Digital copies of photos, videos, and files.',
+   fields:[{n:'file_desc',l:'What file do you need?',t:'text'},{n:'event_date',l:'Event / date of material',t:'date'},{n:'purpose',l:'Purpose',t:'textarea'}]}
+];
+// Shared fields every form has
+const COMMON = [{n:'name',l:'Full name',t:'text'},{n:'email',l:'Email',t:'email'},{n:'phone',l:'Contact number',t:'tel'}];
+
+const COLORS = {indigo:'bg-indigo-100 dark:bg-indigo-950',pink:'bg-pink-100 dark:bg-pink-950',amber:'bg-amber-100 dark:bg-amber-950',emerald:'bg-emerald-100 dark:bg-emerald-950',sky:'bg-sky-100 dark:bg-sky-950',rose:'bg-rose-100 dark:bg-rose-950'};
+
+// ===== 2. Build the cards =====
+const cards = document.getElementById('cards');
+TYPES.forEach((t,i)=>{
+  const b = document.createElement('button');
+  b.className = 'reveal group text-left rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm hover:shadow-xl hover:-translate-y-2 hover:border-indigo-400 transition-all duration-300';
+  b.style.transitionDelay = (i%3)*0.1+'s';
+  b.innerHTML = `<div class="w-14 h-14 rounded-xl ${COLORS[t.color]} grid place-items-center text-3xl group-hover:rotate-12 group-hover:scale-110 transition">${t.icon}</div>
+    <h3 class="mt-4 text-lg font-bold">${t.title}</h3>
+    <p class="mt-1 text-sm text-slate-500">${t.desc}</p>
+    <span class="mt-4 inline-block text-sm font-semibold text-indigo-600 dark:text-indigo-400">Fill out form <span class="inline-block group-hover:translate-x-1 transition">→</span></span>`;
+  b.onclick = ()=>openModal(t);
+  cards.appendChild(b);
+});
+
+// ===== 3. Modal + dynamic form =====
+const modal = document.getElementById('modal'), form = document.getElementById('mForm'), done = document.getElementById('mDone');
+const inputCls = 'w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500';
+function field(f){
+  let el;
+  if(f.t==='textarea') el=`<textarea name="${f.n}" rows="3" required class="${inputCls}"></textarea>`;
+  else if(f.t==='select') el=`<select name="${f.n}" required class="${inputCls}">${f.o.map(o=>`<option>${o}</option>`).join('')}</select>`;
+  else el=`<input type="${f.t}" name="${f.n}" required class="${inputCls}">`;
+  return `<label class="block text-sm font-semibold">${f.l}<div class="mt-1 font-normal">${el}</div></label>`;
+}
+function openModal(t){
+  document.getElementById('mIcon').textContent=t.icon;
+  document.getElementById('mTitle').textContent=t.title;
+  form.innerHTML=[...COMMON,...t.fields].map(field).join('')+
+    `<button class="w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 transition hover:scale-[1.02]">Submit request</button>`;
+  form.classList.remove('hidden'); done.classList.add('hidden');
+  form.onsubmit = e=>{
+    e.preventDefault();
+    // In Laravel you will POST this data to a route instead (see the steps below the preview).
+    const data = Object.fromEntries(new FormData(form)); console.log(t.id, data);
+    document.getElementById('mRef').textContent='TMS-2026-'+Math.random().toString(16).slice(2,8).toUpperCase();
+    form.classList.add('hidden'); done.classList.remove('hidden');
+  };
+  modal.classList.remove('hidden'); document.body.style.overflow='hidden';
+}
+function closeModal(){modal.classList.add('hidden');document.body.style.overflow=''}
+document.getElementById('mClose').onclick=closeModal;
+modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// Track (demo only)
+document.getElementById('trackForm').onsubmit=e=>{e.preventDefault();
+  document.getElementById('trackMsg').textContent='Demo: status lookup will come from your database once connected.'};
+
+// ===== 4. Scroll reveal + counters =====
+const io = new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('show');io.unobserve(x.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('[data-count]').forEach(el=>{
+  const end=+el.dataset.count; let n=0;
+  const step=setInterval(()=>{n+=Math.ceil(end/40);if(n>=end){n=end;clearInterval(step)}el.textContent=n},40);
+});
+</script>
+</body>
+</html>

@@ -113,17 +113,33 @@
                             <div class="card-header p-0 nav">
                                 <div class="row no-gutters"
                                     role="tablist">
+                                     @if (in_array(auth()->user()->user_type, ['creative_team', 'creative_admin'], true))
+                                    <!-- My task -->
+                                    <div class="col-auto">
+                                        <a href="#mytask" data-toggle="tab" role="tab" aria-selected="true"
+                                            class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
+                                            <span class="h2 mb-0 mr-3" id="count-mytask">{{ $mytasks->count() }}</span>
+                                            <span class="flex d-flex flex-column">
+                                                <strong class="card-title">Task</strong>
+                                                <small class="card-subtitle text-50">My Task</small>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @endif
+
+                                    @if (in_array(auth()->user()->user_type, ['admin', 'superadmin'], true))
                                     <!-- Active Counter -->
                                     <div class="col-auto">
                                         <a href="#active" data-toggle="tab" role="tab" aria-selected="true"
-                                            class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start active">
+                                            class="dashboard-area-tabs__tab card-body d-flex flex-row align-items-center justify-content-start ">
                                             <span class="h2 mb-0 mr-3" id="count-active">{{ $inProgressCount }}</span>
                                             <span class="flex d-flex flex-column">
-                                                <strong class="card-title">Active</strong>
+                                                <strong class="card-title">Pending</strong>
                                                 <small class="card-subtitle text-50">Ongoing Projects</small>
                                             </span>
                                         </a>
                                     </div>
+                                    @endif
 
                                     <!-- Archive Counter -->
                                     <div class="col-auto border-left border-right">
@@ -169,12 +185,21 @@
 
                             <div class="tab-content">
 
-                                {{-- ACTIVE PROJECTS --}}
+                            {{-- ACTIVE PROJECTS --}}
                                 <div class="tab-pane fade show active"
                                     id="active"
                                     role="tabpanel">
                                     <div class="table-responsive">
                                         @include ('admin.creatives.layout.table.active')
+                                    </div>
+                                </div>
+
+                                {{-- MY TASKS --}}
+                                <div class="tab-pane fade"
+                                    id="mytask"
+                                    role="tabpanel">
+                                    <div class="table-responsive">
+                                        @include ('admin.creatives.layout.table.mytask')
                                     </div>
                                 </div>
 
@@ -261,43 +286,53 @@
                                         .catch(err => console.error('[socmed] refresh failed', err));
                                 }
 
-                                $(document).on('hidden.bs.modal', '.modal', function() {
-                                    if (pendingRefresh) refreshSocmedTable();
-                                });
-
+                                // jQuery is loaded by the footer at the bottom of the page,
+                                // so anything that uses "$" has to wait until the page has finished loading.
                                 window.addEventListener('load', function() {
-                                    window.Echo.channel('admin.socmed').listen('.socmed.updated', () => {
-                                        console.log('[socmed] event received');
-                                        clearTimeout(refreshTimer);
-                                        refreshTimer = setTimeout(refreshSocmedTable, 300);
+                                    $(document).on('hidden.bs.modal', '.modal', function() {
+                                        if (pendingRefresh) refreshSocmedTable();
                                     });
-                                    console.log('[socmed] listener registered');
+
+                                    // Live refresh only works while the Reverb server is running:
+                                    //   php artisan reverb:start
+                                    if (window.Echo) {
+                                        window.Echo.channel('admin.socmed').listen('.socmed.updated', () => {
+                                            console.log('[socmed] event received');
+                                            clearTimeout(refreshTimer);
+                                            refreshTimer = setTimeout(refreshSocmedTable, 300);
+                                        });
+                                        console.log('[socmed] listener registered');
+                                    }
                                 });
                             </script>
+
+                            {{-- Popups: SweetAlert is also loaded by the footer, so wait for "load" here too --}}
                             @if(session('success') || session('error') || $errors->any())
                             <script>
-                                @if(session('success'))
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Good job!',
-                                    text: "{{ session('success') }}",
-                                    confirmButtonText: 'OK'
+                                window.addEventListener('load', function() {
+                                    @if(session('success'))
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Good job!',
+                                        text: @json(session('success')),
+                                        confirmButtonText: 'OK'
+                                    });
+                                    @elseif(session('error'))
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Saving Failed',
+                                        text: @json(session('error')),
+                                        confirmButtonText: 'OK'
+                                    });
+                                    @elseif($errors->any())
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Validation Error!',
+                                        html: @json(implode('<br>', array_map('e', $errors->all()))),
+                                        confirmButtonText: 'OK'
+                                    });
+                                    @endif
                                 });
-                                @elseif(session('error'))
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Saving Failed',
-                                    text: "{{ session('error') }}",
-                                    confirmButtonText: 'OK'
-                                });
-                                @elseif($errors -> any())
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Validation Error!',
-                                    html: '{!! implode("<br>", $errors->all()) !!}',
-                                    confirmButtonText: 'OK'
-                                });
-                                @endif
                             </script>
                             @endif
 

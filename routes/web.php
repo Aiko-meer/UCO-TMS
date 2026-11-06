@@ -17,16 +17,35 @@ use App\Http\Controllers\UzprController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\PublicRequestController;
+
 /*
 |--------------------------------------------------------------------------
 | 1. Public routes (no login needed)
 |--------------------------------------------------------------------------
 */
 
-// Send visitors to the right place
-Route::get('/', function () {
-    return redirect()->route(auth()->check() ? 'admin.home' : 'login');
+// Landing page: anyone can open it
+Route::get('/', fn () => view('landingpage.index'))->name('landing');
+
+// Public request forms: max 10 submissions per minute per visitor
+Route::prefix('request')->name('request.')->middleware('throttle:10,1')->group(function () {
+    Route::post('/socmed',     [SocialmediaController::class, 'store'])->name('socmed');
+    Route::post('/layout',     [LayoutservicesController::class, 'store'])->name('layout');
+    Route::post('/production', [ProductionservicesController::class, 'store'])->name('production');
+    Route::post('/trademark',  [TrademarkRequestController::class, 'store'])->name('trademark');
+    Route::post('/softcopy',   [SoftcopyController::class, 'store'])->name('softcopy');
 });
+
+// Login page: only for people who are NOT logged in yet
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'authenticate'])
+        ->middleware('throttle:10,1')
+        ->name('login.store');
+});
+
+Route::redirect('/admin-login', '/login');
 
 // Login page: only for people who are NOT logged in yet
 Route::middleware('guest')->group(function () {
@@ -47,6 +66,8 @@ Route::redirect('/admin-login', '/login');
 | Everything below needs a login. "role:..." limits a group to certain user
 | types (admin and superadmin can always open everything).
 */
+
+
 
 Route::middleware('auth')->group(function () {
 
@@ -98,6 +119,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/layoutservices/dashboard', [LayoutservicesController::class, 'dashboard'])->name('layout.home');
         Route::post('/layoutservices/dashboard/store', [LayoutservicesController::class, 'store'])->name('layout.store');
         Route::put('/layoutservices/dashboard/update/{request_id}', [LayoutservicesController::class, 'update'])->name('layout.update');
+        Route::put('/layoutservices/dashboard/taketask/{request_id}', [LayoutservicesController::class, 'taketask'])->name('layout.taketask');
+        Route::put('/layoutservices/dashboard/assigntask/{request_id}', [LayoutservicesController::class, 'assignTask'])->name('layout.assignTask');
         Route::post('/layoutservices/dashboard/mark-sent/{request_id}', [LayoutservicesController::class, 'markAsSent']);
         Route::post('/admin/layoutservices/mark-denied/{request_id}', [LayoutservicesController::class, 'markAsDenied']);
         Route::delete('/layoutservices/dashboard/delete/{request_id}', [LayoutservicesController::class, 'destroy'])->name('layout.destroy');

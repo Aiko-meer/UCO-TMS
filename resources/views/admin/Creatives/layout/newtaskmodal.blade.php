@@ -7,7 +7,7 @@
         <div class="modal-header">
             <div>
                 <h5 class="modal-title font-weight-bold mb-1">
-                    Create New Request
+                    Create New  Layout Request
                 </h5>
 
                 <small class="text-muted">

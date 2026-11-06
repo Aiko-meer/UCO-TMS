@@ -136,17 +136,23 @@
                              </div>
                          </div>
                      </div>
-
+                    
+                      @if (in_array(auth()->user()->user_type, ['admin' , 'superadmin','creative_admin'], true))
                      <div class="row mb-3">
                          <div class="col-md-12 form-group">
                              @if(empty($req->publishing?->produce))
                              <label><strong>Assign to:</strong></label>
                              <!-- Show select dropdown when produce is empty -->
-                             <select name="produce" class="form-control" required>
+                             <select name="produce" class="form-control assign-select" data-target="#user_assigned_{{ $req->request_id }}" data-email-target="#user_email_{{ $req->request_id }}">
                                  <option value="" disabled selected>Select a user</option>
                                  @foreach($users as $user)
-                                 <option value="{{ $user->employee_id }}">{{ $user->fullname }}</option>
+                                 <option value="{{ $user->employee_id }}" data-email="{{ $user->email }}">
+                                     {{ $user->fullname }}
+                                 </option>
                                  @endforeach
+                                 <option value="234312331" data-email="zaeed.cervantes@uz.edu.ph" class="form-control">
+                                     John Doe
+                                 </option>
                              </select>
                              @else
 
@@ -155,13 +161,14 @@
                              @endif
                          </div>
                      </div>
+                     @endif
 
 
-
+                     @if (in_array(auth()->user()->user_type, ['admin' , 'superadmin'], true))
                      <div class="row mb-3">
                          <div class="col-md-12 form-group">
                              <label><strong>Status:</strong></label>
-                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}" required>
+                             <select name="status" class="form-control status-dropdown" data-id="{{ $req->request_id }}">
                                  <option value="{{ $req->publishing->status }}" selected>
                                      @if($req->publishing->status == 0) Pending
                                      @elseif($req->publishing->status == 1) Approve
@@ -179,6 +186,7 @@
                              </select>
                          </div>
                      </div>
+                     @endif
 
                      <script>
                          document.addEventListener('change', function(e) {
@@ -198,11 +206,37 @@
 
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                     @auth
+
+                     @if (in_array(auth()->user()->user_type, ['admin' , 'superadmin',], true))
                      <button type="submit" class="btn btn-primary">Save Changes</button>
-                 </div>
+                     @endif
              </form>
+             @if(empty($req->publishing?->produce))
+             <form action="{{ route('layout.taketask', $req->request_id) }}" method="POST">
+                 @csrf
+                 @method('PUT')
+                 <input type="hidden" name="user" value="{{ auth()->user()->employee_id }}">
+                 <button type="submit" class="btn btn-success">Take Task</button>
+             </form>
+             @endif
+             @if (in_array(auth()->user()->user_type, ['creative_admin'], true))
+             @if(empty($req->publishing?->produce))
+             <form action="{{ route('layout.assignTask', $req->request_id) }}" method="POST"
+                 onsubmit="sendAssignEmailJS(event, @js($req->request_id), @js(auth()->user()->fullname), @js($req->publishing?->purpose))">
+                 @csrf
+                 @method('PUT')
+                 <input type="hidden" name="user_assigned" id="user_assigned_{{ $req->request_id }}" value="">
+                 <input type="hidden" name="user_email" id="user_email_{{ $req->request_id }}" value="">
+                 <button type="submit" id="assignBtn-{{ $req->request_id }}" class="btn btn-info">Assign Task</button>
+             </form>
+             @endif
+             @endif
+             @endauth
          </div>
+
      </div>
+ </div>
  </div>
  @endforeach
 
@@ -237,5 +271,85 @@
 
          // Show the Bootstrap modal
          $('#deleteConfirmModal').modal('show');
+     }
+ </script>
+ <script>
+     // When a user is picked, copy their id, email and name into the hidden inputs
+     document.addEventListener('change', function(e) {
+         const select = e.target.closest('.assign-select');
+         if (!select) return;
+
+         const option = select.options[select.selectedIndex];
+         const idInput = document.getElementById(select.dataset.target.replace('#', ''));
+         const emailInput = document.getElementById(select.dataset.emailTarget.replace('#', ''));
+
+         if (idInput) idInput.value = select.value;
+         if (emailInput) {
+             emailInput.value = option.dataset.email || '';
+             emailInput.dataset.userName = option.text.trim();
+         }
+     });
+
+     function sendAssignEmailJS(event, requestId, assignedBy, purpose) {
+         event.preventDefault(); // Prevent standard page reload
+
+         const form = event.target;
+         const userId = document.getElementById('user_assigned_' + requestId).value;
+         const emailInput = document.getElementById('user_email_' + requestId);
+         const submitBtn = document.getElementById('assignBtn-' + requestId);
+
+         if (!userId || !emailInput.value) {
+             alert('Please select a user to assign first.');
+             return;
+         }
+
+         // Disable button & show loading state
+         submitBtn.disabled = true;
+         submitBtn.innerHTML = 'Sending...';
+
+         // Same variables as your approval email, so the same template works
+         // Variables that match the template text exactly
+         const templateParams = {
+             to_email: emailInput.value,
+             to_title: 'New Task Assigned to You',
+             to_name: emailInput.dataset.userName || '',
+             assigned_by: assignedBy,
+             request_id: requestId,
+             purpose: purpose || 'N/A'
+         };
+
+         emailjs.send('service_ydriqxs', 'YOUR_ASSIGN_TEMPLATE_ID', templateParams)
+
+         emailjs.send('service_ydriqxs', 'template_1njzwjo', templateParams)
+             .then(function(response) {
+                 console.log('EmailJS SUCCESS!', response.status, response.text);
+
+                 // Save the assignment through the same Laravel route the form uses
+                 fetch(form.action, {
+                         method: 'POST', // the form's hidden _method field turns this into PUT
+                         headers: {
+                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                             'Accept': 'application/json'
+                         },
+                         body: new FormData(form)
+                     })
+                     .then(res => {
+                         if (!res.ok) throw new Error('Server returned ' + res.status);
+                         alert('Task assigned and email sent successfully!');
+                         location.reload(); // Refresh to show the assigned user
+                     })
+                     .catch(err => {
+                         console.error('Database update error:', err);
+                         alert('Email sent, but failed to save the assignment in the database.');
+                         submitBtn.disabled = false;
+                         submitBtn.innerHTML = 'Assign Task';
+                     });
+
+             }, function(error) {
+                 console.error('EmailJS FAILED...', error);
+                 alert('Failed to send the email: ' + ((error && (error.text || error.message)) || 'Unknown error'));
+                 submitBtn.disabled = false;
+                 submitBtn.innerHTML = 'Assign Task';
+             });
      }
  </script>
