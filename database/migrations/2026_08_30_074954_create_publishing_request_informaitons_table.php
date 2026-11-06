@@ -1,0 +1,48 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('publishing_request_informaitons', function (Blueprint $table) {
+            $table->id();
+            $table->string('request_id');
+            $table->string('purpose');
+            $table->date('date_needed');
+            $table->string('category')->nullable();
+            $table->string('other_category')->nullable();
+            $table->string('specification');
+            $table->text('content_information')->nullable();
+            $table->string('section');
+            $table->string('approve');
+            $table->string('produce')->nullable();
+            $table->date('published')->nullable();
+            $table->integer('status')->nullable();
+            $table->json('content_attachement')->nullable();
+            $table->json('sdg')->nullable();
+            $table->string('reference')->nullable();
+            $table->date('date_event')->nullable();
+            $table->integer('token')->default(0);
+            $table->date('date_approved')->nullable();
+            $table->string('size')->nullable();
+            $table->integer('quantity')->nullable();
+            $table->string('type_material')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('publishing_request_informaitons');
+    }
+};

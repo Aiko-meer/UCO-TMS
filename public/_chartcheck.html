@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{font:13px system-ui;background:#fff;padding:16px;display:flex;gap:24px}
+.c{text-align:center}.wrap{position:relative;width:48px;height:48px;margin:0 auto}
+.wrap small{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+</style></head><body>
+<div class="c"><div class="wrap"><small>40%</small><canvas width="48" height="48" id="a"></canvas></div><p>40% (nonzero)</p></div>
+<div class="c"><div class="wrap"><small>0%</small><canvas width="48" height="48" id="b"></canvas></div><p>0% (status all 0)</p></div>
+<div class="c"><div class="wrap"><small>100%</small><canvas width="48" height="48" id="c"></canvas></div><p>100%</p></div>
+<script src="/assets/vendor/Chart.min.js"></script>
+<script>
+function createProgressChart(elementId, percentage, color) {
+    var ctx = document.getElementById(elementId).getContext('2d');
+    new Chart(ctx, { type:'doughnut',
+        data:{ datasets:[{ data:[percentage, 100-percentage], backgroundColor:[color,'#e9ecef'], borderWidth:0 }] },
+        options:{ cutoutPercentage:80, tooltips:{enabled:false}, responsive:false, maintainAspectRatio:false } });
+}
+createProgressChart('a', 40, '#ffc107');
+createProgressChart('b', 0,  '#007bff');
+createProgressChart('c', 100,'#28a745');
+window.__RESULT__ = function(){
+  function px(id){
+    var cv=document.getElementById(id), g=cv.getContext('2d');
+    // sample at 12 o'clock on the ring band (radius offset 12 from center, y=12)
+    var d=g.getImageData(12,12,1,1).data;
+    return 'rgba('+d[0]+','+d[1]+','+d[2]+','+d[3]+')';
+  }
+  return {version:(window.Chart&&Chart.version)||'none', a:px('a'), b:px('b'), c:px('c')};
+};
+window.__READY__=true;
+</script></body></html>
