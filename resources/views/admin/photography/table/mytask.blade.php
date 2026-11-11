@@ -1,0 +1,171 @@
+<div class="table-responsive"
+                             data-toggle="lists"
+                             data-lists-sort-by="js-lists-values-date"
+                             data-lists-sort-desc="true"
+                             data-lists-values='["js-lists-values-lead", "js-lists-values-project", "js-lists-values-status", "js-lists-values-budget", "js-lists-values-date"]'>
+
+                             <div class="card-header">
+                                            <div class="search-form">
+                                                <input type="text"
+                                                       class="form-control search"
+                                                       placeholder="Search ...">
+                                                <button class="btn"
+                                                        type="button"
+                                                        role="button"><i class="material-icons">search</i></button>
+                                            </div>
+                                        </div>
+                            <table class="table mb-0 thead-border-top-0 table-nowrap" id="active">
+                                <thead>
+                                    <tr>
+
+                                        <th style="width: 150px;">
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-project">Requestor</a>
+                                        </th>
+
+                                        <th style="width: 70px";>
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-lead">Department</a>
+                                        </th>
+
+                                        <th style="width: 70px";>
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-lead">Event</a>
+                                        </th>
+
+                                        <th style="width: 48px;">
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-status">Status</a>
+                                        </th>
+
+                                        <th >
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-budget">Location </a>
+                                        </th>
+
+                                        <th style="width: 48px;">
+                                            <a href="javascript:void(0)"
+                                               class="sort"
+                                               data-sort="js-lists-values-date">Date Event</a>
+                                        </th>
+                                        <th style="width: 24px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list"
+                                       id="projects">
+                                     @foreach($mytasks as $req)
+                                     @if ( $req->status = 1)
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="media flex-nowrap align-items-center"
+                                                 style="white-space: nowrap;">
+                                                
+                                                <div class="media-body">
+                                                    <div class="d-flex flex-column">
+                                                        <small class="js-lists-values-project"><strong>{{$req->fullname}}</strong></small>
+                                                        <a href="mailto:{{$req->email}}">{{$req->email}}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="media flex-nowrap align-items-center"
+                                                 style="white-space: nowrap;">
+                                                <div class="media-body">
+
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex d-flex flex-column">
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{$req->department}}</strong></p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="media flex-nowrap align-items-center"
+                                                 style="white-space: nowrap;">
+                                                <div class="media-body">
+
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex d-flex flex-column">
+                                                            <p class="mb-0"><strong class="js-lists-values-lead">{{$req->photo->event}}</strong></p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @if ($req->photo->status == 0)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Pending</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->photo->status == 1)
+                                                <small class="js-lists-values-status text-50 mb-4pt">On progress</small>
+                                                <span class="indicator-line rounded bg-warning"></span>
+                                                @endif
+                                                 @if ($req->photo->status == 2)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-info"></span>
+                                                @endif 
+                                                @if ($req->photo->status == 3)
+                                                <small class="js-lists-values-status text-50 mb-4pt">Done</small>
+                                                <span class="indicator-line rounded bg-danger"></span>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <small class="js-lists-values-date"><strong>{{$req->photo->venue}}</strong></small>
+                                                <small class="text-50"></small>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                               <small class="js-lists-values-date">
+                                                    <strong>{{ $req->photo?->date_needed ? \Carbon\Carbon::parse($req->photo->date_needed)->format('M d, Y') : 'N/A' }}</strong>
+                                                </small>
+                                                <small class="text-50">
+                                                    {{ $req->photo?->date_needed ? \Carbon\Carbon::parse($req->photo->date_needed)->diffForHumans() : '' }}
+                                                </small>
+                                            </div>
+                                        </td>
+                                         <td class="text-right">
+                                            <button type="button" class="btn btn-link text-50 p-0" onclick="$('#viewModal-{{ $req->request_id }}').modal('show');">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                                                 <script>
+function openDeleteModal(actionUrl) {
+    // Set the form action URL dynamically to the specific request route
+    document.getElementById('activeDeleteForm').action = actionUrl;
+    
+    // Show the Bootstrap modal
+    $('#deleteConfirmModal').modal('show');
+}
+</script>
