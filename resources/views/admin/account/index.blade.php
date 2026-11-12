@@ -62,43 +62,51 @@
                 </div>
 
                 <div class="container-fluid page__container">
-                    <form action="edit-account.html">
+                    <form method="POST" action="{{ route('admin.account.update') }}">
+                        @csrf
+                        @method('PUT')
                         <div class="row">
                             <div class="col-lg-9 pr-lg-0">
 
                                 <div class="page-section">
+                                    @include('admin.account.partials.alerts')
                                     <h4>Basic Information</h4>
                                     <div class="list-group list-group-form">
                                         <div class="list-group-item">
                                             <div class="form-group row align-items-center mb-0">
-                                                <label class="form-label col-form-label col-sm-3">First name</label>
+                                                <label class="form-label col-form-label col-sm-3" for="fullname">Full name</label>
                                                 <div class="col-sm-9">
                                                     <input type="text"
-                                                           class="form-control"
-                                                           value="Alexander"
-                                                           placeholder="Your first name ...">
+                                                           class="form-control @error('fullname') is-invalid @enderror"
+                                                           id="fullname"
+                                                           name="fullname"
+                                                           value="{{ old('fullname', auth()->user()->fullname) }}"
+                                                           placeholder="Your full name ..."
+                                                           maxlength="255"
+                                                           autocomplete="name"
+                                                           required>
+                                                    @error('fullname')
+                                                        <div class="form-text text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="list-group-item">
                                             <div class="form-group row align-items-center mb-0">
-                                                <label class="form-label col-form-label col-sm-3">Last name</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text"
-                                                           class="form-control"
-                                                           value="Watson"
-                                                           placeholder="Your last name ...">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="list-group-item">
-                                            <div class="form-group row align-items-center mb-0">
-                                                <label class="form-label col-form-label col-sm-3">Email address</label>
+                                                <label class="form-label col-form-label col-sm-3" for="email">Email address</label>
                                                 <div class="col-sm-9">
                                                     <input type="email"
-                                                           class="form-control"
-                                                           value="alexander.watson@fake-mail.com"
-                                                           placeholder="Your email address ...">
+                                                           class="form-control @error('email') is-invalid @enderror"
+                                                           id="email"
+                                                           name="email"
+                                                           value="{{ old('email', auth()->user()->email) }}"
+                                                           placeholder="Your email address ..."
+                                                           maxlength="255"
+                                                           autocomplete="email"
+                                                           required>
+                                                    @error('email')
+                                                        <div class="form-text text-danger">{{ $message }}</div>
+                                                    @enderror
                                                     <small class="form-text text-muted">Note that if you change your email, you will have to confirm it again.</small>
                                                 </div>
                                             </div>

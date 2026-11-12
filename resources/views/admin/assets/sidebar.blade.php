@@ -5,11 +5,15 @@
             data-perfect-scrollbar>
 
             <a href="{{ route('admin.home') }}"
-                class="sidebar-brand ">
-                <img class="sidebar-brand-icon"
-                    src="{{ asset('assets/images/logo/accent-teal-100@2x.png') }}"
-                    alt="">
-                <span>UCO-TMS</span>
+                class="sidebar-brand">
+                <span class="sidebar-brand-seal">
+                    <img src="{{ asset('assets/images/uz-logo.png') }}"
+                        alt="Universidad de Zamboanga seal">
+                </span>
+                <span class="sidebar-brand-text">
+                    <span class="sidebar-brand-name">UCO<span>·</span>TMS</span>
+                    <span class="sidebar-brand-caption">Universidad de Zamboanga</span>
+                </span>
             </a>
 
             <div class="sidebar-heading">Overview</div>
@@ -140,6 +144,17 @@
             </ul>
             </li>
             </ul>
+
+            <div class="sidebar-credit">
+                <span class="sidebar-credit-seal">
+                    <img src="{{ asset('assets/images/uco-logo.png') }}"
+                        alt="University Communication Office seal">
+                </span>
+                <span>
+                    <strong>University Communication Office</strong>
+                    <small>Developed by <span>Zaeed Cervantes</span></small>
+                </span>
+            </div>
 
         </div>
     </div>

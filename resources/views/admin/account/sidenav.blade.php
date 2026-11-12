@@ -9,7 +9,7 @@
 
             <a class="nav-link {{ request()->routeIs('admin.account.edit-profile') ? 'active' : '' }}"
                href="{{ route('admin.account.edit-profile') }}">
-                Profile &amp; Privacy
+                Profile 
             </a>
 
             <a class="nav-link {{ request()->routeIs('admin.account.edit-password') ? 'active' : '' }}"

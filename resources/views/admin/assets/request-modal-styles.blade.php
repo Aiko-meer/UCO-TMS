@@ -9,8 +9,8 @@
     .request-modal .modal-header {
         align-items: flex-start;
         padding: 1.15rem 1.5rem;
-        border-bottom: 1px solid #e9edf2;
-        background: #fff;
+        border-bottom: 1px solid #DCE7D8;
+        background: #FFFDF7;
     }
 
     .request-modal .modal-title {
@@ -40,8 +40,8 @@
 
     .request-modal .modal-footer {
         padding: .95rem 1.5rem;
-        border-top: 1px solid #e9edf2;
-        background: #f8f9fa;
+        border-top: 1px solid #DCE7D8;
+        background: #F7F4EA;
         gap: .5rem;
     }
 
@@ -63,8 +63,8 @@
         height: 2.5rem;
         margin-right: .9rem;
         border-radius: .55rem;
-        background: rgba(74, 162, 238, .12);
-        color: #3a8ed4;
+        background: rgba(43, 82, 56, .12);
+        color: #2B5238;
     }
 
     .request-modal__glyph .material-icons {
@@ -81,7 +81,7 @@
         align-items: center;
         margin-top: .2rem;
         font-size: .75rem;
-        color: #7b8590;
+        color: #6B8F71;
     }
 
     .request-modal__meta > * + * {
@@ -90,7 +90,7 @@
 
     .request-modal__ref {
         font-weight: 600;
-        color: #272c33;
+        color: #152C1F;
         letter-spacing: .02em;
         font-variant-numeric: tabular-nums;
     }
@@ -109,7 +109,7 @@
 
     .request-modal__section + .request-modal__section {
         padding-top: 1.35rem;
-        border-top: 1px solid #eef1f5;
+        border-top: 1px solid #EDF1E7;
     }
 
     .request-modal__section-title {
@@ -121,13 +121,13 @@
         font-weight: 600;
         letter-spacing: .09em;
         text-transform: uppercase;
-        color: #66707b;
+        color: #5E7461;
     }
 
     .request-modal__section-title .material-icons {
         margin-right: .45rem;
         font-size: 1rem;
-        color: #4aa2ee;
+        color: #4F7D5C;
     }
 
     .request-modal__grid {
@@ -155,20 +155,20 @@
         font-weight: 700;
         letter-spacing: .08em;
         text-transform: uppercase;
-        color: #929ba4;
+        color: #8FAE92;
     }
 
     .request-modal__value {
         margin: 0;
         font-size: .8125rem;
         line-height: 1.6;
-        color: #272c33;
+        color: #152C1F;
         overflow-wrap: anywhere;
         white-space: pre-line;
     }
 
     .request-modal__value--muted {
-        color: #a6aeb6;
+        color: #9AAE9D;
     }
 
     .request-modal__chips {
@@ -183,8 +183,8 @@
         margin: .15rem;
         padding: .3rem .6rem;
         border-radius: 2rem;
-        background: #eef4fb;
-        color: #3272a8;
+        background: #F1F5EC;
+        color: #3B6B4A;
         font-size: .72rem;
         font-weight: 600;
     }
@@ -193,9 +193,9 @@
         display: flex;
         align-items: center;
         padding: .7rem .85rem;
-        border: 1px solid #e9edf2;
+        border: 1px solid #DCE7D8;
         border-radius: .45rem;
-        background: #f8f9fa;
+        background: #F7F4EA;
     }
 
     .request-modal__file + .request-modal__file {
@@ -210,10 +210,10 @@
         width: 2.1rem;
         height: 2.1rem;
         margin-right: .75rem;
-        border: 1px solid #e9edf2;
+        border: 1px solid #DCE7D8;
         border-radius: .4rem;
-        background: #fff;
-        color: #6b7682;
+        background: #FFFDF7;
+        color: #6B8F71;
     }
 
     .request-modal__file-icon .material-icons {
@@ -224,15 +224,15 @@
         min-width: 0;
         font-size: .8rem;
         font-weight: 600;
-        color: #272c33;
+        color: #152C1F;
     }
 
     .request-modal__panel {
         margin-bottom: 1.25rem;
         padding: 1rem 1.15rem;
-        border: 1px solid #e9edf2;
+        border: 1px solid #DCE7D8;
         border-radius: .5rem;
-        background: #f8f9fa;
+        background: #F7F4EA;
     }
 
     .request-modal .form-label {
@@ -241,14 +241,14 @@
         font-weight: 700;
         letter-spacing: .07em;
         text-transform: uppercase;
-        color: #7b8590;
+        color: #6B8F71;
     }
 
     .request-modal .form-control {
         height: calc(1.5em + .9rem + 2px);
         padding: .45rem .75rem;
         font-size: .8125rem;
-        border-color: #dde3e9;
+        border-color: #B9CDB6;
         border-radius: .375rem;
     }
 
@@ -257,13 +257,13 @@
     }
 
     .request-modal .form-control:focus {
-        border-color: #4aa2ee;
-        box-shadow: 0 0 0 .2rem rgba(74, 162, 238, .18);
+        border-color: #4F7D5C;
+        box-shadow: 0 0 0 .2rem rgba(79, 125, 92, .18);
     }
 
     .request-modal .form-text {
         font-size: .72rem;
-        color: #929ba4;
+        color: #8FAE92;
     }
 
     .request-modal .close {

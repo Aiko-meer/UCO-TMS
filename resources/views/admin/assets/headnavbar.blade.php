@@ -13,10 +13,10 @@
                     <a href="{{ route('admin.home') }}"
                        class="navbar-brand mr-16pt d-lg-none">
                         <img class="navbar-brand-icon mr-0 mr-lg-8pt"
-                             src="{{ asset('assets/images/logo/accent-teal-100@2x.png') }}"
-                             width="32"
-                             alt="Huma">
-                        <span class="d-none d-lg-block">UCO-TMS</span>
+                             src="{{ asset('assets/images/uz-logo.png') }}"
+                             width="34"
+                             alt="Universidad de Zamboanga seal">
+                        <span class="d-none d-lg-block">UCO·TMS</span>
                     </a>
 
                     <!-- <button class="btn navbar-btn mr-16pt" data-toggle="modal" data-target="#apps">Apps <i class="material-icons">arrow_drop_down</i></button> -->
@@ -34,11 +34,15 @@
                                data-toggle="dropdown">
                                 @auth
                                     @php($currentUser = auth()->user())
-                                    <img width="32"
-                                         height="32"
-                                         class="rounded-circle mr-8pt"
-                                         src="{{ asset('storage/' . $currentUser->image) ?? asset('assets/images/people/50/guy-3.jpg') }}"
-                                         alt="{{ $currentUser->fullname }}" />
+                                    @if ($currentUser->image)
+                                        <img width="32"
+                                             height="32"
+                                             class="rounded-circle mr-8pt"
+                                             src="{{ asset('storage/' . $currentUser->image) }}"
+                                             alt="{{ $currentUser->fullname }}" />
+                                    @else
+                                        <span class="nav-avatar-initials mr-8pt" aria-hidden="true">{{ strtoupper(mb_substr($currentUser->fullname, 0, 1)) }}</span>
+                                    @endif
                                     <span class="flex d-flex flex-column mr-8pt">
                                         <span class="navbar-text-100">{{ $currentUser->fullname }}</span>
                                         <small class="navbar-text-50">{{ $currentUser->user_type ?: 'User' }}</small>

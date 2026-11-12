@@ -70,7 +70,7 @@
                      data: {
                          datasets: [{
                              data: [percentage, 100 - percentage],
-                             backgroundColor: [color, '#e9ecef'],
+                             backgroundColor: [color, '#E7EDDF'],
                              borderWidth: 0
                          }]
                      },
@@ -86,9 +86,9 @@
              }
 
              // Initialize each chart with its specific color
-             createProgressChart('dynamicInProgressChart', {{ $inProgressPercentage}}, '#ffc107'); // Accent / Yellow
-             createProgressChart('dynamicPostedChart', {{ $pendingPercentage}}, '#007bff'); // Primary / Blue
-             createProgressChart('dynamicApprovalChart', {{ $approvalPercentage}}, '#28a745'); // Success / Green
+             createProgressChart('dynamicInProgressChart', {{ $inProgressPercentage}}, '#4F7D5C'); // Accent / Yellow
+             createProgressChart('dynamicPostedChart', {{ $pendingPercentage}}, '#C9A24B'); // Primary / Blue
+             createProgressChart('dynamicApprovalChart', {{ $approvalPercentage}}, '#3B6B4A'); // Success / Green
          });
      </script>
  </div>

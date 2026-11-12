@@ -77,8 +77,11 @@ Route::middleware('auth')->group(function () {
     // ----- Any logged-in user -----
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.home');
     Route::get('/admin/account', [AccountController::class, 'dashboard'])->name('admin.account');
+    Route::put('/admin/account', [AccountController::class, 'updateBasic'])->name('admin.account.update');
     Route::get('/admin/account/edit-profile', [AccountController::class, 'editprofile'])->name('admin.account.edit-profile');
+    Route::put('/admin/account/edit-profile', [AccountController::class, 'updateProfile'])->name('admin.account.update-profile');
     Route::get('/admin/account/edit-profile/password', [AccountController::class, 'editprofilepassword'])->name('admin.account.edit-password');
+    Route::put('/admin/account/edit-profile/password', [AccountController::class, 'updatePassword'])->name('admin.account.update-password');
 
     // ----- Notifications (any logged-in user, scoped to their own account) -----
     // Read state is per account: these never touch a shared flag.

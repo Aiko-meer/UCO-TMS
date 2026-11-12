@@ -10,18 +10,18 @@
         width: 96px; height: 96px; border-radius: 50%;
         display: inline-flex; align-items: center; justify-content: center;
         font-size: 32px; font-weight: 600; color: #fff;
-        background: linear-gradient(135deg, #26c6da, #00838f);
+        background: linear-gradient(135deg, #4F7D5C, #152C1F);
     }
     .user-modal .section-title {
         font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
-        font-weight: 700; color: #8a8f98; margin-bottom: .75rem;
+        font-weight: 700; color: #6B8F71; margin-bottom: .75rem;
     }
-    .user-modal .info-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: #8a8f98; margin-bottom: 2px; }
-    .user-modal .info-value { font-weight: 600; color: #2d3436; margin-bottom: 0; word-break: break-word; }
-    .user-modal .stat-tile { border: 1px solid #eceff1; border-radius: 8px; padding: .75rem .5rem; background: #fafbfc; }
+    .user-modal .info-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: #6B8F71; margin-bottom: 2px; }
+    .user-modal .info-value { font-weight: 600; color: #152C1F; margin-bottom: 0; word-break: break-word; }
+    .user-modal .stat-tile { border: 1px solid #DCE7D8; border-radius: 8px; padding: .75rem .5rem; background: #FBF9F2; }
     .user-modal .stat-tile .stat-num { font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
-    .user-modal .stat-tile .stat-name { font-size: .68rem; letter-spacing: .06em; font-weight: 700; color: #8a8f98; }
-    .user-modal .role-card { border: 1px solid #e3e8ec; border-radius: 8px; background: #f8fafb; padding: 1rem; }
+    .user-modal .stat-tile .stat-name { font-size: .68rem; letter-spacing: .06em; font-weight: 700; color: #6B8F71; }
+    .user-modal .role-card { border: 1px solid #DCE7D8; border-radius: 8px; background: #F7F4EA; padding: 1rem; }
     .user-modal .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
 </style>
 
@@ -40,6 +40,10 @@
     $roleLabel = $roles[$user->user_type] ?? ucwords(str_replace('_', ' ', $user->user_type));
     // ...rest of your @php variables
         $isSelf     = auth()->id() === $user->id;
+
+        // The DB may still point at a portrait that was removed from storage.
+        $hasAvatar  = !empty($user->image)
+                      && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->image);
 
         $nameParts  = preg_split('/\s+/', trim($user->fullname));
         $initials   = strtoupper(mb_substr($nameParts[0] ?? '', 0, 1) . mb_substr(end($nameParts) ?: '', 0, 1));
@@ -85,11 +89,11 @@
                         {{-- Profile summary --}}
                         <div class="row align-items-center">
                             <div class="col-md-4 text-center mb-3 mb-md-0 border-md-right">
-                                @if($user->image)
+                                @if($hasAvatar)
                                     <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->fullname }}"
                                          class="avatar-lg rounded-circle shadow-sm border mb-3">
                                 @else
-                                    <div class="avatar-initials shadow-sm mb-3">{{ $initials }}</div>
+                                    <div class="avatar-initials shadow-sm mb-3" aria-hidden="true">{{ $initials }}</div>
                                 @endif
 
                                 <h5 class="font-weight-bold text-dark mb-1">{{ $user->fullname }}</h5>

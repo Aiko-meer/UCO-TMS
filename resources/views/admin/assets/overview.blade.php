@@ -1,11 +1,11 @@
 @php
     $overviewStatuses = [
-        'in_progress' => ['label' => 'In Progress', 'color' => '#0e9fab', 'icon' => 'autorenew'],
-        'for_approval' => ['label' => 'For Approval', 'color' => '#5b6fe0', 'icon' => 'check'],
-        'pending' => ['label' => 'Pending', 'color' => '#d98e1f', 'icon' => 'schedule'],
-        'rejected' => ['label' => 'Rejected', 'color' => '#d44a5c', 'icon' => 'cancel'],
+        'in_progress' => ['label' => 'In Progress', 'color' => '#4F7D5C', 'icon' => 'autorenew'],
+        'for_approval' => ['label' => 'For Approval', 'color' => '#C9A24B', 'icon' => 'check'],
+        'pending' => ['label' => 'Pending', 'color' => '#B08968', 'icon' => 'schedule'],
+        'rejected' => ['label' => 'Rejected', 'color' => '#A8574A', 'icon' => 'cancel'],
     ];
-    $completedColor = '#2f9e77';
+    $completedColor = '#1F3D2B';
     $overviewServices = [
         'socmed' => ['label' => 'Social Media', 'detail' => 'Socmed request information'],
         'layout' => ['label' => 'Layout', 'detail' => 'Publication · Layout'],
@@ -27,11 +27,12 @@
 
 <style>
     .request-overview {
-        --ink: #1f2a33;
-        --muted: #71808b;
-        --line: #e4e9ec;
-        --surface: #ffffff;
-        --soft: #f5f7f9;
+        --ink: #152C1F;
+        --muted: #6B8F71;
+        --line: #DCE7D8;
+        --line-soft: #EDF1E7;
+        --surface: #FFFDF7;
+        --soft: #F7F4EA;
         --ease: cubic-bezier(.22, 1, .36, 1);
         color: var(--ink);
     }
@@ -65,7 +66,7 @@
     .request-overview .status-card:hover .status-icon { transform: rotate(-8deg) scale(1.08); }
     .request-overview .status-card.is-active .status-icon.spin { animation: ro-spin 3s linear infinite; }
     .request-overview .status-meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 18px; color: var(--muted); font-size: 12px; }
-    .request-overview .status-track { height: 5px; margin-top: 8px; overflow: hidden; border-radius: 10px; background: #edf1f3; }
+    .request-overview .status-track { height: 5px; margin-top: 8px; overflow: hidden; border-radius: 10px; background: #EDF1E7; }
     .request-overview .status-fill { width: var(--status-percent); height: 100%; border-radius: inherit; background: var(--status-color); animation: ro-grow 1s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms + 250ms); }
 
     /* ---------- Panels ---------- */
@@ -91,7 +92,7 @@
     .request-overview ul.ro-legend > li { position: static !important; display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto 3rem; align-items: center; column-gap: 10px; width: auto; margin: 0 !important; padding: 9px 10px; border-radius: 8px; font-size: 13px; transition: background .2s ease; animation: ro-rise .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms + 400ms); }
     .request-overview ul.ro-legend > li:hover { background: var(--soft); }
     .request-overview .ro-legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--legend-color); }
-    .request-overview .ro-legend-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #55646f; }
+    .request-overview .ro-legend-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #5E7461; }
     .request-overview .ro-legend-value { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
     .request-overview .ro-legend-percent { color: var(--muted); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
 
@@ -99,14 +100,14 @@
     .request-overview .breakdown-table { width: 100%; margin: 0; border-collapse: collapse; }
     .request-overview .breakdown-table th { padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--soft); color: var(--muted); font-size: 12px; font-weight: 600; text-align: right; white-space: nowrap; }
     .request-overview .breakdown-table th:first-child { padding-left: 22px; text-align: left; }
-    .request-overview .breakdown-table td { padding: 13px 14px; border-bottom: 1px solid #eef1f3; font-size: 13px; text-align: right; vertical-align: middle; }
+    .request-overview .breakdown-table td { padding: 13px 14px; border-bottom: 1px solid var(--line-soft); font-size: 13px; text-align: right; vertical-align: middle; }
     .request-overview .breakdown-table td:first-child { padding-left: 22px; text-align: left; }
     .request-overview .breakdown-table tbody tr { transition: background .2s ease; animation: ro-rise .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 50ms + 350ms); }
-    .request-overview .breakdown-table tbody tr:hover { background: #f8fafb; }
+    .request-overview .breakdown-table tbody tr:hover { background: #FAF8F0; }
     .request-overview .breakdown-table tbody tr:last-child td { border-bottom: 0; }
     .request-overview .service-name { display: block; font-size: 13.5px; font-weight: 600; }
-    .request-overview .service-detail { display: block; margin-top: 2px; color: #93a0a8; font-size: 11px; }
-    .request-overview .number-pill { display: inline-block; min-width: 30px; padding: 3px 8px; border-radius: 6px; background: #f1f4f6; color: #9aa6ae; text-align: center; font-variant-numeric: tabular-nums; transition: transform .2s var(--ease); }
+    .request-overview .service-detail { display: block; margin-top: 2px; color: #8FAE92; font-size: 11px; }
+    .request-overview .number-pill { display: inline-block; min-width: 30px; padding: 3px 8px; border-radius: 6px; background: #F1F5EC; color: #9AAE9D; text-align: center; font-variant-numeric: tabular-nums; transition: transform .2s var(--ease); }
     .request-overview .number-pill.has-value { background: color-mix(in srgb, var(--number-color) 11%, white); color: var(--number-color); font-weight: 700; }
     .request-overview tr:hover .number-pill.has-value { transform: scale(1.1); }
     .request-overview .total-cell { font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -132,7 +133,7 @@
         .request-overview *, .request-overview *::before { animation: none !important; transition: none !important; }
     }
     @supports not (background: color-mix(in srgb, red 10%, white)) {
-        .request-overview .status-icon, .request-overview .number-pill.has-value { background: #eef4f5; }
+        .request-overview .status-icon, .request-overview .number-pill.has-value { background: #F1F5EC; }
     }
 </style>
 
@@ -175,7 +176,7 @@
                     <div class="ro-dist-body">
                         <div class="ro-donut">
                             <svg viewBox="0 0 42 42" role="img" aria-label="Request status distribution: {{ $requestStatusSummary['in_progress'] }} in progress, {{ $requestStatusSummary['for_approval'] }} for approval, {{ $requestStatusSummary['pending'] }} pending, {{ $requestStatusSummary['rejected'] }} rejected, {{ $requestStatusSummary['completed'] }} completed">
-                                <circle cx="21" cy="21" r="15.9155" pathLength="100" stroke="#edf1f3"></circle>
+                                <circle cx="21" cy="21" r="15.9155" pathLength="100" stroke="#EDF1E7"></circle>
                                 @foreach ($overviewStatuses as $status => $meta)
                                     @php $percentage = ($requestStatusSummary[$status] / $overviewChartTotal) * 100; @endphp
                                     @if ($percentage > 0)

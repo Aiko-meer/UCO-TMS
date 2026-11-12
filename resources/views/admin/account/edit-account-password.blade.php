@@ -62,11 +62,14 @@
                 </div>
 
                 <div class="container-fluid page__container">
-                    <form action="edit-account.html">
+                    <form method="POST" action="{{ route('admin.account.update-password') }}">
+                        @csrf
+                        @method('PUT')
                         <div class="row">
                             <div class="col-lg-9 pr-lg-0">
 
                                 <div class="page-section">
+                                    @include('admin.account.partials.alerts')
                                     <h4>Change Password</h4>
 
                                     <!--<div class="alert alert-soft-warning">
@@ -86,21 +89,50 @@
                                     <div class="list-group list-group-form">
                                         <div class="list-group-item">
                                             <div class="form-group row mb-0">
-                                                <label class="col-form-label col-sm-3">New password</label>
+                                                <label class="col-form-label col-sm-3" for="current_password">Current password</label>
                                                 <div class="col-sm-9">
                                                     <input type="password"
-                                                           class="form-control"
-                                                           placeholder="Password ...">
+                                                           class="form-control @error('current_password') is-invalid @enderror"
+                                                           id="current_password"
+                                                           name="current_password"
+                                                           placeholder="Current password ..."
+                                                           autocomplete="current-password"
+                                                           required>
+                                                    @error('current_password')
+                                                        <div class="form-text text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="list-group-item">
                                             <div class="form-group row mb-0">
-                                                <label class="col-form-label col-sm-3">Confirm password</label>
+                                                <label class="col-form-label col-sm-3" for="password">New password</label>
+                                                <div class="col-sm-9">
+                                                    <input type="password"
+                                                           class="form-control @error('password') is-invalid @enderror"
+                                                           id="password"
+                                                           name="password"
+                                                           placeholder="New password ..."
+                                                           autocomplete="new-password"
+                                                           required>
+                                                    @error('password')
+                                                        <div class="form-text text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                    <small class="form-text text-muted">At least 8 characters with upper and lower case letters, a number, and a symbol.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="form-group row mb-0">
+                                                <label class="col-form-label col-sm-3" for="password_confirmation">Confirm password</label>
                                                 <div class="col-sm-9">
                                                     <input type="password"
                                                            class="form-control"
-                                                           placeholder="Confirm password ...">
+                                                           id="password_confirmation"
+                                                           name="password_confirmation"
+                                                           placeholder="Confirm new password ..."
+                                                           autocomplete="new-password"
+                                                           required>
                                                 </div>
                                             </div>
                                         </div>

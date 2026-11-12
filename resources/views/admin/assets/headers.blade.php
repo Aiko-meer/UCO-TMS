@@ -10,9 +10,48 @@
               content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>UCO-TMS</title>
 
+        <!-- Safety net: never let the theme preloader trap the page.
+             Placed before any stylesheet so slow CDNs cannot delay the timer. -->
+        <script>
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                if (!preloader) return;
+                preloader.style.transition = 'opacity .4s ease';
+                preloader.style.opacity = '0';
+                preloader.style.pointerEvents = 'none';
+                setTimeout(function () { preloader.style.display = 'none'; }, 450);
+            }, 1000);
+        </script>
+
         <!-- Prevent the demo from appearing in search engines -->
         <meta name="robots"
               content="noindex">
+
+        <meta name="theme-color"
+              content="#0B1F16">
+        <link rel="icon"
+              type="image/png"
+              href="{{ asset('assets/images/uz-logo.png') }}">
+
+        <script>
+            /* Stored portraits can outlive their files — fall back to the UZ seal. */
+            document.addEventListener('error', function (event) {
+                var img = event.target;
+                if (!img || img.tagName !== 'IMG' || img.dataset.fallbackApplied) return;
+                if (!/\/storage\//.test(img.getAttribute('src') || '')) return;
+                img.dataset.fallbackApplied = '1';
+                img.src = '{{ asset('assets/images/uz-logo.png') }}';
+                img.classList.add('img-fallback-seal');
+            }, true);
+        </script>
+
+        <link rel="preconnect"
+              href="https://fonts.googleapis.com">
+        <link rel="preconnect"
+              href="https://fonts.gstatic.com"
+              crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap"
+              rel="stylesheet">
 
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7COswald:300,400,500,700%7CRoboto:400,500%7CExo+2:600&display=swap"
               rel="stylesheet">
@@ -52,6 +91,12 @@
          <!-- Sweet Alert -->
         <link rel="stylesheet"
               href="{{ asset('assets/css/sweetalert.css') }}">
+
+        <!-- Forest Whisper admin theme -->
+        <link type="text/css"
+              href="{{ asset('assets/css/forest-admin.css') }}"
+              rel="stylesheet">
+
      @livewireStyles
   <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.4.0/dist/web/pusher.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
